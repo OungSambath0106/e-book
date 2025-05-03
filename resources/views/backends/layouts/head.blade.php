@@ -40,7 +40,8 @@
     <link rel="stylesheet"
         href="{{ asset('backend/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     {{-- summernote --}}
-    <link rel="stylesheet" href="{{ asset('backend/plugins/summernote/summernote-bs4.min.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('backend/plugins/summernote/summernote-bs4.min.css') }}"> --}}
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
     <link rel="stylesheet"
@@ -62,6 +63,18 @@
     @stack('css')
 </head>
 <style>
+    .note-editor.note-frame{
+        overflow: hidden;
+    }
+
+    .note-btn{
+        padding-inline: 1.5rem !important;
+    }
+
+    .note-editor .note-toolbar>.note-btn-group, .note-popover .popover-content>.note-btn-group {
+        margin-right: 8px;
+    }
+
     .nav-item.dropdown {
         list-style-type: none;
         /* Removes the bullet marker */

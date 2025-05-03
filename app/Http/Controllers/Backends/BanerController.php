@@ -26,7 +26,7 @@ class BanerController extends Controller
         }
 
         $banners = Baner::latest('id')->get();
-        return view('backends.banner-slider.index', compact('banners'));
+        return view('backends.banner.index', compact('banners'));
     }
 
     /**
@@ -45,7 +45,7 @@ class BanerController extends Controller
         $default_lang = 'en';
         $default_lang = json_decode($language, true)[0]['code'];
 
-        return view('backends.banner-slider._create', compact('language', 'default_lang'));
+        return view('backends.banner._create', compact('language', 'default_lang'));
     }
 
     /**
@@ -89,10 +89,10 @@ class BanerController extends Controller
             if ($request->filled('image_names')) {
                 $imageName = $request->image_names;
                 $tempPath = public_path("uploads/temp/{$imageName}");
-                $banerPath = public_path("uploads/banner-slider/{$imageName}");
+                $banerPath = public_path("uploads/banners/{$imageName}");
 
                 if (\File::exists($tempPath)) {
-                    \File::ensureDirectoryExists(public_path('uploads/banner-slider'), 0777, true);
+                    \File::ensureDirectoryExists(public_path('uploads/banners'), 0777, true);
                     \File::move($tempPath, $banerPath);
                     $baner->image = $imageName;
                 }
@@ -114,7 +114,7 @@ class BanerController extends Controller
             ];
         }
 
-        return redirect()->route('admin.banner-slider.index')->with($output);
+        return redirect()->route('admin.banner.index')->with($output);
     }
 
     /**
@@ -141,7 +141,7 @@ class BanerController extends Controller
         }
 
         $baner = Baner::withoutGlobalScopes()->findOrFail($id);
-        return view('backends.banner-slider._edit', compact('baner'));
+        return view('backends.banner._edit', compact('baner'));
     }
 
     /**
@@ -186,14 +186,14 @@ class BanerController extends Controller
             if ($request->filled('image_names')) {
                 $imageName = $request->image_names;
                 $tempPath = public_path("uploads/temp/{$imageName}");
-                $banerPath = public_path("uploads/banner-slider/{$imageName}");
+                $banerPath = public_path("uploads/banners/{$imageName}");
 
-                if ($baner->image && \File::exists(public_path("uploads/banner-slider/{$baner->image}"))) {
-                    \File::delete(public_path("uploads/banner-slider/{$baner->image}"));
+                if ($baner->image && \File::exists(public_path("uploads/banners/{$baner->image}"))) {
+                    \File::delete(public_path("uploads/banners/{$baner->image}"));
                 }
 
                 if (\File::exists($tempPath)) {
-                    \File::ensureDirectoryExists(public_path('uploads/banner-slider'), 0777, true);
+                    \File::ensureDirectoryExists(public_path('uploads/banners'), 0777, true);
                     \File::move($tempPath, $banerPath);
                     $baner->image = $imageName;
                 }
@@ -214,7 +214,7 @@ class BanerController extends Controller
             ];
         }
 
-        return redirect()->route('admin.banner-slider.index')->with($output);
+        return redirect()->route('admin.banner.index')->with($output);
     }
 
     /**
@@ -234,7 +234,7 @@ class BanerController extends Controller
             $baner = Baner::findOrFail($id);
 
             if ($baner->image) {
-                $imagePath = public_path('uploads/banner-slider/' . $baner->image);
+                $imagePath = public_path('uploads/banners/' . $baner->image);
 
                 if (file_exists($imagePath)) {
                     unlink($imagePath);
@@ -242,7 +242,7 @@ class BanerController extends Controller
             }
 
             $baner->delete();
-            $view = view('backends.banner-slider._table', ['banners' => Baner::latest()->get()])->render();
+            $view = view('backends.banner._table', ['banners' => Baner::latest()->get()])->render();
 
             DB::commit();
             $output = [
@@ -271,7 +271,7 @@ class BanerController extends Controller
 
         $baner = Baner::find($request->baner_id);
         if ($baner && $baner->image) {
-            $imagePath = public_path('uploads/banner-slider/' . $baner->image);
+            $imagePath = public_path('uploads/banners/' . $baner->image);
 
             if (file_exists($imagePath)) {
                 unlink($imagePath);

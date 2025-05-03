@@ -31,9 +31,9 @@
                     <span class="nav-link-text ms-1"> {{ __('Dashboard') }} </span>
                 </a>
             </li>
-            @if (auth()->user()->can('brand.view') || auth()->user()->can('product.view'))
-                <li class="nav-item @if (request()->routeIs('admin.brand.*') || request()->routeIs('admin.product.*')) menu-is-opening menu-open @endif">
-                    <a class="nav-link mx-0 justify-content-between @if (request()->routeIs('admin.brand.*') || request()->routeIs('admin.product.*')) active @endif" href="">
+            @if (auth()->user()->can('category.view') || auth()->user()->can('product.view'))
+                <li class="nav-item @if (request()->routeIs('admin.category.*') || request()->routeIs('admin.product.*')) menu-is-opening menu-open @endif">
+                    <a class="nav-link mx-0 justify-content-between @if (request()->routeIs('admin.category.*') || request()->routeIs('admin.product.*')) active @endif" href="">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="ni ni-box-2 icon-aside text-sm opacity-10"></i>
                         </div>
@@ -41,13 +41,13 @@
                         <i class="menu-arrow fa-solid fa-chevron-down ms-auto transition-icon"></i>
                     </a>
                     <ul class="nav nav-treeview pt-1">
-                        @if (auth()->user()->can('brand.view'))
+                        @if (auth()->user()->can('category.view'))
                             <li class="nav-item">
-                                <a href="{{ route('admin.brand.index') }}" class="nav-link @if (request()->routeIs('admin.brand*')) active @endif">
+                                <a href="{{ route('admin.category.index') }}" class="nav-link @if (request()->routeIs('admin.category*')) active @endif">
                                     <div class="icon icon-shape icon-xxs border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                         <i class="fa-solid fa-circle nav-icon icon-aside text-sm opacity-10" style="top: 0;"></i>
                                     </div>
-                                    <span class="nav-link-text ms-1"> {{ __('Brand') }} </span>
+                                    <span class="nav-link-text ms-1"> {{ __('Category') }} </span>
                                 </a>
                             </li>
                         @endif
@@ -65,38 +65,14 @@
                     </ul>
                 </li>
             @endif
-            @if (auth()->user()->can('banner.view') || auth()->user()->can('shoes-slider.view'))
-                <li class="nav-item @if (request()->routeIs('admin.banner-slider.*') || request()->routeIs('admin.shoes-slider.*')) menu-is-opening menu-open @endif">
-                    <a class="nav-link mx-0 justify-content-between @if (request()->routeIs('admin.banner-slider.*') || request()->routeIs('admin.shoes-slider.*')) active @endif" href="">
+            @if (auth()->user()->can('banner.view'))
+                <li class="nav-item">
+                    <a class="nav-link mx-0 @if (request()->routeIs('admin.banner*')) active @endif" href="{{ route('admin.banner.index') }}">
                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="ni ni-image icon-aside text-sm opacity-10"></i>
                         </div>
-                        <span class="nav-link-text ms-1"> {{ __('Banner Slider') }} </span>
-                        <i class="menu-arrow fa-solid fa-chevron-down ms-auto transition-icon"></i>
+                        <span class="nav-link-text ms-1"> {{ __('Banner') }} </span>
                     </a>
-                    <ul class="nav nav-treeview pt-1">
-                        @if (auth()->user()->can('banner.view'))
-                            <li class="nav-item">
-                                <a href="{{ route('admin.banner-slider.index') }}" class="nav-link @if (request()->routeIs('admin.banner-slider*')) active @endif">
-                                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-circle nav-icon icon-aside text-sm opacity-10" style="top: 0;"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1"> {{ __('Banner') }} </span>
-                                </a>
-                            </li>
-                        @endif
-
-                        @if (auth()->user()->can('shoes-slider.view'))
-                            <li class="nav-item">
-                                <a href="{{ route('admin.shoes-slider.index') }}" class="nav-link @if (request()->routeIs('admin.shoes-slider*')) active @endif">
-                                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fa-solid fa-circle nav-icon icon-aside text-sm opacity-10" style="top: 0;"></i>
-                                    </div>
-                                    <span class="nav-link-text ms-1"> {{ __('Shoes Slider') }} </span>
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
                 </li>
             @endif
             @if (auth()->user()->can('promotion.view'))

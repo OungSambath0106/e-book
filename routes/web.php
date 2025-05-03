@@ -12,11 +12,13 @@ use App\Http\Controllers\Backends\LanguageController;
 use App\Http\Controllers\Backends\DashboardController;
 use App\Http\Controllers\Backends\FileManagerController;
 use App\Http\Controllers\Backends\BusinessSettingController;
+use App\Http\Controllers\Backends\CategoryController;
 use App\Http\Controllers\Backends\CustomerController;
 use App\Http\Controllers\Backends\OrderController;
 use App\Http\Controllers\Backends\ProductController;
 use App\Http\Controllers\Backends\PromotionController;
 use App\Http\Controllers\Backends\ShoesSliderController;
+use App\Http\Controllers\Websites\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,9 +44,7 @@ Route::get('/admin/login', function () {
     return redirect('/admin/login');
 });
 
-Route::get('/', function () {
-    return view('website.home.index');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/shop', function () {
     return view('website.shop.index');
@@ -168,20 +168,15 @@ Route::middleware(['auth','CheckUserLogin', 'SetSessionData'])->group(function (
         Route::post('promotion/update_status', [PromotionController::class, 'updateStatus'])->name('promotion.update_status');
         Route::delete('promotion/delete/gallery',[PromotionController::class, 'deletePromotionGallery'])->name('promotion.delete_gallery');
 
-        // Route Baner-Slider
-        Route::post('banner-slider/update_status', [BanerController::class, 'updateStatus'])->name('banner-slider.update_status');
-        Route::resource('banner-slider', BanerController::class);
-        Route::post('banner-slider/delete-image', [BanerController::class, 'deleteImage'])->name('banner-slider.delete_image');
+        // Route Baner
+        Route::post('banner/update_status', [BanerController::class, 'updateStatus'])->name('banner.update_status');
+        Route::resource('banner', BanerController::class);
+        Route::post('banner/delete-image', [BanerController::class, 'deleteImage'])->name('banner.delete_image');
 
-        //Route for onboard
-        Route::resource('shoes-slider', ShoesSliderController::class);
-        Route::post('shoes-slider/update_status', [ShoesSliderController::class, 'updateStatus'])->name('shoes-slider.update_status');
-        Route::post('shoes-slider/delete-image', [ShoesSliderController::class, 'deleteImage'])->name('shoes-slider.delete_image');
-
-        // Route Brand
-        Route::post('brand/update_status', [BrandController::class, 'updateStatus'])->name('brand.update_status');
-        Route::resource('brand', BrandController::class);
-        Route::post('brand/delete-image', [BrandController::class, 'deleteImage'])->name('brand.delete_image');
+        // Route Category
+        Route::post('category/update_status', [CategoryController::class, 'updateStatus'])->name('category.update_status');
+        Route::resource('category', CategoryController::class);
+        Route::post('category/delete-image', [CategoryController::class, 'deleteImage'])->name('category.delete_image');
 
         // Route Product
         Route::post('product/update_status', [ProductController::class, 'updateStatus'])->name('product.update_status');

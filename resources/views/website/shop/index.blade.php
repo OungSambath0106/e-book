@@ -18,7 +18,7 @@
 
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Search for a book, author...">
-                <button class="search-btn-hero">
+                <button class="search-btn-hero" type="button" aria-label="Search">
                     <i class="fas fa-search"></i>
                 </button>
             </div>

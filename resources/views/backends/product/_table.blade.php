@@ -5,7 +5,7 @@
                 <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7"> {{ __('SL') }} </th>
                 <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7"> {{ __('Image') }} </th>
                 <th class="text-uppercase text-secondary text-sm font-weight-bolder px-2 opacity-7"> {{ __('Name') }} </th>
-                <th class="text-uppercase text-secondary text-sm font-weight-bolder px-2 opacity-7"> {{ __('Brand') }} </th>
+                <th class="text-uppercase text-secondary text-sm font-weight-bolder px-2 opacity-7"> {{ __('Category') }} </th>
                 <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7"> {{ __('Sale') }} </th>
                 <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7"> {{ __('In Stock') }} </th>
                 <th class="text-uppercase text-secondary text-sm font-weight-bolder px-2 opacity-7"> {{ __('Created By') }} </th>
@@ -43,7 +43,7 @@
                         <p class="text-sm font-weight-bold mb-0"> {{ $product->name ?? 'Null' }} </p>
                     </td>
                     <td>
-                        <p class="text-sm font-weight-bold mb-0 @if ($product->total_qty == 0) text-danger @endif">{{ $product->brand->name ?? 'Null' }}</p>
+                        <p class="text-sm font-weight-bold mb-0 @if ($product->total_qty == 0) text-danger @endif">{{ $product->category->name ?? 'Null' }}</p>
                     </td>
                     <td>
                         <p class="text-sm text-center font-weight-bold mb-0 @if ($product->total_qty == 0) text-danger @endif">{{ $product->count_product_sale ?? '0' }}</p>

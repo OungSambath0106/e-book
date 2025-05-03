@@ -44,16 +44,16 @@
                         <div class="card-body pt-1">
                             <div class="d-flex col-lg-12 col-md-12 col-sm-12">
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-12 filter tab-content" id="custom-content-below-tabContent">
-                                    <label for="brand_id">{{ __('Brand') }}</label>
-                                    <select name="brand_id" id="brand_id" class="form-control select2">
+                                    <label for="category_id">{{ __('Category') }}</label>
+                                    <select name="category_id" id="category_id" class="form-control select2">
                                         <option value="" class="form-control"
-                                            {{ !request()->filled('brands') ? 'selected' : '' }}>
-                                            {{ __('All Brand') }}
+                                            {{ !request()->filled('categories') ? 'selected' : '' }}>
+                                            {{ __('All Category') }}
                                         </option>
-                                        @foreach ($brands as $brand)
-                                            <option value="{{ $brand->id }}" class="form-control"
-                                                {{ $brand->id == request('brand_id') ? 'selected' : '' }}>
-                                                {{ $brand->name }}
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}" class="form-control"
+                                                {{ $category->id == request('category_id') ? 'selected' : '' }}>
+                                                {{ $category->name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -176,13 +176,13 @@
     </script>
     <script>
         $(document).ready(function() {
-            $('#brand_id').select2();
+            $('#category_id').select2();
         });
 
-        $(document).on('change', '#brand_id', function(e) {
+        $(document).on('change', '#category_id', function(e) {
             e.preventDefault();
 
-            var brand_id = $('#brand_id').val();
+            var category_id = $('#category_id').val();
 
             if ($.fn.DataTable.isDataTable('#bookingTable')) {
                 $('#bookingTable').DataTable().destroy();
@@ -192,7 +192,7 @@
                 type: "GET",
                 url: '{{ route('admin.product.index') }}',
                 data: {
-                    'brand_id': brand_id
+                    'category_id': category_id
                 },
                 dataType: "json",
                 success: function(response) {

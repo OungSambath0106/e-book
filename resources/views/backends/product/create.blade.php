@@ -88,16 +88,16 @@
                                                     </span>
                                                 @enderror
                                             </div>
-                                            <div class="form-group col-md-12">
+                                            {{-- <div class="form-group col-md-12">
                                                 <label for="description" class="required_label">{{ __('Description') }}</label>
-                                                <textarea type="text" id="description" class="form-control @error('description') is-invalid @enderror"
+                                                <textarea type="text" id="description" class="form-control summernote @error('description') is-invalid @enderror"
                                                     name="description" placeholder="{{ __('Enter Description') }}" value=""></textarea>
                                                 @error('description')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
-                                            </div>
+                                            </div> --}}
                                             <div class="form-group d-flex col-md-12 mb-0">
                                                 <div class="form-group col-md-2">
                                                     <label class="switch" for="new-arrival">
@@ -161,15 +161,15 @@
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-6 ">
-                                                <label class="required_label" for="brand">{{ __('Brand') }}</label>
-                                                <select name="brand_id" id="brand"
-                                                    class="form-control select2 @error('brand_id') is-invalid @enderror">
-                                                    <option value="">{{ __('Select Brand') }}</option>
-                                                    @foreach ($brands as $item)
+                                                <label class="required_label" for="category">{{ __('Category') }}</label>
+                                                <select name="category_id" id="category"
+                                                    class="form-control select2 @error('category_id') is-invalid @enderror">
+                                                    <option value="">{{ __('Select Category') }}</option>
+                                                    @foreach ($categories as $item)
                                                         <option value="{{ $item -> id }}">{{ $item -> name }}</option>
                                                     @endforeach
                                                 </select>
-                                                @error('brand')
+                                                @error('category_id')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>

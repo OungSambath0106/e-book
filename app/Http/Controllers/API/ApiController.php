@@ -85,7 +85,7 @@ class ApiController extends Controller
                         ->select('id', 'name', 'image', 'status')
                         ->get();
         $baner_slider = $baner_slider->map(function ($baner) {
-            $baner->image = asset('uploads/banner-slider/' . $baner->image);
+            $baner->image = asset('uploads/banners/' . $baner->image);
             return $baner;
         });
 

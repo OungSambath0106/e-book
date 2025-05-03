@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backends;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
@@ -22,7 +23,7 @@ class DashboardController extends Controller
         $shoesSliders = ShoesSlider::get();
         $totalCustomers = Customer::count();
         $totalCustomersLastWeek = Customer::where('created_at', '<', now()->subWeek())->count();
-        $brands = Brand::get();
+        $categories = Category::get();
         $products = Product::get();
         $productsLastWeek = Product::where('created_at', '<', now()->subWeek())->count();
         $totalSalesReport = Order::count();
@@ -44,6 +45,6 @@ class DashboardController extends Controller
 
                 return $product;
             });
-        return view('backends.index', compact('users', 'shoesSliders', 'customers', 'totalCustomers', 'totalCustomersLastWeek', 'brands', 'products', 'productsLastWeek', 'count_pro_sale', 'totalSalesReport', 'totalSalesReportLastDay', 'totalIncome', 'totalIncomeLastMonth', 'transactions'));
+        return view('backends.index', compact('users', 'shoesSliders', 'customers', 'totalCustomers', 'totalCustomersLastWeek', 'categories', 'products', 'productsLastWeek', 'count_pro_sale', 'totalSalesReport', 'totalSalesReportLastDay', 'totalIncome', 'totalIncomeLastMonth', 'transactions'));
     }
 }

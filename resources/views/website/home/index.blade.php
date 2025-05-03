@@ -9,24 +9,23 @@
 
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Search for a book, author...">
-                <button class="search-btn-hero">
+                <button class="search-btn-hero" type="button" aria-label="Search">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
 
             <div class="book-showcase">
-                <div class="book-image">
-                    <img src="/api/placeholder/220/280" alt="Library Interior">
-                </div>
-                <div class="book-image">
-                    <img src="/api/placeholder/220/280" alt="Stack of Books">
-                </div>
-                <div class="book-image">
-                    <img src="/api/placeholder/220/280" alt="Person Reading">
-                </div>
-                <div class="book-image">
-                    <img src="/api/placeholder/220/280" alt="Books on Shelf">
-                </div>
+                @foreach ($banners as $banner)
+                    <div class="book-image">
+                        <img src="
+                                @if ($banner->image && file_exists(public_path('uploads/banners/' . $banner->image)))
+                                    {{ asset('uploads/banners/'. $banner->image) }}
+                                @else
+                                    {{ asset('uploads/default1.png') }}
+                                @endif
+                                " alt="{{ $banner->name }}">
+                    </div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -68,25 +67,6 @@
         </div>
     </section>
 
-    @php
-        $books = [
-            [
-                'title' => 'ផ្ទះត្រើយស្ទឹងម្ខាង',
-                'author' => 'តាំង​ ហ៊ុយសេង',
-                'price' => '$11.99',
-                'rating' => 4.5,
-                'thumbnail' => 'book1.webp'
-            ],
-            [
-                'title' => '15ឆ្នាំក្រោយជួបគ្នា',
-                'author' => 'ម៉ុង ម៉ានិត',
-                'price' => '$11.99',
-                'rating' => 4.5,
-                'thumbnail' => 'book2.webp'
-            ],
-        ];
-    @endphp
-
     <!-- Featured Books Section -->
     <section class="featured-books">
         <div class="container">
@@ -95,24 +75,24 @@
             </div>
 
             <div class="books-grid">
-                @foreach ($books as $book)
+                @foreach ($products as $product)
                     <div class="book-card">
                         <div class="book-card-img">
-                            <img src="{{ asset('uploads/books/' . $book['thumbnail']) }}" alt="{{ $book['title'] }}">
+                            <img src="{{ asset('uploads/products/' . @$product->productgallery->thumbnail) }}" alt="{{ @$product->name }}">
                         </div>
                         <div class="book-card-content">
-                            <h3>{{ $book['title'] }}</h3>
-                            <p class="book-author">by {{ $book['author'] }}</p>
+                            <h3>{{ @$product->name }}</h3>
+                            <p class="book-author">by {{ @$product->author->name }}</p>
                             <div class="star-rating">
                                 @for ($i = 0; $i < 5; $i++)
-                                    @if ($i < $book['rating'])
+                                    @if ($i < @$product->rating)
                                         <i class="fas fa-star"></i>
                                     @else
-                                        <i class="fas fa-star-half-alt"></i>
+                                        <i class="far fa-star"></i>
                                     @endif
                                 @endfor
                             </div>
-                            <p class="book-price">{{ $book['price'] }}</p>
+                            <p class="book-price">{{ @$product->price }}</p>
                         </div>
                     </div>
                 @endforeach

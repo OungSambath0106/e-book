@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Backends;
 use App\helpers\ImageManager;
 use File;
 use Exception;
-use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Translation;
 use Illuminate\Http\Request;
 use App\Models\BusinessSetting;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\ProductGallery;
 use Illuminate\Support\Facades\Validator;
 
@@ -42,15 +42,15 @@ class ProductController extends Controller
             return $product;
         });
 
-        $brands = Brand::all();
+        $categories = Category::all();
         if ($request->ajax()) {
-            $view = view('backends.product._table', compact('products', 'brands', 'product_instock'))->render();
+            $view = view('backends.product._table', compact('products', 'categories', 'product_instock'))->render();
             return response()->json([
                 'view' => $view
             ]);
         }
 
-        return view('backends.product.index', compact('products', 'brands', 'product_instock'));
+        return view('backends.product.index', compact('products', 'categories', 'product_instock'));
     }
 
     /**
@@ -62,10 +62,10 @@ class ProductController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $brands = Brand::all();
-        $products = Product::with('brand')->get();
+        $categories = Category::all();
+        $products = Product::with('category')->get();
 
-        return view('backends.product.create', compact('products', 'brands'));
+        return view('backends.product.create', compact('products', 'categories'));
     }
 
     /**
@@ -79,7 +79,7 @@ class ProductController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'brand_id' => 'required',
+            'category_id' => 'required',
         ]);
 
         if (is_null($request->name)) {
@@ -87,14 +87,6 @@ class ProductController extends Controller
                 $validator->errors()->add(
                     'name',
                     'Name field is required!'
-                );
-            });
-        }
-        if (is_null($request->description)) {
-            $validator->after(function ($validator) {
-                $validator->errors()->add(
-                    'description',
-                    'description field is required!'
                 );
             });
         }
@@ -112,8 +104,8 @@ class ProductController extends Controller
 
             $pro = new Product;
             $pro->name = $request->name;
-            $pro->description = $request->description;
-            $pro->brand_id = $request->brand_id;
+            // $pro->description = $request->description;
+            $pro->category_id = $request->category_id;
             $pro->rating = $request->rating;
             $pro->created_by = auth()->user()->id;
             $pro->new_arrival = $request->has('new-arrival') ? 1 : 0;
@@ -182,10 +174,10 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $brands = Brand::all();
-        $product = Product::withoutGlobalScopes()->with('brand', 'productgallery')->findOrFail($id);
+        $categories = Category::all();
+        $product = Product::withoutGlobalScopes()->with('category', 'productgallery')->findOrFail($id);
 
-        return view('backends.product.edit', compact('product', 'brands'));
+        return view('backends.product.edit', compact('product', 'categories'));
     }
 
     /**
@@ -199,7 +191,7 @@ class ProductController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'brand_id' => 'required',
+            'category_id' => 'required',
             // 'images' => ['nullable', function ($attribute, $value, $fail) {
             //     $images = json_decode($value, true);
             //     if (is_array($images) && count($images) > 5) {
@@ -216,14 +208,6 @@ class ProductController extends Controller
                 );
             });
         }
-        if (is_null($request->description)) {
-            $validator->after(function ($validator) {
-                $validator->errors()->add(
-                    'description',
-                    'description field is required!'
-                );
-            });
-        }
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -237,8 +221,8 @@ class ProductController extends Controller
 
             $product = Product::findOrFail($id);
             $product->name = $request->name;
-            $product->description = $request->description;
-            $product->brand_id = $request->brand_id;
+            // $product->description = $request->description;
+            $product->category_id = $request->category_id;
             $product->rating = $request->rating;
             $product->new_arrival = $request->has('new-arrival') ? 1 : 0;
             $product->recommended = $request->has('recommended') ? 1 : 0;
@@ -389,7 +373,6 @@ class ProductController extends Controller
         }
 
         try{
-            \Log::info($request->all());
             DB::beginTransaction();
             $product_gallery = ProductGallery::where('product_id', $request->product_id)->first();
             if (!$product_gallery) {

@@ -160,7 +160,7 @@
             window.location.href = "{{ route('admin.order.index') }}";
         });
     </script>
-    <script>
+    {{-- <script>
         $(function() {
             // Date-range callback
             function cb(start, end) {
@@ -214,7 +214,7 @@
                 });
             }
         });
-    </script>
+    </script> --}}
     <script>
         $('.btn_add').click(function(e) {
             var tbody = $('.tbody');
