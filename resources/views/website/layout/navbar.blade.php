@@ -13,7 +13,7 @@
                 <li><a class="@if (request()->is('categories')) active @endif"
                         href="{{ route('categories') }}">Categories</a></li>
                 <li><a class="@if (request()->is('shop') || request()->is('book/*')) active @endif" href="{{ route('shop') }}">Shop</a></li>
-                <li><a class="@if (request()->is('authors') || request()->is('author-detail')) active @endif" href="{{ route('authors') }}">Authors</a>
+                <li><a class="@if (request()->is('authors') || request()->is('author-detail/*')) active @endif" href="{{ route('authors') }}">Authors</a>
                 </li>
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Blog</a></li>

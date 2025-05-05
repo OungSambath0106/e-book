@@ -4,6 +4,7 @@ use App\Models\BusinessSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Backends\AuthorController;
 use App\Http\Controllers\Backends\BanerController;
 use App\Http\Controllers\Backends\BrandController;
 use App\Http\Controllers\Backends\RoleController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Backends\OrderController;
 use App\Http\Controllers\Backends\ProductController;
 use App\Http\Controllers\Backends\PromotionController;
 use App\Http\Controllers\Backends\ShoesSliderController;
+use App\Http\Controllers\Websites\AuthorController as WebsitesAuthorController;
 use App\Http\Controllers\Websites\HomeController;
 
 /*
@@ -101,13 +103,8 @@ Route::get('/categories', function () {
     return view('website.categories.index');
 })->name('categories');
 
-Route::get('/authors', function () {
-    return view('website.authors.index');
-})->name('authors');
-
-Route::get('/author-detail', function () {
-    return view('website.authors.partials.author_detail');
-})->name('author.detail');
+Route::get('/authors', [WebsitesAuthorController::class, 'index'])->name('authors');
+Route::get('/author-detail/{id}', [WebsitesAuthorController::class, 'show'])->name('author.detail');
 
 Auth::routes();
 
@@ -159,6 +156,10 @@ Route::middleware(['auth','CheckUserLogin', 'SetSessionData'])->group(function (
         Route::resource('customer', CustomerController::class);
         Route::post('customer/delete-image', [CustomerController::class, 'deleteImage'])->name('customer.delete_image');
         Route::post('customer/update_status', [CustomerController::class, 'updateStatus'])->name('customer.update_status');
+
+        //Route for Author
+        Route::resource('author', AuthorController::class);
+        Route::post('author/delete-image', [AuthorController::class, 'deleteImage'])->name('author.delete_image');
 
         //Route for role
         Route::resource('roles', RoleController::class);

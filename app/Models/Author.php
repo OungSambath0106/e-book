@@ -16,6 +16,10 @@ class Author extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'social_media' => 'array',
+    ];
+
     public function products()
     {
         return $this->hasMany(Product::class);

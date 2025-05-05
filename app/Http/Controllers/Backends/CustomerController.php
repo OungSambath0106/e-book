@@ -237,7 +237,7 @@ class CustomerController extends Controller
                 ImageManager::delete(public_path('uploads/customers/' . $customer->image));
             }
             $customer->delete();
-            $customers = Customer::latest('id')->paginate(10);
+            $customers = Customer::latest('id')->get();
             $view = view('backends.customer._table', compact('customers'))->render();
 
             DB::commit();

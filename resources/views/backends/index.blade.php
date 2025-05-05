@@ -296,11 +296,11 @@
             <div class="card card-carousel overflow-hidden h-100 p-0">
                 <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
                     <div class="carousel-inner border-radius-lg h-100">
-                        @foreach ($shoesSliders as $index => $shoesSlider)
+                        @foreach ($banners as $index => $banner)
                             <div class="carousel-item h-100 {{ $index === 0 ? 'active' : '' }}"
-                                style="background-image: url('{{ asset('uploads/shoes-slider/' . $shoesSlider->image) }}'); background-size: cover;">
+                                style="background-image: url('{{ asset('uploads/banners/' . $banner->image) }}'); background-size: cover;">
                                 <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
-                                    <h5 class="text-white mb-1">{{ $shoesSlider->title }}</h5>
+                                    <h5 class="text-white mb-1">{{ $banner->title }}</h5>
                                     <p>There’s nothing I really wanted to do in life that I wasn’t able to get good at.</p>
                                 </div>
                             </div>

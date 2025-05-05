@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="deleteCustomerModal" tabindex="-1" role="dialog" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteAuthorModal" tabindex="-1" role="dialog" aria-labelledby="deleteAuthorModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md" style="padding-inline: 3.5rem;" role="document">
         <div class="modal-content" style="border-radius: 15px">
             <div class="modal-body p-4">
@@ -10,7 +10,7 @@
                     <h5 class="mb-0"> Are you sure? </h5>
                 </div>
                 <div class="description text-gray text-center pt-2 pb-3">
-                    <small> Are you sure you want to delete this Customer? </small>
+                    <small> Are you sure you want to delete this Author? </small>
                 </div>
                 <div class="button">
                     <div class="d-flex justify-content-center col-12 button-footer" style="gap: 10px">

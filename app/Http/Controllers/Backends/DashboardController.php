@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backends;
 
 use App\Http\Controllers\Controller;
+use App\Models\Baner;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Customer;
@@ -20,7 +21,7 @@ class DashboardController extends Controller
     {
         $users = User::get();
         $customers = Customer::take(6)->latest('id')->get();
-        $shoesSliders = ShoesSlider::get();
+        $banners = Baner::get();
         $totalCustomers = Customer::count();
         $totalCustomersLastWeek = Customer::where('created_at', '<', now()->subWeek())->count();
         $categories = Category::get();
@@ -45,6 +46,6 @@ class DashboardController extends Controller
 
                 return $product;
             });
-        return view('backends.index', compact('users', 'shoesSliders', 'customers', 'totalCustomers', 'totalCustomersLastWeek', 'categories', 'products', 'productsLastWeek', 'count_pro_sale', 'totalSalesReport', 'totalSalesReportLastDay', 'totalIncome', 'totalIncomeLastMonth', 'transactions'));
+        return view('backends.index', compact('users', 'banners', 'customers', 'totalCustomers', 'totalCustomersLastWeek', 'categories', 'products', 'productsLastWeek', 'count_pro_sale', 'totalSalesReport', 'totalSalesReportLastDay', 'totalIncome', 'totalIncomeLastMonth', 'transactions'));
     }
 }

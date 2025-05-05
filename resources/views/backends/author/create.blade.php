@@ -1,5 +1,5 @@
 @extends('backends.layouts.admin')
-@section('page_title', __('Add New Customer'))
+@section('page_title', __('Add New Author'))
 @section('contents')
     <style>
         .dark-version .table tbody tr td {
@@ -66,12 +66,25 @@
         .image-box:hover .close-btn {
             display: block;
         }
+        .btn_add_social_media {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            padding: 0 !important;
+        }
+        .btn_remove_social_media {
+            align-content: center;
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            padding: 0 !important;
+        }
     </style>
     <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <form method="POST" action="{{ route('admin.customer.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('admin.author.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="card card-primary">
                             <div class="card-body">
@@ -81,7 +94,7 @@
                                             <div class="form-group col-md-6 ">
                                                 <label class="required_label">{{__('Name')}}</label>
                                                 <input type="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
-                                                    name="name" placeholder="{{__('John')}}">
+                                                    name="name" placeholder="{{__('John Doe')}}">
                                                 @error('name')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -89,48 +102,79 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label>{{__('Gender')}}</label>
-                                                <select class="form-control select2" name="gender" >
-                                                    <option value="male">{{__('Male')}}</option>
-                                                    <option value="female">{{__('Female')}}</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="required_label">{{__('Phone Number')}}</label>
-                                                <input type="text" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}"
-                                                    name="phone" placeholder="{{__('+855 12 345 678')}}" >
-                                                @error('phone')
+                                                <label class="required_label">{{__('Role')}}</label>
+                                                <input type="text" class="form-control @error('role') is-invalid @enderror" value="{{ old('role') }}"
+                                                    name="role" placeholder="{{__('Author, Editor, etc.')}}" >
+                                                @error('role')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label class="required_label">{{__('Email')}}</label>
-                                                <input type="text" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}"
-                                                name="email" placeholder="{{__('john.doe@example.com')}}" >
-                                                    @error('email')
+                                                <label class="required_label">{{__('Creativity')}}</label>
+                                                <input type="text" class="form-control @error('creativity') is-invalid @enderror" value="{{ old('creativity') }}"
+                                                name="creativity" placeholder="{{__('1-100')}}" >
+                                                    @error('creativity')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label class="required_label">{{__('Password')}}</label>
-                                                <input type="password" class="form-control @error('password') is-invalid @enderror" value=""
-                                                    name="password" placeholder="{{__('Must have at least 8 characters')}}" >
-                                                @error('password')
+                                                <label class="required_label">{{__('Popularity')}}</label>
+                                                <input type="text" class="form-control @error('popularity') is-invalid @enderror" value="{{ old('popularity') }}"
+                                                    name="popularity" placeholder="{{__('1-100')}}" >
+                                                @error('popularity')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
                                                 @enderror
                                             </div>
-                                            {{-- <div class="form-group col-md-6">
-                                                <label>{{__('Address')}}</label>
-                                                <input type="text" class="form-control" value="{{ old('address') }}"
-                                                    name="address" placeholder="{{__('Enter Address')}}" >
-                                            </div> --}}
-                                            <div class="form-group col-md-6">
+                                            <div class="form-group col-md-12">
+                                                <div class="form-group mb-0">
+                                                    <label for="exampleInputFile">{{ __('Social Media') }}</label>
+                                                    <table class="table table-bordered table-striped table-hover mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="col-3">{{ __('Title') }}</th>
+                                                                <th class="col-8">{{ __('Link') }}</th>
+                                                                <th class="col-1 text-center">
+                                                                    <button type="button" class="btn btn-sm bg-gradient-success btn_add_social_media my-0" id="addRow">
+                                                                        <i class="fa fa-plus-circle"></i>
+                                                                    </button>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="socialMediaTable">
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control" name="social_media[0][title]">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control" name="social_media[0][link]">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label>{{__('Description')}}</label>
+                                                <textarea class="form-control summernote @error('description') is-invalid @enderror" name="description" placeholder="{{__('Enter Description')}}">{{ old('description') }}</textarea>
+                                                @error('description')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-12">
                                                 <div class="form-group">
                                                     <label for="dropifyInput">{{__('Image')}} <span class="text-info text-xs"> {{ __('Recommend size 512 x 512 px') }} </span> </label>
                                                     <input type="hidden" name="image_names" class="image_names_hidden">
@@ -167,6 +211,36 @@
 @endsection
 
 @push('js')
+    <script>
+        let rowIndex = 1;
+
+        $(document).on('click', '.btn_remove_social_media', function () {
+            $(this).closest('tr').remove();
+        });
+
+        $('#addRow').click(function () {
+            const row = `
+                <tr>
+                    <td>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="social_media[${rowIndex}][title]">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="social_media[${rowIndex}][link]">
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <a type="button" class="btn btn-sm bg-gradient-danger btn_remove_social_media my-0">
+                            <i class="fa fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>`;
+            $('#socialMediaTable').append(row);
+            rowIndex++;
+        });
+    </script>
     <script>
         $(document).ready(function () {
             var dropifyInput = $('.dropify').dropify();

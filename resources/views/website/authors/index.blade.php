@@ -24,33 +24,46 @@
 
     <!-- Authors grid -->
     <div class="authors-grid">
-        <!-- Author card 1 -->
-        <div class="author-card">
-            <div class="author-image">
-                <img src="/api/placeholder/400/400" alt="Silvan Schuppisser">
+        @foreach ($authors as $author)
+            <div class="author-card">
+                <div class="author-image">
+                    <img src="{{ asset('uploads/authors/' . $author->image) }}" alt="{{ $author->name }}">
+                </div>
+                <a href="{{ route('author.detail', $author->id) }}" class="back-link">
+                    <h3 class="author-name">{{ $author->name }}</h3>
+                </a>
+                <p class="author-role">{{ $author->role }}</p>
+                <div class="social-links">
+                    @if($author->social_media && is_array($author->social_media))
+                        @foreach ($author->social_media as $social)
+                            @if(isset($social['link']) && isset($social['title']))
+                                <a href="{{ $social['link'] }}" class="social-link" target="_blank">
+                                    @if ($social['title'] == 'Facebook')
+                                        <i class="fab fa-facebook-f"></i>
+                                    @elseif ($social['title'] == 'Twitter')
+                                        <i class="fab fa-twitter"></i>
+                                    @elseif ($social['title'] == 'Instagram')
+                                        <i class="fab fa-instagram"></i>
+                                    @elseif ($social['title'] == 'LinkedIn')
+                                        <i class="fab fa-linkedin-in"></i>
+                                    @elseif ($social['title'] == 'TikTok')
+                                        <i class="fab fa-tiktok"></i>
+                                    @elseif ($social['title'] == 'YouTube')
+                                        <i class="fab fa-youtube"></i>
+                                    @elseif ($social['title'] == 'Snapchat')
+                                        <i class="fab fa-snapchat"></i>
+                                    @elseif ($social['title'] == 'Telegram')
+                                        <i class="fab fa-telegram"></i>
+                                    @elseif ($social['title'] == 'WhatsApp')
+                                        <i class="fab fa-whatsapp"></i>
+                                    @endif
+                                </a>
+                            @endif
+                        @endforeach
+                    @endif
+                </div>
             </div>
-            <h3 class="author-name">Silvan Schuppisser</h3>
-            <p class="author-role">Technical Writer</p>
-            <div class="social-links">
-                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-        </div>
-
-        <!-- Author card 2 -->
-        <div class="author-card">
-            <div class="author-image">
-                <img src="/api/placeholder/400/400" alt="Olive Yew">
-            </div>
-            <h3 class="author-name">Olive Yew</h3>
-            <p class="author-role">Technical Writer</p>
-            <div class="social-links">
-                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-            </div>
-        </div>
+        @endforeach
     </div>
 
     <!-- Main Shop Content -->

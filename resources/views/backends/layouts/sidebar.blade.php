@@ -95,6 +95,16 @@
                     </a>
                 </li>
             @endif
+            @if (auth()->user()->can('author.view'))
+                <li class="nav-item">
+                    <a class="nav-link mx-0 @if (request()->routeIs('admin.author*')) active @endif" href="{{ route('admin.author.index') }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="ni ni-badge icon-aside text-sm opacity-10"></i>
+                        </div>
+                        <span class="nav-link-text ms-1"> {{ __('Author Management') }} </span>
+                    </a>
+                </li>
+            @endif
             @if (auth()->user()->can('user.view') || auth()->user()->can('role.view') || auth()->user()->can('customer.view'))
                 <li class="nav-item @if (request()->routeIs('admin.user*', 'admin.customer*', 'admin.roles*')) menu-is-opening menu-open @endif">
                     <a class="nav-link mx-0 justify-content-between @if (request()->routeIs('admin.user*', 'admin.customer*', 'admin.roles*')) active @endif" href="">
