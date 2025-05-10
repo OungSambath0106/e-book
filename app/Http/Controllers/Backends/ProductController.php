@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\BusinessSetting;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Author;
 use App\Models\Category;
 use App\Models\ProductGallery;
 use Illuminate\Support\Facades\Validator;
@@ -64,8 +65,8 @@ class ProductController extends Controller
 
         $categories = Category::all();
         $products = Product::with('category')->get();
-
-        return view('backends.product.create', compact('products', 'categories'));
+        $authors = Author::all();
+        return view('backends.product.create', compact('products', 'categories', 'authors'));
     }
 
     /**

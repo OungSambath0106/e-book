@@ -17,10 +17,6 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'product_info' => 'array'
-    ];
-
     public function getNameAttribute($name)
     {
         if (strpos(url()->current(), '/admin')) {

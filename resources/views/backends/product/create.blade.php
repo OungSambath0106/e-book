@@ -159,6 +159,26 @@
                                                         </div>
                                                     </label>
                                                 </div>
+                                                <div class="form-group col-md-2">
+                                                    <label class="required_lable switch" for="popular">
+                                                        {{ __('Bestseller') }}
+                                                        <input type="checkbox" class="status" id="bestseller" value="0" name="bestseller">
+                                                        <div class="slider mt-2">
+                                                            <div class="circle">
+                                                                <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                                                    <g>
+                                                                        <path data-original="#000000" fill="currentColor" d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"></path>
+                                                                    </g>
+                                                                </svg>
+                                                                <svg class="checkmark" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 24 24" y="0" x="0" height="10" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                                                    <g>
+                                                                        <path class="" data-original="#000000" fill="currentColor" d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"></path>
+                                                                    </g>
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
                                             </div>
                                             <div class="form-group col-md-6 ">
                                                 <label class="required_label" for="category">{{ __('Category') }}</label>
@@ -176,6 +196,49 @@
 
                                                 @enderror
                                             </div>
+                                            <div class="form-group col-md-6 ">
+                                                <label class="required_label" for="author">{{ __('Author') }}</label>
+                                                <select name="author_id" id="author"
+                                                    class="form-control select2 @error('author_id') is-invalid @enderror">
+                                                    <option value="">{{ __('Select Author') }}</option>
+                                                    @foreach ($authors as $item)
+                                                        <option value="{{ $item -> id }}">{{ $item -> name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('author_id')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="price">{{ __('Price') }}</label>
+                                                <input type="number" name="price" id="price" class="form-control @error('price') is-invalid @enderror" placeholder="{{ __('Enter Price') }}" value="">
+                                                @error('price')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="qty">{{ __('Quantity') }}</label>
+                                                <input type="number" name="qty" id="qty" class="form-control @error('qty') is-invalid @enderror" placeholder="{{ __('Enter Quantity') }}" value="">
+                                                @error('qty')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="publish">{{ __('Published Date') }}</label>
+                                                <input type="date" name="publish" id="publish" class="form-control flatpickr @error('publish') is-invalid @enderror" placeholder="{{ __('Enter Published Date') }}" value="">
+                                                @error('publish')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
                                             <div class="form-group col-md-6">
                                                 <label class="required_label" for="rating">{{ __('Star Rating') }}</label>
                                                 <select name="rating" id="rating" class="form-control select2 @error('rating') is-invalid @enderror">
@@ -190,39 +253,53 @@
                                                     </span>
                                                 @enderror
                                             </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="page">{{ __('Page') }}</label>
+                                                <input type="number" name="page" id="page" class="form-control @error('page') is-invalid @enderror" placeholder="{{ __('Enter Page') }}" value="">
+                                                @error('page')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="reviews">{{ __('Reviews') }}</label>
+                                                <input type="number" name="reviews" id="reviews" class="form-control @error('reviews') is-invalid @enderror" placeholder="{{ __('Enter Reviews') }}" value="">
+                                                @error('reviews')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="barcode">{{ __('Barcode') }}</label>
+                                                <input type="text" name="barcode" id="barcode" class="form-control @error('barcode') is-invalid @enderror" placeholder="{{ __('Enter Barcode') }}" value="">
+                                                @error('barcode')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="format">{{ __('Format') }}</label>
+                                                <select name="format" id="format" class="form-control select2 @error('format') is-invalid @enderror">
+                                                    <option value="">{{ __('Select Format') }}</option>
+                                                    <option value="paperback">{{ __('Paperback') }}</option>
+                                                    <option value="hardback">{{ __('Hardback') }}</option>
+                                                    <option value="e-book">{{ __('E-Book') }}</option>
+                                                </select>
+                                                @error('format')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
                                             <div class="form-group col-md-12">
-                                                <div class="form-group mb-0">
-                                                    <label for="exampleInputFile">{{ __('Product Info') }}</label>
-                                                    <table class="table table-bordered table-striped table-hover rowfy mb-0">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="col-4">{{ __('Size') }}</th>
-                                                                <th class="col-4">{{ __('Price') }}</th>
-                                                                <th class="col-4">{{ __('Quantity') }}</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <input type="text" class="form-control" min="0" oninput="validatePriceInput(this)" onkeydown="preventMinus(event)"
-                                                                        name="products_info[product_size][]">
-                                                                </td>
-                                                                <td>
-                                                                    <div class="input-group">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text" style="border-top-right-radius: 0; border-bottom-right-radius: 0;">$</span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control" min="0" oninput="validatePriceInput(this)" onkeydown="preventMinus(event)"
-                                                                            name="products_info[product_price][]">
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="number" class="form-control" min="0" oninput="validatePriceInput(this)" onkeydown="preventMinus(event)"
-                                                                        name="products_info[product_qty][]">
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                                <label for="dropifyInput">{{ __('Thumbnail') }} <span class="text-info text-xs"> {{ __('Recommended size 1200 x 1200 px') }} </span> </label>
+                                                <input type="hidden" name="thumbnail_name" class="thumbnail_names_hidden">
+                                                <input type="file" id="dropifyInput" class="dropify custom-file-input" name="thumbnail" accept="image/png, image/jpeg, image/gif, image/webp">
+                                                <div class="progress mt-2" style="height: 10px; display: none;">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-12">
@@ -252,6 +329,146 @@
 @endsection
 
 @push('js')
+    <script>
+        $(document).ready(function () {
+            var dropifyInput = $('.dropify').dropify();
+
+            $('.custom-file-input').change(async function (e) {
+                const fileInput = $(this);
+                const thumbnailHidden = fileInput.closest('.form-group').find('.thumbnail_names_hidden');
+                const progressBarContainer = fileInput.closest('.form-group').find('.progress');
+                const progressBar = progressBarContainer.find('.progress-bar');
+
+                const file = e.target.files[0];
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+
+                if (!allowedTypes.includes(file.type)) {
+                    toastr.error('Only JPG, JPEG, PNG, GIF, WEBP files are allowed.');
+                    return;
+                }
+
+                const formData = new FormData();
+                progressBarContainer.show();
+                updateProgressBar(progressBar, 0);
+
+                try {
+                    const webpFile = await processImageToWebP(file);
+
+                    formData.append('image', webpFile);
+                    formData.append('_token', '{{ csrf_token() }}');
+
+                    simulateProgress(progressBar, function () {
+                        $.ajax({
+                            url: "{{ route('save_temp_file') }}",
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                if (response.status === 1) {
+                                    thumbnailHidden.val(response.temp_files);
+                                } else {
+                                    toastr.error(response.msg);
+                                }
+                                progressBarContainer.hide();
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                toastr.error(`Upload failed: ${jqXHR.status} ${errorThrown}`);
+                                console.log(jqXHR.responseText);
+                                progressBarContainer.hide();
+                            }
+                        });
+                    });
+
+                } catch (error) {
+                    toastr.error("Image processing failed: " + error.message);
+                    console.error(error);
+                    progressBarContainer.hide();
+                }
+            });
+
+            dropifyInput.on('dropify.afterClear', function () {
+                $(this).closest('.form-group').find('.thumbnail_names_hidden').val('');
+                const progressBarContainer = $(this).closest('.form-group').find('.progress');
+                progressBarContainer.hide();
+            });
+
+            function simulateProgress(progressBar, callback) {
+                let progress = 0;
+                const interval = setInterval(function () {
+                    progress += 10;
+                    updateProgressBar(progressBar, progress);
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        if (typeof callback === "function") {
+                            callback();
+                        }
+                    }
+                }, 300);
+            }
+
+            function updateProgressBar(progressBar, value) {
+                progressBar.css('width', value + '%');
+                progressBar.text(value + '%');
+                progressBar.attr('aria-valuenow', value);
+            }
+
+            async function processImageToWebP(file) {
+                const MAX_WIDTH = 1200;
+
+                const { canvas } = await loadImageToCanvas(file, MAX_WIDTH);
+
+                const webpFile = await convertCanvasToWebPFile(canvas, file.name, 0.85);
+                return webpFile;
+            }
+
+            async function loadImageToCanvas(file, maxWidth) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const img = new Image();
+                        img.onload = function () {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+
+                            if (width > maxWidth) {
+                                height = (maxWidth / width) * height;
+                                width = maxWidth;
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            resolve({ canvas, width, height });
+                        };
+                        img.onerror = reject;
+                        img.src = event.target.result;
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            async function convertCanvasToWebPFile(canvas, fileName, quality = 0.85) {
+                const blob = await canvasToBlob(canvas, quality);
+
+                if (!blob) {
+                    throw new Error('Failed to convert canvas to WebP.');
+                }
+
+                return new File([blob], fileName.replace(/\.(jpg|jpeg|png)$/i, '.webp'), { type: 'image/webp' });
+            }
+
+            function canvasToBlob(canvas, quality) {
+                return new Promise((resolve) => {
+                    canvas.toBlob(resolve, 'image/webp', quality);
+                });
+            }
+        });
+    </script>
     <script>
         class ImageUploader {
             constructor(maxWidthOrHeight, csrfToken, uploadUrl) {
