@@ -1,10 +1,15 @@
 <header>
+    @php
+        $setting = App\Models\BusinessSetting::all();
+        $web_header_logo = $setting->where('type', 'web_header_logo')->first()->value ?? '';
+        $company_name = $setting->where('type', 'company_name')->first()->value ?? '';
+    @endphp
     <div class="container nav-container">
-        <a href="#" class="logo">
+        <a href="{{ route('home') }}" class="logo">
             <div class="logo-icon">
-                <i class="fas fa-book"></i>
+                <img src="{{ asset('uploads/business_settings/' . $web_header_logo) }}" alt="logo" width="26px" height="26px">
             </div>
-            E-Books.
+            {{ $company_name }}
         </a>
 
         <nav>
@@ -12,7 +17,7 @@
                 <li><a class="@if (request()->is('/')) active @endif" href="{{ route('home') }}">Home</a></li>
                 <li><a class="@if (request()->is('categories')) active @endif"
                         href="{{ route('categories') }}">Categories</a></li>
-                <li><a class="@if (request()->is('shop') || request()->is('book/*')) active @endif" href="{{ route('shop') }}">Shop</a></li>
+                <li><a class="@if (request()->is('shop') || request()->is('book-detail/*')) active @endif" href="{{ route('shop') }}">Shop</a></li>
                 <li><a class="@if (request()->is('authors') || request()->is('author-detail/*')) active @endif" href="{{ route('authors') }}">Authors</a>
                 </li>
                 <li><a href="#">About Us</a></li>
@@ -21,10 +26,6 @@
         </nav>
 
         <div class="nav-buttons">
-            <button class="search-btn" type="button" aria-label="Search">
-                <i class="fas fa-search"></i>
-            </button>
-
             <button class="cart-btn" type="button" aria-label="View cart">
                 <i class="fas fa-shopping-cart"></i>
             </button>

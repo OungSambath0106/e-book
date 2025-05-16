@@ -160,7 +160,7 @@
                                                     </label>
                                                 </div>
                                                 <div class="form-group col-md-2">
-                                                    <label class="required_lable switch" for="popular">
+                                                    <label class="required_lable switch" for="bestseller">
                                                         {{ __('Bestseller') }}
                                                         <input type="checkbox" class="status" id="bestseller" value="0" name="bestseller">
                                                         <div class="slider mt-2">
@@ -231,9 +231,39 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label class="required_label" for="publish">{{ __('Published Date') }}</label>
+                                                <label for="publish">{{ __('Published Date') }}</label>
                                                 <input type="date" name="publish" id="publish" class="form-control flatpickr @error('publish') is-invalid @enderror" placeholder="{{ __('Enter Published Date') }}" value="">
                                                 @error('publish')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="pages">{{ __('Pages') }}</label>
+                                                <input type="number" name="pages" id="pages" class="form-control @error('pages') is-invalid @enderror" placeholder="{{ __('Enter Pages') }}" value="">
+                                                @error('pages')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="reviews">{{ __('Reviews') }}</label>
+                                                <input type="number" name="reviews" id="reviews" class="form-control @error('reviews') is-invalid @enderror" placeholder="{{ __('Enter Reviews') }}" value="">
+                                                @error('reviews')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label class="required_label" for="barcode">
+                                                    {{ __('Barcode') }}
+                                                    <a class="text-info text-xs cursor-pointer" onclick="document.getElementById('barcode').value = getRndInteger()"> {{ __('Generate Code') }} </a>
+                                                </label>
+                                                <input type="text" name="barcode" id="barcode" class="form-control @error('barcode') is-invalid @enderror" placeholder="{{ __('Enter Barcode') }}" value="">
+                                                @error('barcode')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -254,33 +284,6 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label class="required_label" for="page">{{ __('Page') }}</label>
-                                                <input type="number" name="page" id="page" class="form-control @error('page') is-invalid @enderror" placeholder="{{ __('Enter Page') }}" value="">
-                                                @error('page')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="required_label" for="reviews">{{ __('Reviews') }}</label>
-                                                <input type="number" name="reviews" id="reviews" class="form-control @error('reviews') is-invalid @enderror" placeholder="{{ __('Enter Reviews') }}" value="">
-                                                @error('reviews')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label class="required_label" for="barcode">{{ __('Barcode') }}</label>
-                                                <input type="text" name="barcode" id="barcode" class="form-control @error('barcode') is-invalid @enderror" placeholder="{{ __('Enter Barcode') }}" value="">
-                                                @error('barcode')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                            <div class="form-group col-md-6">
                                                 <label class="required_label" for="format">{{ __('Format') }}</label>
                                                 <select name="format" id="format" class="form-control select2 @error('format') is-invalid @enderror">
                                                     <option value="">{{ __('Select Format') }}</option>
@@ -294,18 +297,12 @@
                                                     </span>
                                                 @enderror
                                             </div>
-                                            <div class="form-group col-md-12">
-                                                <label for="dropifyInput">{{ __('Thumbnail') }} <span class="text-info text-xs"> {{ __('Recommended size 1200 x 1200 px') }} </span> </label>
-                                                <input type="hidden" name="thumbnail_name" class="thumbnail_names_hidden">
-                                                <input type="file" id="dropifyInput" class="dropify custom-file-input" name="thumbnail" accept="image/png, image/jpeg, image/gif, image/webp">
+                                            <div class="form-group col-md-12 px-0">
+                                                <label for="dropifyInput">{{ __('Thumbnail') }} <span class="text-info text-xs"> {{ __('Recommend size 1200 px') }} </span> </label>
+                                                <input type="hidden" name="image_names" class="image_names_hidden">
+                                                <input type="file" id="dropifyInput" class="dropify custom-file-input" name="image" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp">
                                                 <div class="progress mt-2" style="height: 10px; display: none;">
                                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">0%</div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-12">
-                                                <div class="form-group">
-                                                    <label for="exampleInputFile" class="required_label">{{ __('Image') }} <span class="text-info text-xs"> {{ __('Recommended upload a maximum of 5 images.') }} </span> </label>
-                                                    @include('backends.product.partial.product_galleries')
                                                 </div>
                                             </div>
                                         </div>
@@ -330,12 +327,17 @@
 
 @push('js')
     <script>
+        function getRndInteger() {
+            return Math.floor(Math.random() * 90000) + 100000;
+        }
+    </script>
+    <script>
         $(document).ready(function () {
             var dropifyInput = $('.dropify').dropify();
 
             $('.custom-file-input').change(async function (e) {
                 const fileInput = $(this);
-                const thumbnailHidden = fileInput.closest('.form-group').find('.thumbnail_names_hidden');
+                const imageNamesHidden = fileInput.closest('.form-group').find('.image_names_hidden');
                 const progressBarContainer = fileInput.closest('.form-group').find('.progress');
                 const progressBar = progressBarContainer.find('.progress-bar');
 
@@ -366,7 +368,7 @@
                             contentType: false,
                             success: function (response) {
                                 if (response.status === 1) {
-                                    thumbnailHidden.val(response.temp_files);
+                                    imageNamesHidden.val(response.temp_files);
                                 } else {
                                     toastr.error(response.msg);
                                 }
@@ -388,7 +390,7 @@
             });
 
             dropifyInput.on('dropify.afterClear', function () {
-                $(this).closest('.form-group').find('.thumbnail_names_hidden').val('');
+                $(this).closest('.form-group').find('.image_names_hidden').val('');
                 const progressBarContainer = $(this).closest('.form-group').find('.progress');
                 progressBarContainer.hide();
             });
@@ -467,293 +469,6 @@
                     canvas.toBlob(resolve, 'image/webp', quality);
                 });
             }
-        });
-    </script>
-    <script>
-        class ImageUploader {
-            constructor(maxWidthOrHeight, csrfToken, uploadUrl) {
-                this.maxWidthOrHeight = maxWidthOrHeight;
-                this.csrfToken = csrfToken;
-                this.uploadUrl = uploadUrl;
-                this.isUploading = false;
-            }
-
-            async handleFileUpload(inputElement) {
-                if (this.isUploading) return;
-
-                this.isUploading = true;
-                const fileInput = $(inputElement);
-                const imageNamesHidden = fileInput.closest('.form-group').find('.image_names_hidden');
-                const container = fileInput.closest('.form-group').find('.preview');
-
-                const files = Array.from(fileInput[0].files);
-                if (files.length === 0) return;
-
-                const formData = new FormData();
-                formData.append('_token', this.csrfToken);
-
-                let uploadedFileNames = imageNamesHidden.val() ? imageNamesHidden.val().split(' ') : [];
-
-                try {
-                    const compressedFiles = await Promise.all(files.map((file) => {
-                        const progressBar = this.createProgressBar(container);
-                        return this.compressAndConvertToWebP(file, progressBar);
-                    }));
-
-                    compressedFiles.forEach(({ file, progressBar }) => {
-                        formData.append('images[]', file);
-                        progressBar.setProgress(100);
-                    });
-
-                    this.uploadImages(formData, uploadedFileNames, container, imageNamesHidden);
-                } catch (error) {
-                    toastr.error("Image processing failed");
-                    console.error("Processing error:", error);
-                } finally {
-                    this.isUploading = false;
-                }
-            }
-
-            async compressAndConvertToWebP(file, progressBar) {
-                progressBar.setProgress(10);
-
-                try {
-                    const compressedFile = await this.compressImage(file);
-                    progressBar.setProgress(60);
-
-                    const webpFile = await this.convertToWebP(compressedFile);
-                    progressBar.setProgress(90);
-                    return { file: webpFile, progressBar };
-                } catch (error) {
-                    progressBar.setError();
-                    throw error;
-                }
-            }
-
-            async compressImage(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = async (event) => {
-                        try {
-                            const img = new Image();
-                            img.src = event.target.result;
-                            img.onload = () => {
-                                const { width, height } = this.getScaledDimensions(img);
-                                const canvas = document.createElement('canvas');
-                                const ctx = canvas.getContext('2d');
-                                canvas.width = width;
-                                canvas.height = height;
-                                ctx.drawImage(img, 0, 0, width, height);
-
-                                canvas.toBlob((blob) => {
-                                    if (blob) {
-                                        resolve(new File([blob], file.name, { type: file.type }));
-                                    } else {
-                                        reject(new Error('Compression failed'));
-                                    }
-                                }, file.type, 0.8);
-                            };
-                            img.onerror = reject;
-                        } catch (error) {
-                            reject(error);
-                        }
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            async convertToWebP(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            const ctx = canvas.getContext('2d');
-                            canvas.width = img.width;
-                            canvas.height = img.height;
-                            ctx.drawImage(img, 0, 0, img.width, img.height);
-
-                            canvas.toBlob((blob) => {
-                                if (blob) {
-                                    resolve(new File([blob], file.name.replace(/\.(jpg|jpeg|png)$/i, '.webp'), { type: 'image/webp' }));
-                                } else {
-                                    reject(new Error('WebP conversion failed'));
-                                }
-                            }, 'image/webp', 0.8);
-                        };
-                        img.onerror = reject;
-                        img.src = event.target.result;
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            createProgressBar(container) {
-                const imageBox = $('<div class="image-box"></div>');
-                const progressContainer = $('<div class="progress"></div>');
-                const progressBar = $('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>');
-
-                progressContainer.append(progressBar);
-                imageBox.append(progressContainer);
-                container.append(imageBox);
-
-                return {
-                    setProgress: function (percentage) {
-                        progressBar.css('width', percentage + '%').text(percentage + '%').attr('aria-valuenow', percentage);
-                        if (percentage === 100) {
-                            progressContainer.fadeOut();
-                        }
-                    },
-                    setError: function () {
-                        progressBar.addClass('bg-danger').text('Failed');
-                    }
-                };
-            }
-
-            getScaledDimensions(img) {
-                let width = img.width;
-                let height = img.height;
-
-                if (width > this.maxWidthOrHeight || height > this.maxWidthOrHeight) {
-                    if (width > height) {
-                        height *= this.maxWidthOrHeight / width;
-                        width = this.maxWidthOrHeight;
-                    } else {
-                        width *= this.maxWidthOrHeight / height;
-                        height = this.maxWidthOrHeight;
-                    }
-                }
-                return { width, height };
-            }
-
-            uploadImages(formData, uploadedFileNames, container, imageNamesHidden) {
-                $.ajax({
-                    url: this.uploadUrl,
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: (response) => {
-                        if (response.status === 1) {
-                            const tempFiles = response.temp_files;
-
-                            if (tempFiles.length > 0) {
-                                tempFiles.forEach((tempFile) => {
-                                    uploadedFileNames.push(tempFile);
-
-                                    const imgContainer = $('<div></div>').addClass('img_container');
-                                    const img = $('<img>').attr('src', "{{ asset('uploads/temp') }}/" + tempFile);
-                                    imgContainer.append(img);
-                                    container.append(imgContainer);
-                                });
-
-                                imageNamesHidden.val(uploadedFileNames.join(' '));
-                            }
-                        } else {
-                            toastr.error(response.msg);
-                        }
-                    },
-                    error: (jqXHR, textStatus, errorThrown) => {
-                        toastr.error(`Upload failed: ${jqXHR.status} ${errorThrown}`);
-                        console.log(jqXHR.responseText);
-                    }
-                });
-            }
-        }
-
-        $(document).ready(function () {
-            const uploader = new ImageUploader(1200, '{{ csrf_token() }}', "{{ route('save_temp_file') }}");
-
-            $('.custom-file-input').change(function () {
-                uploader.handleFileUpload(this);
-            });
-        });
-    </script>
-    <script>
-        document.querySelector('.upload-box').addEventListener('click', function() {
-            document.getElementById('fileUpload').click();
-        });
-
-        $(document).ready(function() {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
-
-            $('#fileUpload').on('change', function(event) {
-                const files = event.target.files;
-                const uploadBox = $('#upload-box');
-
-                $.each(files, function(index, file) {
-                    if (!file.type.startsWith('image/')) {
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Please upload a valid image file.'
-                        });
-                        return;
-                    }
-
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imageBox = $(`
-                            <div class="image-box">
-                                <img src="${e.target.result}" alt="Uploaded Image">
-                                <button type="button" class="remove-image">&times;</button>
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0"
-                                        aria-valuemin="0" aria-valuemax="100">0%</div>
-                                </div>
-                            </div>
-                        `);
-                        uploadBox.before(imageBox);
-                        simulateProgress(imageBox.find('.progress-bar'));
-
-                        imageBox.find('.close-btn').on('click', function() {
-                            imageBox.remove();
-                        });
-                    };
-                    reader.readAsDataURL(file);
-                });
-            });
-
-            function simulateProgress(progressBar) {
-                let progress = 0;
-                progressBar.closest('.progress').show();
-
-                const interval = setInterval(function() {
-                    progress += 10;
-                    progressBar.css('width', progress + '%');
-                    progressBar.text(progress + '%');
-                    progressBar.attr('aria-valuenow', progress);
-
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        progressBar.closest('.progress').hide();
-                    }
-                }, 300);
-            }
-
-            $('form').on('submit', function(event) {
-                const imageDetails = [];
-                const imageNames = $('.image_names_hidden').val().trim();
-
-                if (imageNames) {
-                    const imageArray = imageNames.split(' ');
-                    imageArray.forEach((imgName) => {
-                        if (imgName) imageDetails.push(imgName);
-                    });
-                }
-
-                $('.image_names_hidden').val(imageDetails.length > 0 ? JSON.stringify(imageDetails) : '');
-
-                $('#galleryError').removeClass('d-block').addClass('d-none');
-                $("#card-validation-room").removeClass('is-invalid-card');
-            });
         });
     </script>
     <script>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Websites\ShopController;
 use App\Models\BusinessSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Backends\ProductController;
 use App\Http\Controllers\Backends\PromotionController;
 use App\Http\Controllers\Backends\ShoesSliderController;
 use App\Http\Controllers\Websites\AuthorController as WebsitesAuthorController;
+use App\Http\Controllers\Websites\CategoryController as WebsitesCategoryController;
 use App\Http\Controllers\Websites\HomeController;
 
 /*
@@ -47,61 +49,11 @@ Route::get('/admin/login', function () {
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-Route::get('/shop', function () {
-    return view('website.shop.index');
-})->name('shop');
-
-// Route::get('/book-detail/{id}', function ($id) {
-//     return view('website.shop.partials.book_detail', compact('id'));
-// })->name('book.detail');
-Route::get('book/{id}', function ($id) {
-    // Static data for books
-    $books = [
-        1 => [
-            'id' => 1,
-            'title' => 'ផ្ទះត្រើយស្ទឹងម្ខាង',
-            'author' => 'តាំង​ ហ៊ុយសេង',
-            'price' => '$11.99',
-            'reviews' => 100,
-            'discount_percentage' => 20,
-            'barcode' => '1234567890',
-            'format' => 'Paperback',
-            'discount_price' => '11.99',
-            'price' => '15.99',
-            'pages' => 300,
-            'rating' => 4.5,
-            'thumbnail' => 'book1.webp',
-            'description' => '',
-        ],
-        2 => [
-            'id' => 2,
-            'title' => '15ឆ្នាំក្រោយជួបគ្នា',
-            'author' => 'ម៉ុង ម៉ានិត',
-            'price' => '$12.99',
-            'reviews' => 100,
-            'discount_percentage' => 20,
-            'barcode' => '1234567890',
-            'format' => 'Paperback',
-            'discount_price' => '12.99',
-            'price' => '15.99',
-            'pages' => 300,
-            'rating' => 4.0,
-            'thumbnail' => 'book2.webp',
-            'description' => '',
-        ],
-    ];
-
-    // Fetch the book data based on the ID passed in the URL
-    $book = $books[$id] ?? null;
-
-    // Return the view and pass the book data
-    return view('website.shop.partials.book_detail', compact('book'));
-})->name('book.detail');
-
-Route::get('/categories', function () {
-    return view('website.categories.index');
-})->name('categories');
+Route::get('/categories', [WebsitesCategoryController::class, 'index'])->name('categories');
+Route::get('/filter-products/{categoryId}', [WebsitesCategoryController::class, 'filterProducts'])->name('filter-products');
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+Route::get('/filter-products/{categoryId}', [ShopController::class, 'filterProducts'])->name('filter-products');
+Route::get('/book-detail/{id}', [ShopController::class, 'bookDetail'])->name('book.detail');
 
 Route::get('/authors', [WebsitesAuthorController::class, 'index'])->name('authors');
 Route::get('/author-detail/{id}', [WebsitesAuthorController::class, 'show'])->name('author.detail');

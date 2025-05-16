@@ -78,7 +78,13 @@
                 @foreach ($products as $product)
                     <div class="book-card">
                         <div class="book-card-img">
-                            <img src="{{ asset('uploads/products/' . @$product->productgallery->thumbnail) }}" alt="{{ @$product->name }}">
+                            <img src="
+                                @if ($product->image && file_exists(public_path('uploads/products/' . $product->image)))
+                                    {{ asset('uploads/products/'. $product->image) }}
+                                @else
+                                    {{ asset('uploads/default1.png') }}
+                                @endif
+                                " alt="{{ @$product->name }}">
                         </div>
                         <div class="book-card-content">
                             <h3>{{ @$product->name }}</h3>
@@ -92,7 +98,7 @@
                                     @endif
                                 @endfor
                             </div>
-                            <p class="book-price">{{ @$product->price }}</p>
+                            <p class="book-price"> $ {{ @$product->price }} </p>
                         </div>
                     </div>
                 @endforeach

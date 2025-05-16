@@ -81,6 +81,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'category_id' => 'required',
+            'author_id' => 'required',
         ]);
 
         if (is_null($request->name)) {
@@ -105,45 +106,35 @@ class ProductController extends Controller
 
             $pro = new Product;
             $pro->name = $request->name;
-            // $pro->description = $request->description;
             $pro->category_id = $request->category_id;
+            $pro->author_id = $request->author_id;
             $pro->rating = $request->rating;
+            $pro->qty = $request->qty;
+            $pro->price = $request->price;
+            $pro->pages = $request->pages;
+            $pro->reviews = $request->reviews;
+            $pro->format = $request->format;
+            $pro->barcode = $request->barcode;
+            $pro->publish = $request->publish;
             $pro->created_by = auth()->user()->id;
             $pro->new_arrival = $request->has('new-arrival') ? 1 : 0;
             $pro->recommended = $request->has('recommended') ? 1 : 0;
             $pro->popular = $request->has('popular') ? 1 : 0;
+            $pro->bestseller = $request->has('bestseller') ? 1 : 0;
 
-            $products_info = [];
-            if ($request->products_info) {
-                foreach ($request->products_info['product_size'] as $key => $number) {
-                    $item['product_size'] = $number;
-                    $item['product_price'] = number_format((float)$request->products_info['product_price'][$key], 2, '.', '');
-                    $item['product_qty'] = $request->products_info['product_qty'][$key];
-                    array_push($products_info, $item);
+            if ($request->filled('image_names')) {
+                $imageName = $request->image_names;
+                $tempPath = public_path("uploads/temp/{$imageName}");
+                $productPath = public_path("uploads/products/{$imageName}");
+
+                if (\File::exists($tempPath)) {
+                    \File::ensureDirectoryExists(public_path('uploads/products'), 0777, true);
+                    \File::move($tempPath, $productPath);
+                    $pro->image = $imageName;
                 }
-                $pro->product_info =$products_info;
             }
 
             $pro->save();
-
-            $productid = $pro->id;
-            $product_gallery = new ProductGallery();
-            $product_gallery->product_id = $productid;
-
-            if ($request->filled('image_names')) {
-                $imageDetails = json_decode($request->input('image_names'), true);
-                $product_data = [];
-                foreach ($imageDetails as $detail) {
-                    $directory = public_path('uploads/products');
-                    if (!\File::exists($directory)) {
-                        \File::makeDirectory($directory, 0777, true);
-                    }
-                    $moved_image = \File::move(public_path('uploads/temp/' . $detail), $directory . '/' . $detail);
-                    $product_data[] = $detail;
-                    $product_gallery->images = $product_data;
-                    $product_gallery->save();
-                }
-            }
 
             DB::commit();
             $output = [

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('author_id')->nullable();
             $table->decimal('price', 10, 2)->nullable();
             $table->integer('pages')->nullable();
-            $table->string('thumbnail')->nullable();
+            $table->string('image')->nullable();
             $table->string('reviews')->nullable();
             $table->string('format')->nullable();
             $table->string('barcode')->nullable();

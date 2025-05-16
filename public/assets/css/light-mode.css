@@ -414,6 +414,7 @@ nav a:hover::after {
 
 .books-grid {
     display: grid;
+    margin-bottom: 3rem;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 30px;
 }
@@ -431,7 +432,7 @@ nav a:hover::after {
 }
 
 .book-card-img {
-    height: 320px;
+    height: 275px;
     overflow: hidden;
 }
 
@@ -914,6 +915,7 @@ footer {
 .categories-list a:hover,
 .categories-list a.active {
     color: var(--primary);
+    cursor: pointer;
 }
 
 .categories-list a.active {
@@ -979,6 +981,16 @@ footer {
     margin-bottom: 30px;
 }
 
+.products-header.all-products {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background: lightgrey;
+    padding-inline: 1rem;
+    border-radius: 10px;
+}
+
 .products-title {
     font-size: 2rem;
     color: var(--text);
@@ -996,7 +1008,8 @@ footer {
 }
 
 .sort-select {
-    padding: 8px 15px;
+    margin-block: 5px;
+    padding: 5px 10px;
     border: 1px solid #eee;
     border-radius: 5px;
     font-size: 0.9rem;
@@ -1005,7 +1018,6 @@ footer {
 }
 
 .shop-info {
-    margin-top: 30px;
     font-size: 0.9rem;
     color: var(--gray);
 }

@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $products = Product::with('productgallery')->where('status', 1)->orderBy('id', 'desc')->get();
+        $products = Product::where('status', 1)->orderBy('id', 'desc')->get();
         $categories = Category::where('status', 1)->orderBy('id', 'desc')->get();
         $banners = Baner::where('status', 1)->take(4)->orderBy('id', 'desc')->get();
 

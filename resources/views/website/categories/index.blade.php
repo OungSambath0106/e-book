@@ -132,6 +132,36 @@
             border: 2px solid #e6a8a8;
         }
 
+        .books-grid {
+            position: relative;
+        }
+
+        .no-results {
+            position: absolute;
+            justify-self: center;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeUp 0.6s forwards 0.4s;
+        }
+
+        .book-card {
+            opacity: 0;
+            animation: fadeUp 0.6s forwards 0.4s;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .nav-container {
@@ -176,55 +206,15 @@
     <section class="categories-body">
         <div class="container">
             <section class="category-filters">
-                <button class="filter-btn active">All</button>
-                <button class="filter-btn">Art & Crafts</button>
-                <button class="filter-btn">Biography</button>
-                <button class="filter-btn">Business & Development</button>
-                <button class="filter-btn">Children's Books</button>
-                <button class="filter-btn">Cookbooks</button>
-                <button class="filter-btn">Fiction & Fantasies</button>
-                <button class="filter-btn">Comics</button>
+                <button class="filter-btn active" data-id="all">All</button>
+                @foreach ($categories as $category)
+                    <button class="filter-btn" data-id="{{ $category->id }}">{{ $category->name }}</button>
+                @endforeach
             </section>
 
-            @php
-                $books = [
-                    [
-                        'title' => 'ផ្ទះត្រើយស្ទឹងម្ខាង',
-                        'author' => 'តាំង​ ហ៊ុយសេង',
-                        'price' => '$11.99',
-                        'rating' => 4.5,
-                        'thumbnail' => 'book1.webp'
-                    ],
-                    [
-                        'title' => '15ឆ្នាំក្រោយជួបគ្នា',
-                        'author' => 'ម៉ុង ម៉ានិត',
-                        'price' => '$11.99',
-                        'rating' => 4.5,
-                        'thumbnail' => 'book2.webp'
-                    ],
-                ];
-            @endphp
-            <section class="books-grid">
-                @foreach ($books as $book)
-                    <div class="book-card">
-                        <div class="book-card-img">
-                            <img src="{{ asset('uploads/books/' . $book['thumbnail']) }}" alt="{{ $book['title'] }}">
-                        </div>
-                        <div class="book-card-content">
-                            <h3>{{ $book['title'] }}</h3>
-                            <p class="book-author">by {{ $book['author'] }}</p>
-                            <div class="star-rating">
-                                @for ($i = 0; $i < 5; $i++)
-                                    @if ($i < $book['rating'])
-                                        <i class="fas fa-star"></i>
-                                    @else
-                                        <i class="fas fa-star-half-alt"></i>
-                                    @endif
-                                @endfor
-                            </div>
-                            <p class="book-price">{{ $book['price'] }}</p>
-                        </div>
-                    </div>
+            <section class="books-grid" id="books-container">
+                @foreach ($products as $book)
+                    @include('website.categories.partials.card_book', ['book' => $book])
                 @endforeach
             </section>
         </div>
@@ -232,3 +222,34 @@
 
     <div class="decorative-shape shape-1"></div>
 @endsection
+
+@push('js')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('.filter-btn').on('click', function () {
+            let categoryId = $(this).data('id');
+
+            $('.filter-btn').removeClass('active');
+            $(this).addClass('active');
+
+            $.ajax({
+                url: '{{ route('filter-products', ['categoryId' => ':categoryId']) }}'.replace(':categoryId', categoryId),
+                method: 'GET',
+                beforeSend: function () {
+                    $('#books-container').html('');
+                },
+                success: function (response) {
+                    if (response.html) {
+                        $('#books-container').html(response.html);
+                    } else {
+                        $('#books-container').html('<p class="no-results fade-in"> {{ __('No books found') }} </p>');
+                    }
+                },
+                error: function () {
+                    $('#books-container').html('<p> {{ __('Error loading books') }} </p>');
+                }
+            });
+        });
+    </script>
+@endpush
+

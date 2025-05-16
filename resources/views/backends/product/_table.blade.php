@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7"> {{ __('SL') }} </th>
-                <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7"> {{ __('Image') }} </th>
+                <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7"> {{ __('Thumbnail') }} </th>
                 <th class="text-uppercase text-secondary text-sm font-weight-bolder px-2 opacity-7"> {{ __('Name') }} </th>
                 <th class="text-uppercase text-secondary text-sm font-weight-bolder px-2 opacity-7"> {{ __('Category') }} </th>
                 <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7"> {{ __('Sale') }} </th>
@@ -21,38 +21,30 @@
                     </td>
                     <td data-order="{{ strtolower($product->name) }}">
                         <div class="d-flex">
-                            @if ($product->productgallery && count($product->productgallery->images) > 0)
-                                @php
-                                    $firstImage = $product->productgallery->images[0];
-                                    $allImages = $product->productgallery->images;
-                                @endphp
-
-                                <img src="{{ file_exists(public_path('uploads/products/' . $firstImage)) ? asset('uploads/products/' . $firstImage) : asset('uploads/default1.png') }}"
-                                    alt="Product Image" class="avatar avatar-md me-3"
-                                    style="object-fit: contain; cursor: pointer;"
-                                    onclick="openGalleryModal({{ $product->id }})">
-
-                                @include('backends.product.partial.modal_popup_image')
-                            @else
-                                <img src="{{ !empty($product->image[0]) && file_exists(public_path('uploads/products/' . $product->image[0])) ? asset('uploads/products/' . $product->image[0]) : asset('uploads/default1.png') }}"
-                                    alt="Product Image" class="avatar avatar-sm me-3">
-                            @endif
+                            <img src="
+                                @if ($product->image && file_exists(public_path('uploads/products/' . $product->image)))
+                                    {{ asset('uploads/products/'. $product->image) }}
+                                @else
+                                    {{ asset('uploads/default1.png') }}
+                                @endif
+                                " alt="" class="avatar avatar-banner" style="object-fit: contain; cursor: pointer;"
+                                data-toggle="modal" data-target="#imageModal" onclick="showImageModal(this)">
                         </div>
                     </td>
-                    <td data-order="{{ strtolower($product->name) }}" class="@if ($product->total_qty == 0) text-danger @endif">
+                    <td data-order="{{ strtolower($product->name) }}" class="@if ($product->qty == 0) text-danger @endif">
                         <p class="text-sm font-weight-bold mb-0"> {{ $product->name ?? 'Null' }} </p>
                     </td>
                     <td>
-                        <p class="text-sm font-weight-bold mb-0 @if ($product->total_qty == 0) text-danger @endif">{{ $product->category->name ?? 'Null' }}</p>
+                        <p class="text-sm font-weight-bold mb-0 @if ($product->qty == 0) text-danger @endif">{{ $product->category->name ?? 'Null' }}</p>
                     </td>
                     <td>
-                        <p class="text-sm text-center font-weight-bold mb-0 @if ($product->total_qty == 0) text-danger @endif">{{ $product->count_product_sale ?? '0' }}</p>
+                        <p class="text-sm text-center font-weight-bold mb-0 @if ($product->qty == 0) text-danger @endif">{{ $product->count_product_sale ?? '0' }}</p>
                     </td>
                     <td>
-                        <p class="text-sm text-center font-weight-bold mb-0 @if ($product->total_qty == 0) text-danger @endif">{{ $product->total_qty == 0 ? 'Out of Stock' : $product->total_qty }}</p>
+                        <p class="text-sm text-center font-weight-bold mb-0 @if ($product->qty == 0) text-danger @endif">{{ $product->qty == 0 ? 'Out of Stock' : $product->qty }}</p>
                     </td>
                     <td>
-                        <p class="text-sm font-weight-bold mb-0 @if ($product->total_qty == 0) text-danger @endif">{{ $product->createdBy->name ?? 'Null' }}</p>
+                        <p class="text-sm font-weight-bold mb-0 @if ($product->qty == 0) text-danger @endif">{{ $product->createdBy->name ?? 'Null' }}</p>
                     </td>
                     <td class="align-middle text-center text-sm" style="justify-items: center;">
                         <label for="status_{{ $product->id }}" class="switch">
@@ -103,7 +95,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="{{ auth()->user()->can('product.edit') || auth()->user()->can('product.delete') ? 8 : 7 }}" class="text-center data-not-available" style="background-color: ghostwhite">
+                    <td colspan="{{ auth()->user()->can('product.edit') || auth()->user()->can('product.delete') ? 9 :8 }}" class="text-center data-not-available" style="background-color: ghostwhite">
                         {{ __('Products are not available.') }}
                     </td>
                 </tr>

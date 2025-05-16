@@ -78,10 +78,6 @@
             transition: color 0.3s;
         }
 
-        .product-author a:hover {
-            text-decoration: underline;
-        }
-
         .product-meta {
             display: flex;
             flex-wrap: wrap;
@@ -108,10 +104,8 @@
             color: #2ecc71;
         }
 
-        .ratings {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 25px;
+        .out-of-stock {
+            color: #e74c3c;
         }
 
         .star {
@@ -283,6 +277,27 @@
             font-size: 18px;
         }
 
+        .no-results {
+            position: absolute;
+            justify-self: center;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeUp 0.6s forwards 0.4s;
+        }
+
         /* Animations */
         @keyframes fadeInUp {
             from {
@@ -405,47 +420,11 @@
         }
     </style>
 
-    @php
-        $books = [
-            [
-                'id' => 1,
-                'title' => 'ផ្ទះត្រើយស្ទឹងម្ខាង',
-                'author' => 'តាំង​ ហ៊ុយសេង',
-                'price' => '$11.99',
-                'rating' => 4.5,
-                'discount_percentage' => 20,
-                'reviews' => 100,
-                'barcode' => '1234567890',
-                'format' => 'Paperback',
-                'discount_price' => '11.99',
-                'price' => '15.99',
-                'pages' => 300,
-                'thumbnail' => 'book1.webp',
-                'description' => '',
-            ],
-            [
-                'id' => 2,
-                'title' => '15ឆ្នាំក្រោយជួបគ្នា',
-                'author' => 'ម៉ុង ម៉ានិត',
-                'price' => '$12.99',
-                'rating' => 4.0,
-                'reviews' => 100,
-                'discount_percentage' => 20,
-                'barcode' => '1234567890',
-                'format' => 'Paperback',
-                'discount_price' => '12.99',
-                'price' => '15.99',
-                'pages' => 300,
-                'thumbnail' => 'book2.webp',
-                'description' => '',
-            ]
-        ];
-    @endphp
     <!-- Shop Hero Section -->
     <section class="hero">
         <div class="container">
             <p class="shop-subtitle">All Your Favorite Books In One Place 📚</p>
-            <h1 class="hero-title">{{ $book['title'] }}</h1>
+            <h1 class="hero-title">{{ $book->name }}</h1>
             <a href="{{ route('shop') }}" class="back-link">Back To Shop</a>
 
             <div class="search-container">
@@ -466,50 +445,82 @@
         <div class="container">
             <div class="product-container">
                 <div class="product-image">
-                    <img src="{{ asset('uploads/books/' . $book['thumbnail']) }}" alt="{{ $book['title'] }}">
-                    <div class="product-badge">Bestseller</div>
+                    <img src="
+                        @if ($book->image && file_exists(public_path('uploads/products/' . $book->image)))
+                            {{ asset('uploads/products/' . $book->image) }}
+                        @else
+                            {{ asset('uploads/default1.png') }}
+                        @endif
+                        " alt="{{ $book->name }}">
+                        {{-- @if ($book->new_arrival)
+                            <div class="product-badge">New Arrival</div>
+                        @elseif ($book->recommended)
+                            <div class="product-badge">Recommended</div>
+                        @elseif ($book->popular)
+                            <div class="product-badge">Popular</div>
+                        @elseif ($book->bestseller)
+                            <div class="product-badge">Best Seller</div>
+                        @endif --}}
                 </div>
 
                 <div class="product-info">
-                    <h2 class="product-title">{{ $book['title'] }}</h2>
-                    <div class="product-author">By <a href="#">{{ $book['author'] }}</a></div>
+                    <h2 class="product-title">{{ $book->name }}</h2>
+                    <div class="product-author">By <a href="{{ route('author.detail', $book->author->id) }}">{{ $book->author->name }}</a></div>
 
                     <div class="product-meta">
                         <div class="meta-item">
                             <span class="meta-label">Availability:</span>
-                            <span class="meta-value in-stock">In Stock</span>
+                            @if ($book->qty > 0)
+                                <span class="meta-value in-stock">In Stock</span>
+                            @else
+                                <span class="meta-value out-of-stock">Out of Stock</span>
+                            @endif
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">Barcode:</span>
-                            <span class="meta-value">{{ $book['barcode'] }}</span>
+                            <span class="meta-value">{{ $book->barcode }}</span>
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">Format:</span>
-                            <span class="meta-value">{{ $book['format'] }}</span>
+                            <span class="meta-value">{{ ucfirst($book->format) }}</span>
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">Pages:</span>
-                            <span class="meta-value">{{ $book['pages'] }}</span>
+                            <span class="meta-value">{{ $book->pages }}</span>
                         </div>
                     </div>
 
-                    <div class="ratings">
+                    <div class="star-rating">
                         @for ($i = 0; $i < 5; $i++)
-                            @if ($i < $book['rating'])
+                            @if ($i < $book->rating)
                                 <i class="fas fa-star star"></i>
                             @else
-                                <i class="fas fa-star-half-alt star"></i>
+                                <i class="far fa-star star"></i>
                             @endif
                         @endfor
-                        <span style="margin-left: 8px; color: #777;">({{ $book['reviews'] }} reviews)</span>
+                        <span style="margin-left: 8px; color: #777;">({{ $book->reviews }} reviews)</span>
                     </div>
 
-                    <div class="price-container">
-                        <span class="current-price">$ {{ $book['discount_price'] }}</span>
-                        <span class="original-price">$ {{ $book['price'] }}</span>
+                    {{-- <div class="price-container">
+                        <span class="current-price">
+                            $ {{ $book->price }}
+                        </span>
+                        <span class="original-price">$ {{ $book->price }}</span>
                         <span
-                            style="background-color: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 20px; font-size: 14px;">Save
-                            {{ $book['discount_percentage'] }}%</span>
+                            style="background-color: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 20px; font-size: 14px;">
+                            Save {{ $book->discount_percentage }}%
+                        </span>
+                    </div> --}}
+                    <div class="price-container">
+                        <span class="current-price">
+                            $ {{ $book->price }}
+                        </span>
+                        {{-- <span class="original-price">$ {{ $book->price }}</span> --}}
+                        {{-- <span
+                            style="background-color: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 20px; font-size: 14px;">
+                            Save {{ $book->discount_percentage }}%
+                            Save 20%
+                        </span> --}}
                     </div>
 
                     <div class="product-actions">
@@ -546,60 +557,50 @@
         </div>
     </section>
 
-    <section class="description-section">
+    {{-- <section class="description-section">
         <div class="container">
             <h3 class="section-title">Description</h3>
             <div class="description-content">
-                <p>{!! $book['description'] !!}</p>
+                <p>{!! $book->description !!}</p>
             </div>
         </div>
-    </section>
+    </section> --}}
 
-    @php
-        $relatedBooks = [
-            [
-                'id' => 1,
-                'title' => 'ផ្ទះត្រើយស្ទឹងម្ខាង',
-                'author' => 'តាំង​ ហ៊ុយសេង',
-                'price' => '$11.99',
-                'rating' => 4.5,
-                'thumbnail' => 'book1.jpeg'
-            ],
-            [
-                'id' => 2,
-                'title' => '15ឆ្នាំក្រោយជួបគ្នា',
-                'author' => 'ម៉ុង ម៉ានិត',
-                'price' => '$11.99',
-                'rating' => 4.5,
-                'thumbnail' => 'book2.jpeg'
-            ],
-        ];
-    @endphp
     <section class="related-section">
         <div class="container">
             <h3 class="related-title">You May Also Like</h3>
             <div class="related-products">
-                @foreach ($relatedBooks as $relatedBook)
+                @forelse ($relatedBooks as $relatedBook)
                     <div class="related-product">
                         <div class="related-product-img">
-                            <img src="{{ asset('uploads/books/' . $relatedBook['thumbnail']) }}" alt="{{ $relatedBook['title'] }}">
+                            <img src="
+                                @if ($relatedBook->image && file_exists(public_path('uploads/products/' . $relatedBook->image)))
+                                    {{ asset('uploads/products/' . $relatedBook->image) }}
+                                @else
+                                    {{ asset('uploads/default1.png') }}
+                                @endif
+                                " alt="{{ $relatedBook->name }}">
                         </div>
                         <div class="related-product-info">
-                            <h4 class="related-product-title">{{ $relatedBook['title'] }}</h4>
-                            <p class="related-product-author">By {{ $relatedBook['author'] }}</p>
+                            <h4 class="related-product-title">{{ $relatedBook->name }}</h4>
+                            <p class="related-product-author">By {{ $relatedBook->author->name }}</p>
                             <div class="star-rating">
                                 @for ($i = 0; $i < 5; $i++)
-                                    @if ($i < $book['rating'])
+                                    @if ($i < $relatedBook->rating)
                                         <i class="fas fa-star"></i>
                                     @else
-                                        <i class="fas fa-star-half-alt"></i>
+                                        <i class="fas fa-star"></i>
                                     @endif
                                 @endfor
                             </div>
-                            <p class="related-product-price">{{ $relatedBook['price'] }}</p>
+                            <p class="related-product-price">{{ $relatedBook->price }}</p>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="no-results fade-in">
+                        <p>No related books found</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>

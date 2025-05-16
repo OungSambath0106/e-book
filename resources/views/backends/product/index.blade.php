@@ -82,16 +82,22 @@
             </div>
         </div>
     </section>
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body text-center position-relative">
+                    <img id="modalImage" src="" alt="User Image" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade modal_form" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
     @include('backends.product.partial.delete_product_modal')
 @endsection
 @push('js')
     <script>
-        function openGalleryModal(productId) {
-            let modal = new bootstrap.Modal(document.getElementById('imageGalleryModal-' + productId), {
-                keyboard: true
-            });
-            modal.show();
+        function showImageModal(img) {
+            document.getElementById('modalImage').src = img.src;
         }
     </script>
     <script>
