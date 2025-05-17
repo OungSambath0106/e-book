@@ -27,7 +27,7 @@
         @foreach ($authors as $author)
             <div class="author-card">
                 <div class="author-image">
-                    <img src="{{ asset('uploads/authors/' . $author->image) }}" alt="{{ $author->name }}">
+                    <img src="{{ $author->image ? asset('uploads/authors/' . $author->image) : asset('uploads/man.png') }}" alt="{{ $author->name }}">
                 </div>
                 <a href="{{ route('author.detail', $author->id) }}" class="back-link">
                     <h3 class="author-name">{{ $author->name }}</h3>
@@ -36,7 +36,7 @@
                 <div class="social-links">
                     @if($author->social_media && is_array($author->social_media))
                         @foreach ($author->social_media as $social)
-                            @if(isset($social['link']) && isset($social['title']))
+                            @if(isset($social['title']))
                                 <a href="{{ $social['link'] }}" class="social-link" target="_blank">
                                     @if ($social['title'] == 'Facebook')
                                         <i class="fab fa-facebook-f"></i>
@@ -48,7 +48,7 @@
                                         <i class="fab fa-linkedin-in"></i>
                                     @elseif ($social['title'] == 'TikTok')
                                         <i class="fab fa-tiktok"></i>
-                                    @elseif ($social['title'] == 'YouTube')
+                                    @elseif ($social['title'] == 'Youtube')
                                         <i class="fab fa-youtube"></i>
                                     @elseif ($social['title'] == 'Snapchat')
                                         <i class="fab fa-snapchat"></i>

@@ -27,12 +27,14 @@ class ProductController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $products = Product::when($request->brand_id, function ($query) use ($request) {
-                        $query->where('brand_id', $request->brand_id);
-                    })
-                    ->with('productgallery')
-                    ->latest('id')
-                    ->get();
+        $products = Product::when($request->category_id, function ($query) use ($request) {
+                $query->whereHas('categories', function ($query) use ($request) {
+                    $query->where('categories.id', $request->category_id);
+                });
+            })
+            ->with('productgallery', 'categories')
+            ->latest('id')
+            ->get();
 
         $product_instock = $products->map(function ($product) {
             $productInfo = $product->product_info;
@@ -64,7 +66,7 @@ class ProductController extends Controller
         }
 
         $categories = Category::all();
-        $products = Product::with('category')->get();
+        $products = Product::with('categories')->get();
         $authors = Author::all();
         return view('backends.product.create', compact('products', 'categories', 'authors'));
     }
@@ -80,7 +82,7 @@ class ProductController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'category_id' => 'required',
+            'categories' => 'required',
             'author_id' => 'required',
         ]);
 
@@ -106,7 +108,6 @@ class ProductController extends Controller
 
             $pro = new Product;
             $pro->name = $request->name;
-            $pro->category_id = $request->category_id;
             $pro->author_id = $request->author_id;
             $pro->rating = $request->rating;
             $pro->qty = $request->qty;
@@ -135,6 +136,11 @@ class ProductController extends Controller
             }
 
             $pro->save();
+
+            if ($request->filled('categories')) {
+                $categoryIds = $request->categories;
+                $pro->categories()->attach($categoryIds);
+            }
 
             DB::commit();
             $output = [
@@ -166,10 +172,16 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $categories = Category::all();
-        $product = Product::withoutGlobalScopes()->with('category', 'productgallery')->findOrFail($id);
+        $product = Product::withoutGlobalScopes()->with('categories', 'productgallery')->findOrFail($id);
+        $categories = Category::with('products')->get();
+        $authors = Author::all();
+        $category_productId = [];
+        if ($product->categories()->get() && $product->categories()->get()->count() > 0) {
+            $category_productId = $product->categories()->get()->pluck('id')->toArray();
+        }
+        // dd($category_productId);
 
-        return view('backends.product.edit', compact('product', 'categories'));
+        return view('backends.product.edit', compact('product', 'categories', 'authors', 'category_productId'));
     }
 
     /**
@@ -183,13 +195,8 @@ class ProductController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'category_id' => 'required',
-            // 'images' => ['nullable', function ($attribute, $value, $fail) {
-            //     $images = json_decode($value, true);
-            //     if (is_array($images) && count($images) > 5) {
-            //         $fail('You can upload a maximum of 5 images.');
-            //     }
-            // }],
+            'categories' => 'required',
+            'author_id' => 'required',
         ]);
 
         if (is_null($request->name)) {
@@ -213,67 +220,47 @@ class ProductController extends Controller
 
             $product = Product::findOrFail($id);
             $product->name = $request->name;
-            // $product->description = $request->description;
-            $product->category_id = $request->category_id;
+            $product->author_id = $request->author_id;
             $product->rating = $request->rating;
+            $product->qty = $request->qty;
+            $product->price = $request->price;
+            $product->pages = $request->pages;
+            $product->reviews = $request->reviews;
+            $product->format = $request->format;
+            $product->barcode = $request->barcode;
+            $product->publish = $request->publish;
+            $product->created_by = auth()->user()->id;
             $product->new_arrival = $request->has('new-arrival') ? 1 : 0;
             $product->recommended = $request->has('recommended') ? 1 : 0;
             $product->popular = $request->has('popular') ? 1 : 0;
+            $product->bestseller = $request->has('bestseller') ? 1 : 0;
 
-            $products_info = [];
-            if ($request->products_info) {
-                foreach ($request->products_info['product_size'] as $key => $number) {
-                    $item['product_size'] = $number;
-                    $item['product_price'] = number_format((float)$request->products_info['product_price'][$key], 2, '.', '');
-                    $item['product_qty'] = $request->products_info['product_qty'][$key];
-                    array_push($products_info, $item);
+            if ($request->filled('image_names')) {
+                $imageName = $request->image_names;
+                $tempPath = public_path("uploads/temp/{$imageName}");
+                $productPath = public_path("uploads/products/{$imageName}");
+
+                if (\File::exists($tempPath)) {
+                    \File::ensureDirectoryExists(public_path('uploads/products'), 0777, true);
+                    \File::move($tempPath, $productPath);
+                    $pro->image = $imageName;
                 }
-                $product->product_info =$products_info;
             }
+
             $product->save();
 
-            $product_gallery = ProductGallery::where('product_id', $product->id)->first();
-            $existingImages = $product_gallery->images ?? [];
-            $imageNameToUpdate = $request->input('image_names');
-            $newImages = json_decode($imageNameToUpdate, true);
-
-            $product_data = [];
-            if (is_array($newImages)) {
-                foreach ($newImages as $image) {
-                    $directory = public_path('uploads/products');
-                    if (!\File::exists($directory)) {
-                        \File::makeDirectory($directory, 0777, true);
-                    }
-
-                    $sourcePath = public_path('uploads/temp/' . $image);
-                    $destinationPath = $directory . '/' . $image;
-
-                    if (\File::exists($sourcePath)) {
-                        \File::move($sourcePath, $destinationPath);
-                        $product_data[] = $image;
-                    }
-                }
+            if ($request->filled('categories')) {
+                $categoryIds = $request->categories;
+                $product->categories()->sync($categoryIds);
             }
-
-            $mergedImages = array_merge($existingImages, $product_data);
-            if ($product_gallery) {
-                $product_gallery->images = $mergedImages;
-                $product_gallery->save();
-            } else {
-                $product_gallery = new ProductGallery();
-                $product_gallery->product_id = $product->id;
-                $product_gallery->images = $mergedImages;
-                $product_gallery->save();
-            }
-
 
             DB::commit();
             $output = [
                 'success' => 1,
-                'msg' => __('Created successfully')
+                'msg' => __('Updated successfully')
             ];
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
             DB::rollBack();
             $output = [
                 'success' => 0,
@@ -297,18 +284,8 @@ class ProductController extends Controller
             DB::beginTransaction();
 
             $product = Product::findOrFail($id);
-            $productImages = ProductGallery::where('product_id', $id)->get();
-
-            foreach ($productImages as $image) {
-                if ($image->images) {
-                    foreach ($image->images as $img) {
-                        $imagePath = public_path('uploads/products/' . $img);
-                        if (file_exists($imagePath)) {
-                            unlink($imagePath);
-                        }
-                    }
-                }
-                $image->delete();
+            if ($product->image) {
+                ImageManager::delete(public_path('uploads/products/' . $product->image));
             }
             $product->delete();
 
@@ -358,83 +335,26 @@ class ProductController extends Controller
         return response()->json($output);
     }
 
-    public function uploadNewGallery(Request $request)
+    public function deleteImage(Request $request)
     {
         if (!auth()->user()->can('product.edit')) {
             abort(403, 'Unauthorized action.');
         }
 
-        try{
-            DB::beginTransaction();
-            $product_gallery = ProductGallery::where('product_id', $request->product_id)->first();
-            if (!$product_gallery) {
-                $product_gallery = new ProductGallery();
-                $product_gallery->product_id = $request->product_id;
-                $product_gallery->images = [];
+        $product = Product::find($request->product_id);
+        if ($product && $product->image) {
+            $imagePath = public_path('uploads/products/' . $product->image);
+
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
             }
-            $productgallery = $product_gallery->images??[];
 
-            if ($request->filled('image_names')) {
-                $imageDetails = $request->input('image_names');
-                $product_data = [];
-                foreach ($imageDetails as $detail) {
-                    $directory = public_path('uploads/products');
-                    if (!\File::exists($directory)) {
-                        \File::makeDirectory($directory, 0777, true);
-                    }
-                    $moved_image = \File::move(public_path('uploads/temp/' . $detail), $directory . '/' . $detail);
-                    $product_data[] = $detail;
-                }
-                $merged = array_merge($productgallery, $product_data);
-                $product_gallery->images = $merged;
-            }
-            $product_gallery->save();
+            $product->image = null;
+            $product->save();
 
-            DB::commit();
-            return response()->json([
-                'success' => true,
-                'message' => __('Created successfully'),
-            ]);
-        } catch(Exception $e){
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
-    }
-
-    public function deleteProductGallery(Request $request)
-    {
-        if (!auth()->user()->can('product.edit')) {
-            abort(403, 'Unauthorized action.');
+            return response()->json(['success' => 1, 'msg' => 'Image deleted']);
         }
 
-        $productGallery = ProductGallery::where('product_id', $request->product_id)->first();
-        if ($productGallery) {
-            $imageNameToDelete = $request->input('name');
-            $images = $productGallery->images;
-            $imageExists = false;
-            foreach ($images as $image) {
-                if ($image === $imageNameToDelete) {
-                    $imageExists = true;
-                    break;
-                }
-            }
-            if ($imageExists) {
-                $newImages = array_filter($images, function ($image) use ($imageNameToDelete) {
-                    return $image !== $imageNameToDelete;
-                });
-                $imagePath = public_path('uploads/products/' . $imageNameToDelete);
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
-                }
-                $productGallery->images = array_values($newImages);
-                $productGallery->save();
-
-                return response()->json(['success' => true]);
-            }
-        }
-        return response()->json(['success' => false, 'message' => 'Image not found.']);
+        return response()->json(['success' => 0, 'msg' => 'Banner or image not found']);
     }
 }

@@ -18,7 +18,7 @@ class Promotion extends Model
 
     protected $casts = [
         'products' => 'array',
-        'brands' => 'array',
+        'categories' => 'array',
     ];
 
     public function getTitleAttribute($title)
@@ -39,9 +39,9 @@ class Promotion extends Model
         return $this->belongsToMany(Product::class, 'promotion_product', 'promotion_id', 'product_id')->where('status', 1);
     }
 
-    public function brands()
+    public function categories()
     {
-        return $this->belongsToMany(Brand::class, 'promotion_brand', 'promotion_id', 'brand_id');
+        return $this->belongsToMany(Category::class, 'promotion_category', 'promotion_id', 'category_id');
     }
 
     public function promotiongallery()
@@ -49,9 +49,9 @@ class Promotion extends Model
         return $this->hasOne(PromotionGallery::class, 'promotion_id');
     }
 
-    public function activeBrands()
+    public function activeCategories()
     {
-        return $this->belongsToMany(Brand::class, 'promotion_brand', 'promotion_id', 'brand_id')->where('status', 1);
+        return $this->belongsToMany(Category::class, 'promotion_category', 'promotion_id', 'category_id')->where('status', 1);
     }
 
     // public function getBannerUrlAttribute()

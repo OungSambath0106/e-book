@@ -149,14 +149,12 @@
                                                                                     </div>
                                                                                 </div>
                                                                             @endif
-                                                                            {{-- <div class="col-12 col-sm-12 col-md-12">
+                                                                            <div class="col-12 col-sm-12 col-md-12">
                                                                                 <div class="form-group">
-                                                                                    <label
-                                                                                        for="company_description_{{ $lang['code'] }}">{{ __('Company Description') }}({{ strtoupper($lang['code']) }})</label>
-                                                                                    <textarea name="company_description[]" id="company_description_{{ $lang['code'] }}"
-                                                                                        class="form-control value_summernote" rows="6">{{ $translate[$lang['code']]['company_description'] ?? $company_description }}</textarea>
+                                                                                    <label for="company_description_{{ $lang['code'] }}">{{ __('Company Description') }}({{ strtoupper($lang['code']) }})</label>
+                                                                                    <textarea name="company_description[]" id="company_description_{{ $lang['code'] }}" class="form-control value_summernote" rows="6">{{ $translate[$lang['code']]['company_description'] ?? $company_description }}</textarea>
                                                                                 </div>
-                                                                            </div> --}}
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 @endif

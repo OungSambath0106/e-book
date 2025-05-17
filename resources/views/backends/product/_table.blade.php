@@ -35,7 +35,11 @@
                         <p class="text-sm font-weight-bold mb-0"> {{ $product->name ?? 'Null' }} </p>
                     </td>
                     <td>
-                        <p class="text-sm font-weight-bold mb-0 @if ($product->qty == 0) text-danger @endif">{{ $product->category->name ?? 'Null' }}</p>
+                        <p class="text-sm font-weight-bold mb-0 @if ($product->qty == 0) text-danger @endif">
+                            @foreach ($product->categories()->get() as $category)
+                                {{ $category->name }}@if (!$loop->last),@endif
+                            @endforeach
+                        </p>
                     </td>
                     <td>
                         <p class="text-sm text-center font-weight-bold mb-0 @if ($product->qty == 0) text-danger @endif">{{ $product->count_product_sale ?? '0' }}</p>

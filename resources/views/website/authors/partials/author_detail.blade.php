@@ -194,7 +194,7 @@
                     </a> --}}
                     @if($author->social_media && is_array($author->social_media))
                         @foreach ($author->social_media as $social)
-                            @if(isset($social['link']) && isset($social['title']))
+                            @if(isset($social['title']))
                                 <a href="{{ $social['link'] }}" class="social-link" target="_blank">
                                     @if ($social['title'] == 'Facebook')
                                         <i class="fab fa-facebook-f"></i>
@@ -206,7 +206,7 @@
                                         <i class="fab fa-linkedin-in"></i>
                                     @elseif ($social['title'] == 'TikTok')
                                         <i class="fab fa-tiktok"></i>
-                                    @elseif ($social['title'] == 'YouTube')
+                                    @elseif ($social['title'] == 'Youtube')
                                         <i class="fab fa-youtube"></i>
                                     @elseif ($social['title'] == 'Snapchat')
                                         <i class="fab fa-snapchat"></i>

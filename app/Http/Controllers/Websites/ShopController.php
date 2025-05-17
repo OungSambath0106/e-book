@@ -52,7 +52,9 @@ class ShopController extends Controller
         $book = Product::find($id);
         $relatedBooks = Product::where('status', 1)
             ->where('id', '!=', $id)
-            ->where('category_id', $book->category_id)
+            ->whereHas('categories', function ($query) use ($book) {
+                $query->whereIn('categories.id', $book->categories()->get()->pluck('id'));
+            })
             ->orderBy('id', 'desc')
             ->take(4)
             ->get();

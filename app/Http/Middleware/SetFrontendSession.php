@@ -24,13 +24,13 @@ class SetFrontendSession
         $web_header_logo = @$business->where('type', 'web_header_logo')->first()->value;
         $web_banner_logo = @$business->where('type', 'web_banner_logo')->first()->value;
         $company_name = @$business->where('type', 'company_name')->first()->value;
-        $company_short_description = @$business->where('type', 'company_short_description')->first()->value;
+        $company_description = @$business->where('type', 'company_description')->first()->value;
 
         $request->session()->put('copy_right_text', $copy_right_text);
         $request->session()->put('web_header_logo', $web_header_logo);
         $request->session()->put('web_banner_logo', $web_banner_logo);
         $request->session()->put('company_name', $company_name);
-        $request->session()->put('company_short_description', $company_short_description);
+        $request->session()->put('company_description', $company_description);
 
         return $next($request);
     }

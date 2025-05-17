@@ -101,7 +101,7 @@
                                             <div class="form-group col-md-6">
                                                 <label class="required_label" for="promotion_type">{{ __('Promotion Type') }}</label>
                                                 <select name="promotion_type" id="promotion_type" class="form-control select2 @error('Promotion_type') is-invalid @enderror" onchange="togglePromotionFields()">
-                                                    <option value="brand" selected>{{ __('By Brand') }}</option>
+                                                    <option value="category" selected>{{ __('By Category') }}</option>
                                                     <option value="product">{{ __('By Product') }}</option>
                                                 </select>
                                                 @error('promotion_type')
@@ -123,14 +123,14 @@
                                                     </span>
                                                 @enderror
                                             </div>
-                                            <div class="form-group col-md-6" id="brand_field" style="display: none;">
-                                                <label class="required_label" for="brand">{{ __('Promotion by Brand') }}</label>
-                                                <select name="brands[]" id="brand" multiple class="form-control select2 @error('brand') is-invalid @enderror">
-                                                    @foreach ($brands as $brand)
-                                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                            <div class="form-group col-md-6" id="category_field" style="display: none;">
+                                                <label class="required_label" for="category">{{ __('Promotion by Category') }}</label>
+                                                <select name="categories[]" id="category" multiple class="form-control select2 @error('category') is-invalid @enderror">
+                                                    @foreach ($categories as $category)
+                                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
                                                     @endforeach
                                                 </select>
-                                                @error('brand')
+                                                @error('category')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -570,14 +570,14 @@
     <script>
         function togglePromotionFields() {
             var promotionType = document.getElementById('promotion_type').value;
-            var brandField = document.getElementById('brand_field');
+            var categoryField = document.getElementById('category_field');
             var productField = document.getElementById('product_field');
 
-            if (promotionType === 'brand') {
-                brandField.style.display = 'block';
+            if (promotionType === 'category') {
+                categoryField.style.display = 'block';
                 productField.style.display = 'none';
             } else {
-                brandField.style.display = 'none';
+                categoryField.style.display = 'none';
                 productField.style.display = 'block';
             }
         }

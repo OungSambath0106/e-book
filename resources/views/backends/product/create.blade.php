@@ -66,6 +66,9 @@
         .image-box:hover .close-btn {
             display: block;
         }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            padding-bottom: 3px ! important;
+        }
     </style>
     <section class="content">
         <div class="container-fluid">
@@ -181,19 +184,18 @@
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-6 ">
-                                                <label class="required_label" for="category">{{ __('Category') }}</label>
-                                                <select name="category_id" id="category"
-                                                    class="form-control select2 @error('category_id') is-invalid @enderror">
+                                                <label class="required_label" for="categories">{{ __('Categories') }}</label>
+                                                <select name="categories[]" id="categories" multiple
+                                                    class="form-control select2 @error('categories') is-invalid @enderror">
                                                     <option value="">{{ __('Select Category') }}</option>
                                                     @foreach ($categories as $item)
                                                         <option value="{{ $item -> id }}">{{ $item -> name }}</option>
                                                     @endforeach
                                                 </select>
-                                                @error('category_id')
+                                                @error('categories')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
-
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-6 ">
@@ -214,7 +216,7 @@
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label class="required_label" for="price">{{ __('Price') }}</label>
-                                                <input type="number" name="price" id="price" class="form-control @error('price') is-invalid @enderror" placeholder="{{ __('Enter Price') }}" value="">
+                                                <input type="number" name="price" id="price" class="form-control @error('price') is-invalid @enderror" placeholder="{{ __('Enter Price') }}" value="" step="0.1">
                                                 @error('price')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>

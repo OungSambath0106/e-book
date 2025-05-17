@@ -29,10 +29,12 @@ class SetSessionData
             $copy_right_text = @$business->where('type', 'copy_right_text')->first()->value;
             $business_logo = @$business->where('type', 'web_header_logo')->first()->value;
             $company_name = @$business->where('type', 'company_name')->first()->value;
+            $company_description = @$business->where('type', 'company_description')->first()->value;
 
             $request->session()->put('copy_right_text', $copy_right_text);
             $request->session()->put('business_logo', $business_logo);
             $request->session()->put('company_name', $company_name);
+            $request->session()->put('company_description', $company_description);
             // $request->session()->put('currency', $currency_data);
 
         }

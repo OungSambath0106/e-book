@@ -589,7 +589,7 @@
                                     @if ($i < $relatedBook->rating)
                                         <i class="fas fa-star"></i>
                                     @else
-                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
                                     @endif
                                 @endfor
                             </div>

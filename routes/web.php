@@ -134,8 +134,9 @@ Route::middleware(['auth','CheckUserLogin', 'SetSessionData'])->group(function (
         // Route Product
         Route::post('product/update_status', [ProductController::class, 'updateStatus'])->name('product.update_status');
         Route::resource('product', ProductController::class);
-        Route::post('product/upload/gallery', [ProductController::class, 'uploadNewGallery'])->name('product.upload_gallery');
-        Route::delete('product/delete/gallery',[ProductController::class, 'deleteProductGallery'])->name('product.delete_gallery');
+        Route::post('product/delete-image', [ProductController::class, 'deleteImage'])->name('product.delete_image');
+        // Route::post('product/upload/gallery', [ProductController::class, 'uploadNewGallery'])->name('product.upload_gallery');
+        // Route::delete('product/delete/gallery',[ProductController::class, 'deleteProductGallery'])->name('product.delete_gallery');
 
         // Route Transaction
         Route::post('order/update_status', [OrderController::class, 'updateStatus'])->name('order.update_status');

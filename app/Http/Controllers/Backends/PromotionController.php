@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\BusinessSetting;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\PromotionGallery;
 use Illuminate\Support\Facades\File;
@@ -60,9 +60,9 @@ class PromotionController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $brands = Brand::with('products')->get();
+        $categories = Category::with('products')->get();
         $products = Product::where('status', 1)->orderBy('name')->get();
-        return view('backends.promotion.create', compact('brands', 'products'));
+        return view('backends.promotion.create', compact('categories', 'products'));
     }
 
     /**
@@ -147,9 +147,9 @@ class PromotionController extends Controller
                 $promotion->products()->attach($productIds);
             }
 
-            if ($request->filled('brands')) {
-                $brandIds = $request->brands;
-                $promotion->brands()->attach($brandIds);
+            if ($request->filled('categories')) {
+                $categoryIds = $request->categories;
+                $promotion->categories()->attach($categoryIds);
             }
 
             DB::commit();
@@ -190,14 +190,14 @@ class PromotionController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $promotion = Promotion::withoutGlobalScopes()->with('products', 'brands', 'promotiongallery')->findOrFail($id);
+        $promotion = Promotion::withoutGlobalScopes()->with('products', 'categories', 'promotiongallery')->findOrFail($id);
 
-        $brands = Brand::with('products')->get();
-        $brand_promotionId = [];
-        if ($promotion->brands()->get() && $promotion->brands()->get()->count() > 0) {
-            $brand_promotionId = $promotion->brands()->get()->pluck('id')->toArray();
+        $categories = Category::with('products')->get();
+        $category_promotionId = [];
+        if ($promotion->categories()->get() && $promotion->categories()->get()->count() > 0) {
+            $category_promotionId = $promotion->categories()->get()->pluck('id')->toArray();
         }
-        // dd($brand_promotionId);
+        // dd($category_promotionId);
 
         $products = Product::where('status', 1)->orderBy('name')->get();
         $product_promotionId = [];
@@ -206,7 +206,7 @@ class PromotionController extends Controller
         }
         // dd($product_promotionId);
 
-        return view('backends.promotion.edit', compact('brands', 'products', 'brand_promotionId', 'product_promotionId', 'promotion'));
+        return view('backends.promotion.edit', compact('categories', 'products', 'category_promotionId', 'product_promotionId', 'promotion'));
     }
 
     /**
@@ -286,12 +286,12 @@ class PromotionController extends Controller
                 $promotion_gallery->save();
             }
 
-            if ($request->promotion_type === 'brand') {
-                if ($request->filled('brands')) {
-                    $brandIds = $request->brands;
-                    $promotion->brands()->sync($brandIds);
+            if ($request->promotion_type === 'category') {
+                if ($request->filled('categories')) {
+                    $categoryIds = $request->categories;
+                    $promotion->categories()->sync($categoryIds);
                 } else {
-                    $promotion->brands()->sync([]);
+                    $promotion->categories()->sync([]);
                 }
                 $promotion->products()->sync([]);
 
@@ -302,7 +302,7 @@ class PromotionController extends Controller
                 } else {
                     $promotion->products()->sync([]);
                 }
-                $promotion->brands()->sync([]);
+                $promotion->categories()->sync([]);
             }
 
             DB::commit();

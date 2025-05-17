@@ -1,40 +1,67 @@
 <footer>
+    @php
+        $setting = App\Models\BusinessSetting::all();
+        $company_description = $setting->where('type', 'company_description')->first()->value ?? '';
+        $social_media = $setting->where('type', 'social_media')->first()->value ?? '';
+
+        $categories = App\Models\Category::all();
+    @endphp
     <div class="container footer-container">
         <div class="footer-about">
             <div class="footer-logo">
                 <div class="footer-logo-icon">
                     <i class="fas fa-book"></i>
                 </div>
-                EleBooks.
+                {{ session()->get('company_name') }}
             </div>
-            <p>EleBooks is the largest digital library offering bestselling ebooks from various genres. Discover your next favorite read today!</p>
+            <p>{!! $company_description !!}</p>
             <div class="social-links">
-                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-pinterest"></i></a>
+                @foreach (json_decode($social_media, true) as $social)
+                    <a href="{{ $social['link'] }}" class="social-link" target="_blank">
+                        @if ($social['title'] == 'Facebook')
+                            <i class="fab fa-facebook-f"></i>
+                        @elseif ($social['title'] == 'Instagram')
+                            <i class="fab fa-instagram"></i>
+                        @elseif ($social['title'] == 'Telegram')
+                            <i class="fab fa-telegram"></i>
+                        @elseif ($social['title'] == 'Youtube')
+                            <i class="fab fa-youtube"></i>
+                        @elseif ($social['title'] == 'X')
+                            <i class="fab fa-x-twitter"></i>
+                        @elseif ($social['title'] == 'Pinterest')
+                            <i class="fab fa-pinterest"></i>
+                        @elseif ($social['title'] == 'Tiktok')
+                            <i class="fab fa-tiktok"></i>
+                        @elseif ($social['title'] == 'Whatsapp')
+                            <i class="fab fa-whatsapp"></i
+                        @elseif ($social['title'] == 'Linkedin')
+                            <i class="fab fa-linkedin"></i>
+                        @elseif ($social['title'] == 'Github')
+                            <i class="fab fa-github"></i>
+                        @endif
+                    </a>
+                @endforeach
             </div>
         </div>
 
         <div class="footer-links">
             <h3>Quick Links</h3>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Categories</a></li>
-                <li><a href="#">Shop</a></li>
-                <li><a href="#">Blog</a></li>
+                <li><a href="{{ route('home') }}">Home</a></li>
+                <li><a href="{{ route('categories') }}">Categories</a></li>
+                <li><a href="{{ route('shop') }}">Shop</a></li>
+                <li><a href="{{ route('authors') }}">Authors</a></li>
                 <li><a href="#">About Us</a></li>
+                <li><a href="#">Blog</a></li>
             </ul>
         </div>
 
         <div class="footer-links">
             <h3>Categories</h3>
             <ul>
-                <li><a href="#">Fiction</a></li>
-                <li><a href="#">Non-Fiction</a></li>
-                <li><a href="#">Children's Books</a></li>
-                <li><a href="#">Biographies</a></li>
-                <li><a href="#">Business & Money</a></li>
+                @foreach ($categories as $category)
+                    <li><a href="{{ route('categories') }}">{{ $category->name }}</a></li>
+                @endforeach
             </ul>
         </div>
 
@@ -52,7 +79,7 @@
 
     <div class="container">
         <div class="copyright">
-            &copy; 2025 EleBooks. All Rights Reserved.
+            {{ session()->get('copy_right_text') }}
         </div>
     </div>
 </footer>

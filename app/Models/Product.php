@@ -11,11 +11,13 @@ use Illuminate\Support\Facades\App;
 
 class Product extends Model
 {
-    use HasFactory;
-
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'categories' => 'array',
+    ];
 
     public function getNameAttribute($name)
     {
@@ -37,9 +39,9 @@ class Product extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsToMany(Category::class, 'product_categories', 'product_id', 'category_id');
     }
 
     public function productgallery()

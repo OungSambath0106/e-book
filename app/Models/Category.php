@@ -23,7 +23,8 @@ class Category extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        // return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class, 'product_categories', 'category_id', 'product_id');
     }
 
     public function createdBy()

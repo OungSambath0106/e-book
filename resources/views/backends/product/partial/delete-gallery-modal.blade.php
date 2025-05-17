@@ -1,4 +1,5 @@
-<div id="delete-gallery-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+<!-- Modal -->
+<div class="modal fade" id="deleteImageModal" tabindex="-1" role="dialog" aria-labelledby="deleteImageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md" style="padding-inline: 3.5rem;" role="document">
         <div class="modal-content" style="border-radius: 15px">
             <div class="modal-body p-4">
@@ -13,8 +14,8 @@
                 </div>
                 <div class="button">
                     <div class="d-flex justify-content-center col-12 button-footer" style="gap: 10px">
-                        <button type="button" class="btn btn-outline-primary col-6" style="padding-block: .75rem; border-radius: 10px;" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger col-6" id="confirm-delete" style="padding-block: .75rem; border-radius: 10px;">Yes, I'm sure</button>
+                        <button type="button" class="btn btn-outline-primary col-6 btn-cancel-modal" style="padding-block: .75rem; border-radius: 10px;" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger col-6 btn-confirm-modal" style="padding-block: .75rem; border-radius: 10px;">Yes, I'm sure</button>
                     </div>
                 </div>
             </div>
