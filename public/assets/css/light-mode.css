@@ -101,6 +101,14 @@ nav a:hover {
     text-decoration: none !important;
 }
 
+a, a:hover, a:focus {
+    text-decoration: none !important;
+}
+
+a.logo:hover {
+    color: unset !important;
+}
+
 nav a::after {
     content: '';
     position: absolute;
