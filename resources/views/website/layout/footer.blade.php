@@ -3,6 +3,8 @@
         $setting = App\Models\BusinessSetting::all();
         $company_description = $setting->where('type', 'company_description')->first()->value ?? '';
         $social_media = $setting->where('type', 'social_media')->first()->value ?? '';
+        $company_name = $setting->where('type', 'company_name')->first()->value ?? '';
+        $copy_right_text = $setting->where('type', 'copy_right_text')->first()->value ?? '';
 
         $categories = App\Models\Category::all();
     @endphp
@@ -12,7 +14,7 @@
                 <div class="footer-logo-icon">
                     <i class="fas fa-book"></i>
                 </div>
-                {{ session()->get('company_name') }}
+                {{ $company_name }}
             </div>
             <p>{!! $company_description !!}</p>
             <div class="social-links">
@@ -79,7 +81,7 @@
 
     <div class="container">
         <div class="copyright">
-            {{ session()->get('copy_right_text') }}
+            {{ $copy_right_text }}
         </div>
     </div>
 </footer>

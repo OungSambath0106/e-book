@@ -2,10 +2,8 @@
 @section('page_title', __('Shop Page'))
 @section('content')
     <style>
-        .no-results {
-            position: absolute;
-            justify-self: center;
-            bottom: -25vh;
+        .books-grid {
+            min-height: 200px;
         }
 
         @keyframes fadeUp {
@@ -42,7 +40,7 @@
             <a href="{{ route('home') }}" class="back-link">Back To Home</a>
 
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search for a book, author...">
+                <input type="text" class="search-input" placeholder="Search your favorite books..." id="search-input">
                 <button class="search-btn-hero" type="button" aria-label="Search">
                     <i class="fas fa-search"></i>
                 </button>
@@ -221,6 +219,8 @@
 @push('js')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        let baseUrl = "{{ url('/shop/filter-products') }}/"; // use `url()` to avoid route param errors
+
         $('.filter-btn').on('click', function () {
             let categoryId = $(this).data('id');
 
@@ -228,25 +228,26 @@
             $(this).addClass('active');
 
             $.ajax({
-                url: '{{ route('filter-products', ['categoryId' => ':categoryId']) }}'.replace(':categoryId', categoryId),
+                url: baseUrl + categoryId,
                 method: 'GET',
                 beforeSend: function () {
                     $('#shop-info').html('');
-                    $('#books-container').html('');
+                    $('#books-container').html('<div class="loading">Loading...</div>'); // optional spinner
                     $('#pagination-links').html('');
                 },
                 success: function (response) {
                     if (response.html) {
-                        $('#shop-info').html(`Showing Products ${response.firstItem} - ${response.lastItem} of ${response.count} Results`);
                         $('#books-container').html(response.html);
                         $('#pagination-links').html(response.pagination);
-                    } else {
-                        $('#books-container').html('<p class="no-results fade-in"> {{ __('No books found') }} </p>');
                         $('#shop-info').html(`Showing Products ${response.firstItem} - ${response.lastItem} of ${response.count} Results`);
+                    } else {
+                        $('#books-container').html('<p class="no-results fade-in">{{ __('No books found') }}</p>');
+                        $('#shop-info').html(`Showing Products 0 - 0 of 0 Results`);
                     }
                 },
-                error: function () {
-                    $('#books-container').html('<p> {{ __('Error loading books') }} </p>');
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                    $('#books-container').html('<p>{{ __('Error loading books') }}</p>');
                 }
             });
         });

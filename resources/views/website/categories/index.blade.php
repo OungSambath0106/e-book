@@ -133,12 +133,7 @@
         }
 
         .books-grid {
-            position: relative;
-        }
-
-        .no-results {
-            position: absolute;
-            justify-self: center;
+            min-height: 420px;
         }
 
         @keyframes fadeUp {
@@ -191,7 +186,7 @@
         <a href="{{ route('home') }}" class="back-link">Back To Home</a>
 
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search For Popular Books...">
+            <input type="text" class="search-input" placeholder="Search your favorite books..." id="search-input">
             <button class="search-btn-hero" type="button" aria-label="Search">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -226,6 +221,8 @@
 @push('js')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        let baseUrl = "{{ url('/categories/filter-products') }}/";
+
         $('.filter-btn').on('click', function () {
             let categoryId = $(this).data('id');
 
@@ -233,7 +230,7 @@
             $(this).addClass('active');
 
             $.ajax({
-                url: '{{ route('filter-products', ['categoryId' => ':categoryId']) }}'.replace(':categoryId', categoryId),
+                url: baseUrl + categoryId,
                 method: 'GET',
                 beforeSend: function () {
                     $('#books-container').html('');
@@ -242,13 +239,19 @@
                     if (response.html) {
                         $('#books-container').html(response.html);
                     } else {
-                        $('#books-container').html('<p class="no-results fade-in"> {{ __('No books found') }} </p>');
+                        $('#books-container').html('<p class="no-results fade-in">{{ __('No books found') }}</p>');
                     }
                 },
-                error: function () {
-                    $('#books-container').html('<p> {{ __('Error loading books') }} </p>');
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                    $('#books-container').html('<p>{{ __('Error loading books') }}</p>');
                 }
             });
+        });
+    </script>
+    <script>
+        document.getElementById('search-input').addEventListener('click', function () {
+            window.location.href = "{{ route('books.search') }}";
         });
     </script>
 @endpush

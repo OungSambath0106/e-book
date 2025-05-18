@@ -137,7 +137,7 @@
             <a href="{{ route('authors') }}" class="back-link">Back To Authors</a>
 
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search for a book, author...">
+                <input type="text" class="search-input" placeholder="Search for an author..." id="search-input">
                 <button class="search-btn-hero">
                     <i class="fas fa-search"></i>
                 </button>

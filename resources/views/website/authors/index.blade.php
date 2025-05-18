@@ -14,7 +14,7 @@
             <a href="{{ route('home') }}" class="back-link">Back To Home</a>
 
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search for a book, author...">
+                <input type="text" class="search-input" placeholder="Search for an author..." id="search-input">
                 <button class="search-btn-hero" type="button" aria-label="Search">
                     <i class="fas fa-search"></i>
                 </button>

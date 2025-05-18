@@ -23,7 +23,9 @@ class CategoryController extends Controller
             $products = Product::where('status', 1)->orderBy('id', 'desc')->get();
         } else {
             $products = Product::where('status', 1)
-                ->where('category_id', $categoryId)
+                ->whereHas('categories', function ($query) use ($categoryId) {
+                    $query->where('categories.id', $categoryId);
+                })
                 ->orderBy('id', 'desc')
                 ->get();
         }

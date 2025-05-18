@@ -2,18 +2,19 @@
     @php
         $setting = App\Models\BusinessSetting::all();
         $web_header_logo = $setting->where('type', 'web_header_logo')->first()->value ?? '';
+        $company_name = $setting->where('type', 'company_name')->first()->value ?? '';
     @endphp
     <div class="container nav-container">
         <a href="{{ route('home') }}" class="logo">
             <div class="logo-icon">
                 <img src="{{ asset('uploads/business_settings/' . $web_header_logo) }}" alt="logo" width="26px" height="26px">
             </div>
-            {{ session()->get('company_name') }}
+            {{ $company_name }}
         </a>
 
         <nav>
             <ul>
-                <li><a class="@if (request()->is('/')) active @endif" href="{{ route('home') }}">Home</a></li>
+                <li><a class="@if (request()->is('/') || request()->is('books/all')) active @endif" href="{{ route('home') }}">Home</a></li>
                 <li><a class="@if (request()->is('categories')) active @endif"
                         href="{{ route('categories') }}">Categories</a></li>
                 <li><a class="@if (request()->is('shop') || request()->is('book-detail/*')) active @endif" href="{{ route('shop') }}">Shop</a></li>

@@ -308,7 +308,7 @@ nav a:hover::after {
 }
 
 .book-image {
-    width: 220px;
+    width: 200px;
     height: 280px;
     border-radius: 10px;
     overflow: hidden;
@@ -427,7 +427,7 @@ nav a:hover::after {
     padding: 30px 0px 0;
 }
 
-.new-arrivals-books, .best-seller-books {
+.popular-books, .best-seller-books {
     padding-bottom: 30px;
 }
 
@@ -480,6 +480,7 @@ nav a:hover::after {
 }
 
 .books-grid {
+    position: relative;
     display: grid;
     margin-bottom: 1rem;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -513,6 +514,13 @@ nav a:hover::after {
 .book-card-content {
     padding: 15px;
     text-align: center;
+}
+
+.book-card-content h3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .book-card-content a {
@@ -918,7 +926,7 @@ footer {
     position: absolute;
     right: 10px;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) !important;
     background-color: var(--primary);
     color: var(--light);
     border: none;
@@ -929,6 +937,12 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.no-results {
+    position: absolute;
+    justify-self: center;
+    align-self: center;
 }
 
 /* Main Shop Content */
@@ -981,7 +995,7 @@ footer {
 
 .categories-list a:hover,
 .categories-list a.active {
-    color: var(--primary);
+    color: var(--primary) !important;
     cursor: pointer;
 }
 

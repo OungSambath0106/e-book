@@ -26,7 +26,9 @@ class ShopController extends Controller
                 ->paginate(10);
         } else {
             $products = Product::where('status', 1)
-                ->where('category_id', $categoryId)
+                ->whereHas('categories', function ($query) use ($categoryId) {
+                    $query->where('categories.id', $categoryId);
+                })
                 ->orderBy('id', 'desc')
                 ->paginate(10);
         }

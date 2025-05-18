@@ -3,23 +3,17 @@
 @section('content')
     <style>
         .books-grid {
-            position: relative;
-        }
-
-        .no-results {
-            position: absolute;
-            justify-self: center;
-            align-self: center;
+            min-height: 200px;
         }
     </style>
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" style="padding-bottom: 40px;">
         <div class="container">
             <p class="shop-subtitle">All Your Favorite Books In One Place ✨</p>
             <h1>Largest Digital Library Of<br>Bestselling eBooks</h1>
 
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search for a book, author...">
+                <input type="text" class="search-input" placeholder="Search your favorite books..." id="search-input">
                 <button class="search-btn-hero" type="button" aria-label="Search">
                     <i class="fas fa-search"></i>
                 </button>
@@ -27,7 +21,7 @@
 
             <div class="book-showcase">
                 @foreach ($banners as $banner)
-                    <div class="book-image">
+                    <div class="book-image parallelogram">
                         <img src="
                                 @if ($banner->image && file_exists(public_path('uploads/banners/' . $banner->image))) {{ asset('uploads/banners/' . $banner->image) }}
                                 @else
@@ -83,92 +77,32 @@
             <div class="section-header">
                 <h2>Featured Books</h2>
                 @if (count($featured_products) > 0)
-                    <a href="{{ route('shop') }}" class="btn-view-all">
+                    <a href="{{ route('all.books.show', ['type' => 'featured']) }}" class="btn-view-all">
                         <span>View All</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 @endif
             </div>
 
-            <div class="books-grid">
-                @forelse ($featured_products as $product)
-                    <div class="book-card">
-                        <div class="book-card-img">
-                            <img src="
-                                @if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {{ asset('uploads/products/' . $product->image) }}
-                                @else
-                                    {{ asset('uploads/default1.png') }} @endif
-                                "
-                                alt="{{ @$product->name }}">
-                        </div>
-                        <div class="book-card-content">
-                            <h3>{{ @$product->name }}</h3>
-                            <p class="book-author"> By {{ @$product->author->name }}</p>
-                            <div class="star-rating">
-                                @for ($i = 0; $i < 5; $i++)
-                                    @if ($i < @$product->rating)
-                                        <i class="fas fa-star"></i>
-                                    @else
-                                        <i class="far fa-star"></i>
-                                    @endif
-                                @endfor
-                            </div>
-                            <p class="book-price"> $ {{ @$product->price }} </p>
-                        </div>
-                    </div>
-                @empty
-                    <div class="no-results" data-aos="fade-up">
-                        <p>Featured Books Not Available.</p>
-                    </div>
-                @endforelse
+            <div class="books-grid " id="featured-books-container">
+                @include('website.home.partials.feature_books', ['featured_products' => $featured_products])
             </div>
         </div>
     </section>
 
-    <!-- New Arrivals Section -->
-    <section class="new-arrivals-books" data-aos="fade-up">
+    <!-- Best Seller Books Section -->
+    <section class="best-seller-books" data-aos="fade-up">
         <div class="container">
             <div class="section-header">
-                <h2>New Arrivals</h2>
-                @if (count($new_arrivals) > 0)
-                    <a href="{{ route('shop') }}" class="btn-view-all">
-                        <span>View All</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                @endif
+                <h2>Best Seller Books</h2>
+                <a href="{{ route('all.books.show', ['type' => 'bestseller']) }}" class="btn-view-all">
+                    <span>View All</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
 
-            <div class="books-grid">
-                @forelse ($new_arrivals as $product)
-                    <div class="book-card">
-                        <div class="book-card-img">
-                            <img src="
-                                @if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {{ asset('uploads/products/' . $product->image) }}
-                                @else
-                                    {{ asset('uploads/default1.png') }} @endif
-                                "
-                                alt="{{ @$product->name }}">
-                        </div>
-                        <div class="book-card-content">
-                            <h3>{{ @$product->name }}</h3>
-                            <p class="book-author"> By {{ @$product->author->name }}</p>
-                            <div class="star-rating">
-                                @for ($i = 0; $i < 5; $i++)
-                                    @if ($i < @$product->rating)
-                                        <i class="fas fa-star"></i>
-                                    @else
-                                        <i class="far fa-star"></i>
-                                    @endif
-                                @endfor
-                            </div>
-                            <p class="book-price"> $ {{ @$product->price }} </p>
-                        </div>
-                    </div>
-                @empty
-                    <div class="no-results" data-aos="fade-up">
-                        <p>New Arrivals Books Not Available.</p>
-                    </div>
-                @endforelse
+            <div class="books-grid " id="best-seller-container">
+                @include('website.home.partials.best_seller_books', ['best_sellers' => $best_sellers])
             </div>
         </div>
     </section>
@@ -204,50 +138,40 @@
         </div>
     </section>
 
-    <!-- Recommended Books Section -->
-    <section class="recommended-books" data-aos="fade-up">
+    <!-- New Arrivals Section -->
+    <section class="new-arrivals-books" data-aos="fade-up">
         <div class="container">
             <div class="section-header">
-                <h2>Recommended Books</h2>
-                @if (count($recommended) > 0)
-                    <a href="{{ route('shop') }}" class="btn-view-all">
+                <h2>New Arrivals</h2>
+                @if (count($new_arrivals) > 0)
+                    <a href="{{ route('all.books.show', ['type' => 'new_arrival']) }}" class="btn-view-all">
                         <span>View All</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 @endif
             </div>
 
-            <div class="books-grid">
-                @forelse ($recommended as $product)
-                    <div class="book-card">
-                        <div class="book-card-img">
-                            <img src="
-                                @if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {{ asset('uploads/products/' . $product->image) }}
-                                @else
-                                    {{ asset('uploads/default1.png') }} @endif
-                                "
-                                alt="{{ @$product->name }}">
-                        </div>
-                        <div class="book-card-content">
-                            <h3>{{ @$product->name }}</h3>
-                            <p class="book-author"> By {{ @$product->author->name }}</p>
-                            <div class="star-rating">
-                                @for ($i = 0; $i < 5; $i++)
-                                    @if ($i < @$product->rating)
-                                        <i class="fas fa-star"></i>
-                                    @else
-                                        <i class="far fa-star"></i>
-                                    @endif
-                                @endfor
-                            </div>
-                            <p class="book-price"> $ {{ @$product->price }} </p>
-                        </div>
-                    </div>
-                @empty
-                    <div class="no-results" data-aos="fade-up">
-                        <p>Recommended Books Not Available.</p>
-                    </div>
-                @endforelse
+            <div class="books-grid " id="new-arrivals-container">
+                @include('website.home.partials.new_arrival_books', ['new_arrivals' => $new_arrivals])
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommended Books Section -->
+    <section class="recommended-books" data-aos="fade-up">
+        <div class="container">
+            <div class="section-header">
+                <h2>Recommended Books</h2>
+                @if (count($recommended) > 0)
+                    <a href="{{ route('all.books.show', ['type' => 'recommended']) }}" class="btn-view-all">
+                        <span>View All</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                @endif
+            </div>
+
+            <div class="books-grid " id="recommended-container">
+                @include('website.home.partials.recommended_books', ['recommended' => $recommended])
             </div>
         </div>
     </section>
@@ -258,92 +182,15 @@
             <div class="section-header">
                 <h2>Popular Books</h2>
                 @if (count($popular) > 0)
-                    <a href="{{ route('shop') }}" class="btn-view-all">
+                    <a href="{{ route('all.books.show', ['type' => 'popular']) }}" class="btn-view-all">
                         <span>View All</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 @endif
             </div>
 
-            <div class="books-grid">
-                @forelse ($popular as $product)
-                    <div class="book-card">
-                        <div class="book-card-img">
-                            <img src="
-                                @if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {{ asset('uploads/products/' . $product->image) }}
-                                @else
-                                    {{ asset('uploads/default1.png') }} @endif
-                                "
-                                alt="{{ @$product->name }}">
-                        </div>
-                        <div class="book-card-content">
-                            <h3>{{ @$product->name }}</h3>
-                            <p class="book-author"> By {{ @$product->author->name }}</p>
-                            <div class="star-rating">
-                                @for ($i = 0; $i < 5; $i++)
-                                    @if ($i < @$product->rating)
-                                        <i class="fas fa-star"></i>
-                                    @else
-                                        <i class="far fa-star"></i>
-                                    @endif
-                                @endfor
-                            </div>
-                            <p class="book-price"> $ {{ @$product->price }} </p>
-                        </div>
-                    </div>
-                @empty
-                    <div class="no-results" data-aos="fade-up">
-                        <p>Popular Books Not Available.</p>
-                    </div>
-                @endforelse
-            </div>
-        </div>
-    </section>
-
-    <!-- Best Seller Books Section -->
-    <section class="best-seller-books" data-aos="fade-up">
-        <div class="container">
-            <div class="section-header">
-                <h2>Best Seller Books</h2>
-                @if (count($best_sellers) > 0)
-                    <a href="{{ route('shop') }}" class="btn-view-all">
-                        <span>View All</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                @endif
-            </div>
-
-            <div class="books-grid">
-                @forelse ($best_sellers as $product)
-                    <div class="book-card">
-                        <div class="book-card-img">
-                            <img src="
-                                @if ($product->image && file_exists(public_path('uploads/products/' . $product->image))) {{ asset('uploads/products/' . $product->image) }}
-                                @else
-                                    {{ asset('uploads/default1.png') }} @endif
-                                "
-                                alt="{{ @$product->name }}">
-                        </div>
-                        <div class="book-card-content">
-                            <h3>{{ @$product->name }}</h3>
-                            <p class="book-author"> By {{ @$product->author->name }}</p>
-                            <div class="star-rating">
-                                @for ($i = 0; $i < 5; $i++)
-                                    @if ($i < @$product->rating)
-                                        <i class="fas fa-star"></i>
-                                    @else
-                                        <i class="far fa-star"></i>
-                                    @endif
-                                @endfor
-                            </div>
-                            <p class="book-price"> $ {{ @$product->price }} </p>
-                        </div>
-                    </div>
-                @empty
-                    <div class="no-results" data-aos="fade-up">
-                        <p>Best Seller Books Not Available.</p>
-                    </div>
-                @endforelse
+            <div class="books-grid " id="popular-container">
+                @include('website.home.partials.popular_books', ['popular' => $popular])
             </div>
         </div>
     </section>
@@ -360,3 +207,10 @@
         </div>
     </section>
 @endsection
+{{-- @push('js')
+    <script>
+        document.getElementById('search-input').addEventListener('click', function () {
+            window.location.href = "{{ route('books.search') }}";
+        });
+    </script>
+@endpush --}}

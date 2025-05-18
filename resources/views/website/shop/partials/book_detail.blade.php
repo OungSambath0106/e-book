@@ -277,11 +277,6 @@
             font-size: 18px;
         }
 
-        .no-results {
-            position: absolute;
-            justify-self: center;
-        }
-
         @keyframes fadeUp {
             0% {
                 opacity: 0;
@@ -428,7 +423,7 @@
             <a href="{{ route('shop') }}" class="back-link">Back To Shop</a>
 
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search for a book, author...">
+                <input type="text" class="search-input" placeholder="Search your favorite books..." id="search-input">
                 <button class="search-btn-hero">
                     <i class="fas fa-search"></i>
                 </button>
