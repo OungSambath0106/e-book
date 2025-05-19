@@ -523,6 +523,19 @@ nav a:hover::after {
     overflow: hidden;
 }
 
+.related-product-info a {
+    text-decoration: none;
+    color: var(--text);
+}
+
+.related-product-info h3 {
+    font-size: 1.2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 .book-card-content a {
     text-decoration: none;
     color: var(--text);
@@ -1006,7 +1019,11 @@ footer {
 .filter-option {
     display: flex;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 1rem;
+}
+
+.filter-option label {
+    margin-bottom: 0;
 }
 
 .filter-checkbox {
@@ -1030,7 +1047,6 @@ footer {
 .star-rating {
     color: var(--accent);
     font-size: 0.9rem;
-    padding-bottom: 0.5rem;
 }
 
 .contact-btn {
@@ -1066,7 +1082,7 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     background: lightgrey;
     padding-inline: 1rem;
     border-radius: 10px;

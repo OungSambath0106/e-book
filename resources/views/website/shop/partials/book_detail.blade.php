@@ -261,11 +261,6 @@
             text-align: center;
         }
 
-        .related-product-title {
-            font-weight: 600;
-            font-size: 16px;
-        }
-
         .related-product-author {
             color: var(--gray);
             font-size: 14px;
@@ -577,8 +572,8 @@
                                 " alt="{{ $relatedBook->name }}">
                         </div>
                         <div class="related-product-info">
-                            <h4 class="related-product-title">{{ $relatedBook->name }}</h4>
-                            <p class="related-product-author">By {{ $relatedBook->author->name }}</p>
+                            <a href="{{ route('book.detail', $relatedBook->id) }}"><h3 class="related-product-title">{{ $relatedBook->name }}</h3></a>
+                            <p class="related-product-author mb-2">By {{ $relatedBook->author->name }}</p>
                             <div class="star-rating">
                                 @for ($i = 0; $i < 5; $i++)
                                     @if ($i < $relatedBook->rating)
@@ -588,7 +583,7 @@
                                     @endif
                                 @endfor
                             </div>
-                            <p class="related-product-price">{{ $relatedBook->price }}</p>
+                            <p class="related-product-price"> $ {{ $relatedBook->price }} </p>
                         </div>
                     </div>
                 @empty

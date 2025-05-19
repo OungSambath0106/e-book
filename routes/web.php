@@ -54,9 +54,8 @@ Route::get('/books/search', [WebsitesHomeController::class, 'searchBooks'])->nam
 Route::get('/categories', [WebsitesCategoryController::class, 'index'])->name('categories');
 Route::get('/categories/filter-products/{categoryId}', [WebsitesCategoryController::class, 'filterProducts'])->name('categories.filter-products');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-Route::get('/shop/filter-products/{categoryId}', [ShopController::class, 'filterProducts'])->name('shop.filter-products');
+Route::get('/shop/filter-products/{categoryId}', [ShopController::class, 'filterProducts'])->name('shop.filter');
 Route::get('/book-detail/{id}', [ShopController::class, 'bookDetail'])->name('book.detail');
-
 Route::get('/authors', [WebsitesAuthorController::class, 'index'])->name('authors');
 Route::get('/author-detail/{id}', [WebsitesAuthorController::class, 'show'])->name('author.detail');
 
@@ -137,6 +136,7 @@ Route::middleware(['auth','CheckUserLogin', 'SetSessionData'])->group(function (
         Route::post('product/update_status', [ProductController::class, 'updateStatus'])->name('product.update_status');
         Route::resource('product', ProductController::class);
         Route::post('product/delete-image', [ProductController::class, 'deleteImage'])->name('product.delete_image');
+        Route::get('product/barcode/{id}', [ProductController::class, 'barcode'])->name('product.barcode');
         // Route::post('product/upload/gallery', [ProductController::class, 'uploadNewGallery'])->name('product.upload_gallery');
         // Route::delete('product/delete/gallery',[ProductController::class, 'deleteProductGallery'])->name('product.delete_gallery');
 

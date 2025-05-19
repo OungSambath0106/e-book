@@ -72,6 +72,14 @@
                         </label>
                     </td>
                     <td class="align-middle text-center">
+                        @if (auth()->user()->can('product.view'))
+                            <a href="{{ route('admin.product.barcode', $product->id) }}" class="btn-barcode" data-bs-toggle="tooltip" title="Barcode" data-bs-placement="top">
+                                <span class="badge bg-gradient-success p-2">
+                                    <i class="fa-solid fa-barcode"></i>
+                                </span>
+                            </a>
+                        @endif
+
                         @if (auth()->user()->can('product.edit'))
                             <a href="{{ route('admin.product.edit', $product->id) }}" class="btn-edit" data-bs-toggle="tooltip" title="Edit" data-bs-placement="top">
                                 <span class="badge bg-gradient-primary p-2">

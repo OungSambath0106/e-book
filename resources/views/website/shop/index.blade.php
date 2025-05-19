@@ -67,123 +67,38 @@
                     <div class="sidebar-widget">
                         <h3 class="sidebar-title">Years</h3>
                         <div class="filter-options">
-                            <div class="filter-option">
-                                <input type="checkbox" id="year-2015" class="filter-checkbox">
-                                <label for="year-2015" class="filter-text">2015<span class="filter-count">
-                                        (20)</span></label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="year-2016" class="filter-checkbox">
-                                <label for="year-2016" class="filter-text">2016<span class="filter-count">
-                                        (34)</span></label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="year-2017" class="filter-checkbox">
-                                <label for="year-2017" class="filter-text">2017<span class="filter-count">
-                                        (15)</span></label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="year-2018" class="filter-checkbox">
-                                <label for="year-2018" class="filter-text">2018<span class="filter-count">
-                                        (24)</span></label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="year-2019" class="filter-checkbox">
-                                <label for="year-2019" class="filter-text">2019<span class="filter-count">
-                                        (45)</span></label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="year-2020" class="filter-checkbox">
-                                <label for="year-2020" class="filter-text">2020<span class="filter-count">
-                                        (18)</span></label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="year-2021" class="filter-checkbox">
-                                <label for="year-2021" class="filter-text">2021<span class="filter-count">
-                                        (25)</span></label>
-                            </div>
+                            @foreach ($years as $year)
+                                <div class="filter-option">
+                                    <input type="checkbox" id="year-{{ $year }}" class="filter-checkbox filter-year" data-year="{{ $year }}">
+                                    <label for="year-{{ $year }}" class="filter-text">
+                                        {{ $year }} <span class="filter-count">({{ $yearCounts[$year] ?? 0 }})</span>
+                                    </label>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
 
                     <div class="sidebar-widget">
                         <h3 class="sidebar-title">Ratings</h3>
                         <div class="filter-options">
-                            <div class="filter-option">
-                                <input type="checkbox" id="rating-5" class="filter-checkbox">
-                                <label for="rating-5" class="filter-text">
-                                    <div class="star-rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="rating-4" class="filter-checkbox">
-                                <label for="rating-4" class="filter-text">
-                                    <div class="star-rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="rating-3" class="filter-checkbox">
-                                <label for="rating-3" class="filter-text">
-                                    <div class="star-rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="rating-2" class="filter-checkbox">
-                                <label for="rating-2" class="filter-text">
-                                    <div class="star-rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="filter-option">
-                                <input type="checkbox" id="rating-1" class="filter-checkbox">
-                                <label for="rating-1" class="filter-text">
-                                    <div class="star-rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </label>
-                            </div>
+                            @for ($i = 5; $i >= 1; $i--)
+                                <div class="filter-option">
+                                    <input type="checkbox" id="rating-{{ $i }}" class="filter-checkbox filter-rating" data-rating="{{ $i }}">
+                                    <label for="rating-{{ $i }}" class="filter-text">
+                                        <div class="star-rating">
+                                            @for ($j = 1; $j <= 5; $j++)
+                                                <i class="{{ $j <= $i ? 'fas fa-star' : 'far fa-star' }}"></i>
+                                            @endfor
+                                        </div>
+                                    </label>
+                                </div>
+                            @endfor
                         </div>
                     </div>
                 </div>
 
                 <!-- Products Section -->
                 <div class="products-section">
-                    <div class="products-header">
-                        <h2 class="products-title">Best Seller Items</h2>
-                    </div>
-
-                    <section class="books-grid" id="best-seller-books">
-                        @foreach ($bestSellersProducts as $book)
-                            @include('website.shop.partials.card_book', ['book' => $book])
-                        @endforeach
-                    </section>
-
                     <div class="products-header all-products">
                         <div class="shop-info" id="shop-info">
                             Showing Products {{ $products->firstItem() }} - {{ $products->lastItem() }} of {{ $products->total() }} Results
@@ -194,6 +109,7 @@
                             <select class="sort-select">
                                 <option value="default">Default sorting</option>
                                 <option value="popularity">Sort by popularity</option>
+                                <option value="bestseller">Sort by bestseller</option>
                                 <option value="rating">Sort by rating</option>
                                 <option value="latest">Sort by latest</option>
                                 <option value="price-low">Sort by price: low to high</option>
@@ -219,21 +135,54 @@
 @push('js')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        let baseUrl = "{{ url('/shop/filter-products') }}/"; // use `url()` to avoid route param errors
+        let filters = {
+            categoryId: 'all',
+            years: [],
+            ratings: [],
+            sort: 'default'
+        };
 
+        // Triggered on category click
         $('.filter-btn').on('click', function () {
-            let categoryId = $(this).data('id');
-
+            filters.categoryId = $(this).data('id');
             $('.filter-btn').removeClass('active');
             $(this).addClass('active');
+            fetchBooks();
+        });
 
+        // Triggered on checkbox change (years & ratings)
+        $('.filter-checkbox').on('change', function () {
+            filters.years = $('.filter-checkbox[id^="year-"]:checked').map(function () {
+                return $(this).attr('id').replace('year-', '');
+            }).get();
+
+            filters.ratings = $('.filter-checkbox[id^="rating-"]:checked').map(function () {
+                return $(this).attr('id').replace('rating-', '');
+            }).get();
+
+            fetchBooks();
+        });
+
+        // Triggered on sort select
+        $('.sort-select').on('change', function () {
+            filters.sort = $(this).val();
+            fetchBooks();
+        });
+
+        // Fetch function
+        function fetchBooks() {
             $.ajax({
-                url: baseUrl + categoryId,
+                url: "{{ url('/shop/filter-products') }}/" + filters.categoryId,
                 method: 'GET',
+                data: {
+                    years: filters.years,
+                    ratings: filters.ratings,
+                    sort: filters.sort
+                },
                 beforeSend: function () {
-                    $('#shop-info').html('');
-                    $('#books-container').html('<div class="loading">Loading...</div>'); // optional spinner
+                    $('#books-container').html('<div class="loading">Loading...</div>');
                     $('#pagination-links').html('');
+                    $('#shop-info').html('');
                 },
                 success: function (response) {
                     if (response.html) {
@@ -249,6 +198,22 @@
                     console.log(xhr.responseText);
                     $('#books-container').html('<p>{{ __('Error loading books') }}</p>');
                 }
+            });
+        }
+
+        $(document).ready(function () {
+            // 1. Uncheck all filter checkboxes on page load
+            $('.filter-checkbox').prop('checked', false);
+
+            // 2. Reset sort select to "default"
+            $('.sort-select').val('default');
+
+            // 3. Update sort label text
+            $('.sort-label').text($('.sort-select option:selected').text());
+
+            // 4. Update sort label on change
+            $('.sort-select').on('change', function () {
+                $('.sort-label').text($(this).find('option:selected').text());
             });
         });
     </script>

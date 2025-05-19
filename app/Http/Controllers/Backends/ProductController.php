@@ -15,6 +15,7 @@ use App\Models\Author;
 use App\Models\Category;
 use App\Models\ProductGallery;
 use Illuminate\Support\Facades\Validator;
+use Picqer\Barcode\BarcodeGeneratorHTML;
 
 class ProductController extends Controller
 {
@@ -356,5 +357,15 @@ class ProductController extends Controller
         }
 
         return response()->json(['success' => 0, 'msg' => 'Banner or image not found']);
+    }
+
+    public function barcode($id)
+    {
+        $product = Product::findOrFail($id);
+        $product_barcode = $product->barcode;
+        $generateBarcode = new BarcodeGeneratorHTML();
+        $barcode = $generateBarcode->getBarcode($product_barcode, $generateBarcode::TYPE_CODE_128);
+
+        return view('backends.product.barcode', compact('product', 'barcode', 'product_barcode'));
     }
 }
