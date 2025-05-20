@@ -21,7 +21,6 @@
                 <li><a class="@if (request()->is('authors') || request()->is('author-detail/*')) active @endif" href="{{ route('authors') }}">Authors</a>
                 </li>
                 <li><a href="#">About Us</a></li>
-                <li><a href="#">Blog</a></li>
             </ul>
         </nav>
 

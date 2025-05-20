@@ -245,6 +245,7 @@ class PromotionController extends Controller
         }
 
         try {
+            // dd($request->all());
             DB::beginTransaction();
             $promotion =  Promotion::findOrFail($id);
             $promotion->title = $request->title;

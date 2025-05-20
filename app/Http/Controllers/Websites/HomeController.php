@@ -16,6 +16,10 @@ class HomeController extends Controller
         $featured_products = Product::where('status', 1)
                             ->orderBy('id', 'desc')
                             ->take(4)->get();
+        $best_sellers = Product::where('status', 1)
+                            ->where('bestseller', 1)
+                            ->orderBy('id', 'desc')
+                            ->paginate(4);
         $new_arrivals = Product::where('status', 1)
                             ->where('new_arrival', 1)
                             ->orderBy('id', 'desc')
@@ -26,10 +30,6 @@ class HomeController extends Controller
                             ->paginate(4);
         $popular = Product::where('status', 1)
                             ->where('popular', 1)
-                            ->orderBy('id', 'desc')
-                            ->paginate(4);
-        $best_sellers = Product::where('status', 1)
-                            ->where('bestseller', 1)
                             ->orderBy('id', 'desc')
                             ->paginate(4);
         $categories = Category::where('status', 1)

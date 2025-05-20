@@ -7,7 +7,7 @@
                 alt="{{ @$product->name }}">
         </div>
         <div class="book-card-content">
-            <h3>{{ @$product->name }}</h3>
+            <a href="{{ route('book.detail', $product->id) }}"><h3>{{ @$product->name }}</h3></a>
             <p class="book-author">By {{ @$product->author->name }}</p>
             <div class="star-rating">
                 @for ($i = 0; $i < 5; $i++)

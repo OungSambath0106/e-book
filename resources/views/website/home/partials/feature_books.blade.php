@@ -1,5 +1,11 @@
 @forelse ($featured_products as $product)
     <div class="book-card">
+        <div class="badges">
+            <p>
+                <span class="firstLine">50%</span>
+                <span class="secondLine">OFF</span>
+            </p>
+        </div>
         <div class="book-card-img">
             <img src="{{ $product->image && file_exists(public_path('uploads/products/' . $product->image))
                     ? asset('uploads/products/' . $product->image)
@@ -7,7 +13,7 @@
                 alt="{{ @$product->name }}">
         </div>
         <div class="book-card-content">
-            <h3>{{ @$product->name }}</h3>
+            <a href="{{ route('book.detail', $product->id) }}"><h3>{{ @$product->name }}</h3></a>
             <p class="book-author">By {{ @$product->author->name }}</p>
             <div class="star-rating">
                 @for ($i = 0; $i < 5; $i++)

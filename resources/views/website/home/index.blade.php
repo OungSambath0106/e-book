@@ -5,6 +5,128 @@
         .books-grid {
             min-height: 200px;
         }
+        .book-card {
+            position: relative;
+        }
+        .firstLine {
+            font-size: 14px;
+            font-weight: 600;
+        }.secondLine {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badges {
+            position: absolute;
+            margin:25px auto;
+            top: 0;
+            right: 20px;
+            width:50px;
+            height:50px;
+            background:#552F87;
+            border-radius:100%;
+            color: #FFF;
+            line-height: 15px;
+            text-align: center;
+            align-content: center;
+            text-transform: uppercase;
+            font-family: "Open Sans",sans-serif;
+            -webkit-animation: 3s ease-in-out 0s normal none infinite running swing;
+            -moz-animation: 3s ease-in-out 0s normal none infinite running swing;
+            -o-animation: 3s ease-in-out 0s normal none infinite running swing;
+            animation: 3s ease-in-out 0s normal none infinite running swing;
+            /* animation: swing 1s infinite ease-in-out; */
+            transform-origin: center;
+
+            -webkit-transform-origin: 100px -71px;
+            -moz-transform-origin: 100px -71px;
+            -o-transform-origin: 100px -71px;
+            transform-origin: 100px -71px;
+        }
+        .badges:before {
+            content: '';
+            position: absolute;
+            top: 22.5px;
+            left: 22.5px;
+            width: 5px;
+            height: 5px;
+            border-radius: 100%;
+
+            -webkit-box-shadow: 0px -20.5px 0px -0.5px #fff, 0px -25px #552F87, 5px -24.5px #552F87, 9.75px -23.5px #552F87, 14px -21.25px #552F87, 17.75px -18px #552F87,
+                20.75px -14.25px #552F87, 23.25px -10px #552F87, 24.5px -5px #552F87, 25px 0px #552F87,
+
+                -5px -24.5px #552F87, -9.75px -23.5px #552F87, -17.75px -18px #552F87,
+                -14px -21.25px #552F87, -20.75px -14.25px #552F87, -23.25px -10px #552F87, -24.5px -5px #552F87, -25px 0px #552F87,
+
+                0px 25px #552F87, -5px 24.5px #552F87, -9.75px 23.5px #552F87, -14px 21.25px #552F87,
+                -17.75px 18px #552F87, -20.75px 14.25px #552F87, -23.25px -10px #552F87, -24.5px 5px #552F87, -23.25px 10px #552F87,
+
+                5px 24.5px #552F87, 9.75px 23.5px #552F87, 14px 21.25px #552F87,
+                17.75px 18px #552F87, 20.75px 14.25px #552F87, 23.25px 10px #552F87, 24.5px 5px #552F87;
+
+            -moz-box-shadow: 0px -20.5px 0px -0.5px #fff, 0px -25px #552F87, 5px -24.5px #552F87, 9.75px -23.5px #552F87, 14px -21.25px #552F87, 17.75px -18px #552F87,
+                20.75px -14.25px #552F87, 23.25px -10px #552F87, 24.5px -5px #552F87, 25px 0px #552F87,
+
+                -5px -24.5px #552F87, -9.75px -23.5px #552F87, -17.75px -18px #552F87,
+                -14px -21.25px #552F87, -20.75px -14.25px #552F87, -23.25px -10px #552F87, -24.5px -5px #552F87, -25px 0px #552F87,
+
+                0px 25px #552F87, -5px 24.5px #552F87, -9.75px 23.5px #552F87, -14px 21.25px #552F87,
+                -17.75px 18px #552F87, -20.75px 14.25px #552F87, -23.25px -10px #552F87, -24.5px 5px #552F87, -23.25px 10px #552F87,
+
+                5px 24.5px #552F87, 9.75px 23.5px #552F87, 14px 21.25px #552F87,
+                17.75px 18px #552F87, 20.75px 14.25px #552F87, 23.25px 10px #552F87, 24.5px 5px #552F87;
+            -o-box-shadow: 0px -20.5px 0px -0.5px #fff, 0px -25px #552F87, 5px -24.5px #552F87, 9.75px -23.5px #552F87, 14px -21.25px #552F87, 17.75px -18px #552F87,
+                20.75px -14.25px #552F87, 23.25px -10px #552F87, 24.5px -5px #552F87, 25px 0px #552F87,
+
+                -5px -24.5px #552F87, -9.75px -23.5px #552F87, -17.75px -18px #552F87,
+                -14px -21.25px #552F87, -20.75px -14.25px #552F87, -23.25px -10px #552F87, -24.5px -5px #552F87, -25px 0px #552F87,
+
+                0px 25px #552F87, -5px 24.5px #552F87, -9.75px 23.5px #552F87, -14px 21.25px #552F87,
+                -17.75px 18px #552F87, -20.75px 14.25px #552F87, -23.25px -10px #552F87, -24.5px 5px #552F87, -23.25px 10px #552F87,
+
+                5px 24.5px #552F87, 9.75px 23.5px #552F87, 14px 21.25px #552F87,
+                17.75px 18px #552F87, 20.75px 14.25px #552F87, 23.25px 10px #552F87, 24.5px 5px #552F87;
+            box-shadow: 0px -20.5px 0px -0.5px #fff, 0px -25px #552F87, 5px -24.5px #552F87, 9.75px -23.5px #552F87, 14px -21.25px #552F87, 17.75px -18px #552F87,
+                20.75px -14.25px #552F87, 23.25px -10px #552F87, 24.5px -5px #552F87, 25px 0px #552F87,
+
+                -5px -24.5px #552F87, -9.75px -23.5px #552F87, -17.75px -18px #552F87,
+                -14px -21.25px #552F87, -20.75px -14.25px #552F87, -23.25px -10px #552F87, -24.5px -5px #552F87, -25px 0px #552F87,
+
+                0px 25px #552F87, -5px 24.5px #552F87, -9.75px 23.5px #552F87, -14px 21.25px #552F87,
+                -17.75px 18px #552F87, -20.75px 14.25px #552F87, -23.25px -10px #552F87, -24.5px 5px #552F87, -23.25px 10px #552F87,
+
+                5px 24.5px #552F87, 9.75px 23.5px #552F87, 14px 21.25px #552F87,
+                17.75px 18px #552F87, 20.75px 14.25px #552F87, 23.25px 10px #552F87, 24.5px 5px #552F87;
+        }
+        .badges:after{
+            content:'';
+            position:absolute;
+            top:-25px;right:24px;
+            width:1.5px;height:35px;
+            border-radius:0%;
+            background:#000;
+        }
+
+        @-webkit-keyframes swing {
+            0%   { -webkit-transform: rotate(-3deg) translate(-2px, -2px); }
+            50%  { -webkit-transform: rotate(3deg) translate(2px, 2px); }
+            100% { -webkit-transform: rotate(-3deg) translate(-2px, -2px); }
+        }
+        @-moz-keyframes swing {
+            0%   { -moz-transform: rotate(-3deg) translate(-2px, -2px); }
+            50%  { -moz-transform: rotate(3deg) translate(2px, 2px); }
+            100% { -moz-transform: rotate(-3deg) translate(-2px, -2px); }
+        }
+        @-o-keyframes swing {
+            0%   { -o-transform: rotate(-3deg) translate(-2px, -2px); }
+            50%  { -o-transform: rotate(3deg) translate(2px, 2px); }
+            100% { -o-transform: rotate(-3deg) translate(-2px, -2px); }
+        }
+        @keyframes swing {
+            0%   { transform: rotate(-3deg) translate(-2px, -2px); }
+            50%  { transform: rotate(3deg) translate(2px, 2px); }
+            100% { transform: rotate(-3deg) translate(-2px, -2px); }
+        }
     </style>
     <!-- Hero Section -->
     <section class="hero" style="padding-bottom: 40px;">

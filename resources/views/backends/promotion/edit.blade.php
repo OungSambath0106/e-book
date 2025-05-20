@@ -114,8 +114,8 @@
                                             <div class="form-group col-md-6">
                                                 <label class="required_label" for="promotion_type">{{ __('Promotion Type') }}</label>
                                                 <select name="promotion_type" id="promotion_type" class="form-control select2 @error('promotion_type') is-invalid @enderror" onchange="togglePromotionFields()">
-                                                    <option value="brand" {{ old('promotion_type', $promotion->promotion_type) == 'brand' ? 'selected' : '' }}>
-                                                        {{ __('Brand') }}
+                                                    <option value="category" {{ old('promotion_type', $promotion->promotion_type) == 'category' ? 'selected' : '' }}>
+                                                        {{ __('Category') }}
                                                     </option>
                                                     <option value="product" {{ old('promotion_type', $promotion->promotion_type) == 'product' ? 'selected' : '' }}>
                                                         {{ __('Product') }}
@@ -143,17 +143,17 @@
                                                     </span>
                                                 @enderror
                                             </div>
-                                            <div class="form-group col-md-6" id="brand_field" style="display: none;">
-                                                <label class="required_label" for="brand">{{ __('Promotion by Brand') }}</label>
-                                                <select name="brands[]" id="brand_input" multiple class="form-control select2 @error('brand') is-invalid @enderror">
-                                                    @foreach ($brands as $brand)
-                                                        <option value="{{ $brand->id }}"
-                                                            {{ in_array($brand->id, old('brands', $brand_promotionId)) ? 'selected' : '' }}>
-                                                            {{ $brand->name }}
+                                            <div class="form-group col-md-6" id="category_field" style="display: none;">
+                                                <label class="required_label" for="category">{{ __('Promotion by Category') }}</label>
+                                                <select name="categories[]" id="category_input" multiple class="form-control select2 @error('categories') is-invalid @enderror">
+                                                    @foreach ($categories as $category)
+                                                        <option value="{{ $category->id }}"
+                                                            {{ in_array($category->id, old('categories', $category_promotionId)) ? 'selected' : '' }}>
+                                                            {{ $category->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                @error('brand')
+                                                @error('categories')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -599,21 +599,21 @@
     <script>
         function togglePromotionFields() {
             var promotionType = document.getElementById('promotion_type').value;
-            var brandField = document.getElementById('brand_field');
+            var categoryField = document.getElementById('category_field');
             var productField = document.getElementById('product_field');
-            var brandInput = document.getElementById('brand_input');
+            var categoryInput = document.getElementById('category_input');
             var productInput = document.getElementById('product_input');
 
-            if (promotionType === 'brand') {
-                brandField.style.display = 'block';
+            if (promotionType === 'category') {
+                categoryField.style.display = 'block';
                 productField.style.display = 'none';
 
                 productInput.value = '';
             } else {
                 productField.style.display = 'block';
-                brandField.style.display = 'none';
+                categoryField.style.display = 'none';
 
-                brandInput.value = '';
+                categoryInput.value = '';
             }
         }
 
