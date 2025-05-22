@@ -20,6 +20,7 @@ use App\Http\Controllers\Backends\OrderController;
 use App\Http\Controllers\Backends\ProductController;
 use App\Http\Controllers\Backends\PromotionController;
 use App\Http\Controllers\Backends\ShoesSliderController;
+use App\Http\Controllers\Websites\Auth\LoginController as AuthLoginController;
 use App\Http\Controllers\Websites\AuthorController as WebsitesAuthorController;
 use App\Http\Controllers\Websites\CategoryController as WebsitesCategoryController;
 use App\Http\Controllers\Websites\CheckoutController;
@@ -45,15 +46,12 @@ Route::get('language/{locale}', function ($locale) {
     return redirect()->back();
 })->name('change_language');
 
-Route::get('/admin/login', function () {
-    return redirect('/admin/login');
-});
+// Customer routes
+Route::get('/sign-in', [AuthLoginController::class, 'showLoginForm'])->name('sign-in');
+Route::post('/sign-in', [AuthLoginController::class, 'loginPhoneOTP']);
+Route::post('/sign-out', [AuthLoginController::class, 'logout'])->name('sign-out');
 
 // website routes
-Route::middleware(['web', 'CheckUserLogin', 'SetSessionData'])->group(function () {
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-    // Route::post('/shop/add-to-cart', [ShopController::class, 'addToCart'])->name('add.to.cart')->middleware('auth:customers');
-});
 Route::get('/', [WebsitesHomeController::class, 'index'])->name('home');
 Route::get('/books/all', [WebsitesHomeController::class, 'showAllBooks'])->name('all.books.show');
 Route::get('/books/search', [WebsitesHomeController::class, 'searchBooks'])->name('books.search');
@@ -66,14 +64,19 @@ Route::get('/book-detail/{id}', [ShopController::class, 'bookDetail'])->name('bo
 Route::get('/authors', [WebsitesAuthorController::class, 'index'])->name('authors');
 Route::get('/author-detail/{id}', [WebsitesAuthorController::class, 'show'])->name('author.detail');
 
+Route::middleware(['web', 'CheckUserLogin', 'SetSessionData'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    // Route::post('/shop/add-to-cart', [ShopController::class, 'addToCart'])->name('add.to.cart')->middleware('auth:customers');
+});
+
 Auth::routes();
 
-Route::redirect('/admin', '/admin/dashboard');
-// Route::redirect('/admin', '/admin/highlight');
-
-// save temp file
-Route::post('save_temp_file', [FileManagerController::class, 'saveTempFile'])->name('save_temp_file');
-Route::get('remove_temp_file', [FileManagerController::class, 'removeTempFile'])->name('remove_temp_file');
+// admin login
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LoginController::class, 'logout'])->name('admin.logout');
+});
 
 // back-end
 Route::middleware(['auth','CheckUserLogin', 'SetSessionData'])->group(function () {
@@ -156,8 +159,11 @@ Route::middleware(['auth','CheckUserLogin', 'SetSessionData'])->group(function (
         Route::post('order/update_payment_status/{id}', [OrderController::class, 'updatePaymentStatus'])->name('order.update_payment_status');
         Route::post('order/update_order_status/{id}', [OrderController::class, 'updateOrderStatus'])->name('order.update_order_status');
     });
-
 });
+
+// save temp file
+Route::post('save_temp_file', [FileManagerController::class, 'saveTempFile'])->name('save_temp_file');
+Route::get('remove_temp_file', [FileManagerController::class, 'removeTempFile'])->name('remove_temp_file');
 
 Route::middleware(['auth:web'])->group(function () {
     Route::get('/logout', [LoginController::class,'logout'])->name('logout');

@@ -31,7 +31,7 @@ class LoginController extends Controller
     {
         request()->session()->flush();
         \Auth::logout();
-        return redirect('/login');
+        return redirect('/admin/login');
     }
 
     protected function redirectTo()
