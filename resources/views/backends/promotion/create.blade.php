@@ -101,8 +101,8 @@
                                             <div class="form-group col-md-6">
                                                 <label class="required_label" for="promotion_type">{{ __('Promotion Type') }}</label>
                                                 <select name="promotion_type" id="promotion_type" class="form-control select2 @error('Promotion_type') is-invalid @enderror" onchange="togglePromotionFields()">
-                                                    <option value="category" selected>{{ __('By Category') }}</option>
-                                                    <option value="product">{{ __('By Product') }}</option>
+                                                    {{-- <option value="category" selected>{{ __('By Category') }}</option> --}}
+                                                    <option value="product" selected>{{ __('By Product') }}</option>
                                                 </select>
                                                 @error('promotion_type')
                                                     <span class="invalid-feedback" role="alert">
@@ -111,7 +111,7 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-6" id="product_field">
-                                                <label class="required_label" for="product">{{ __('Promotion by Product') }}</label>
+                                                <label class="required_label" for="product">{{ __('Promotion Products') }}</label>
                                                 <select name="products[]" id="product" multiple class="form-control select2 @error('product') is-invalid @enderror">
                                                     @foreach ($products as $product)
                                                         <option value="{{ $product->id }}">{{ $product->name }}</option>

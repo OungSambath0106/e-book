@@ -44,14 +44,14 @@ class Promotion extends Model
         return $this->belongsToMany(Category::class, 'promotion_category', 'promotion_id', 'category_id');
     }
 
-    public function promotiongallery()
-    {
-        return $this->hasOne(PromotionGallery::class, 'promotion_id');
-    }
-
     public function activeCategories()
     {
         return $this->belongsToMany(Category::class, 'promotion_category', 'promotion_id', 'category_id')->where('status', 1);
+    }
+
+    public function promotiongallery()
+    {
+        return $this->hasOne(PromotionGallery::class, 'promotion_id');
     }
 
     // public function getBannerUrlAttribute()

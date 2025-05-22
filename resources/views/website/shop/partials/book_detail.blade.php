@@ -155,6 +155,7 @@
 
         .add-to-cart:hover {
             background-color: rgba(123, 72, 227, 0.1);
+            color: var(--primary);
             transform: translateY(-3px);
         }
 
@@ -166,6 +167,7 @@
 
         .buy-now:hover {
             background-color: #6339c0;
+            color: white;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(123, 72, 227, 0.3);
         }
@@ -227,6 +229,7 @@
         }
 
         .related-product {
+            position: relative;
             background-color: white;
             border-radius: 10px;
             overflow: hidden;
@@ -240,7 +243,6 @@
         }
 
         .related-product-img {
-            position: relative;
             height: 200px;
             overflow: hidden;
         }
@@ -250,10 +252,6 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s;
-        }
-
-        .related-product:hover .related-product-img img {
-            transform: scale(1.1);
         }
 
         .related-product-info {
@@ -270,6 +268,12 @@
             color: var(--primary);
             font-weight: 600;
             font-size: 18px;
+        }
+
+        .related-product-original-price {
+            color: var(--gray);
+            text-decoration: line-through;
+            font-size: 14px;
         }
 
         @keyframes fadeUp {
@@ -442,15 +446,6 @@
                             {{ asset('uploads/default1.png') }}
                         @endif
                         " alt="{{ $book->name }}">
-                        {{-- @if ($book->new_arrival)
-                            <div class="product-badge">New Arrival</div>
-                        @elseif ($book->recommended)
-                            <div class="product-badge">Recommended</div>
-                        @elseif ($book->popular)
-                            <div class="product-badge">Popular</div>
-                        @elseif ($book->bestseller)
-                            <div class="product-badge">Best Seller</div>
-                        @endif --}}
                 </div>
 
                 <div class="product-info">
@@ -491,33 +486,39 @@
                         <span style="margin-left: 8px; color: #777;">({{ $book->reviews }} reviews)</span>
                     </div>
 
-                    {{-- <div class="price-container">
-                        <span class="current-price">
-                            $ {{ $book->price }}
-                        </span>
-                        <span class="original-price">$ {{ $book->price }}</span>
-                        <span
-                            style="background-color: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 20px; font-size: 14px;">
-                            Save {{ $book->discount_percentage }}%
-                        </span>
-                    </div> --}}
                     <div class="price-container">
-                        <span class="current-price">
-                            $ {{ $book->price }}
-                        </span>
-                        {{-- <span class="original-price">$ {{ $book->price }}</span> --}}
-                        {{-- <span
-                            style="background-color: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 20px; font-size: 14px;">
-                            Save {{ $book->discount_percentage }}%
-                            Save 20%
-                        </span> --}}
+                        @if ($book->promotions->count() > 0)
+                            @foreach ($book->promotions as $promotion)
+                                @php
+                                    $current_price = $book->price;
+                                    if ($promotion->discount_type == 'percent') {
+                                        $current_price = $book->price * (1 - $promotion->percent / 100);
+                                    } else {
+                                        $current_price = $book->price - $promotion->amount;
+                                    }
+                                @endphp
+                                <span class="current-price pt-2">$ {{ number_format($current_price, 2) }}</span>
+                                <span class="original-price">$ {{ number_format($book->price, 2) }}</span>
+                                <span style="background-color: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 20px; font-size: 14px;">
+                                    @if ($promotion->discount_type == 'percent')
+                                        Save {{ $promotion->percent }}%
+                                    @else
+                                        Save $ {{ $promotion->amount }}
+                                    @endif
+                                </span>
+                            @endforeach
+                        @else
+                            <span class="current-price pt-2">
+                                $ {{ $book->price }}
+                            </span>
+                        @endif
                     </div>
 
                     <div class="product-actions">
-                        <button class="add-to-cart">
+                        <a href="#" class="add-to-cart" data-product-id="{{ $book->id }}">
                             <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i> Add To Cart
-                        </button>
-                        <button class="buy-now">Buy Now</button>
+                        </a>
+                        <a href="{{ route('checkout') }}" class="buy-now">Buy Now</a>
                     </div>
 
                     <div class="product-features">
@@ -561,7 +562,20 @@
             <h3 class="related-title">You May Also Like</h3>
             <div class="related-products">
                 @forelse ($relatedBooks as $relatedBook)
-                    <div class="related-product">
+                    <div class="related-product book-card">
+                        @php $promotion = $relatedBook->latestPromotion(); @endphp
+                            @if ($promotion)
+                                <div class="badges-tag">
+                                    <p>
+                                        @if ($promotion->discount_type == 'percent')
+                                            <span class="firstLine">{{ $promotion->percent }}%</span>
+                                        @else
+                                            <span class="firstLine">${{ $promotion->amount }}</span>
+                                        @endif
+                                        <span class="secondLine">OFF</span>
+                                    </p>
+                                </div>
+                            @endif
                         <div class="related-product-img">
                             <img src="
                                 @if ($relatedBook->image && file_exists(public_path('uploads/products/' . $relatedBook->image)))
@@ -571,6 +585,17 @@
                                 @endif
                                 " alt="{{ $relatedBook->name }}">
                         </div>
+                        @php
+                            $current_price = $relatedBook->price;
+                            if ($promotion) {
+                                $current_price = $relatedBook->price;
+                                if ($promotion->discount_type == 'percent') {
+                                    $current_price = $relatedBook->price * (1 - $promotion->percent / 100);
+                                } else {
+                                    $current_price = $relatedBook->price - $promotion->amount;
+                                }
+                            }
+                        @endphp
                         <div class="related-product-info">
                             <a href="{{ route('book.detail', $relatedBook->id) }}"><h3 class="related-product-title">{{ $relatedBook->name }}</h3></a>
                             <p class="related-product-author mb-2">By {{ $relatedBook->author->name }}</p>
@@ -583,7 +608,12 @@
                                     @endif
                                 @endfor
                             </div>
-                            <p class="related-product-price"> $ {{ $relatedBook->price }} </p>
+                            <div class="price-container d-inline-flex align-items-center pt-1" style="gap: 7px;">
+                                <p class="related-product-price">$ {{ number_format($current_price, 2) }}</p>
+                                @if ($promotion)
+                                    <p class="related-product-original-price">$ {{ number_format($relatedBook->price, 2) }}</p>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @empty
@@ -595,3 +625,102 @@
         </div>
     </section>
 @endsection
+
+@push('js')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.add-to-cart').click(function (e) {
+                e.preventDefault(); // prevent link navigation
+
+                var productId = $(this).data('product-id');
+                if (!productId) {
+                    alert('Product ID is missing!');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('add.to.cart') }}",
+                    type: "POST",
+                    data: {
+                        product_id: productId,
+                        quantity: 1,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            showNotification(response.message);
+                        } else {
+                            showNotificationError(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('AJAX error:', status, error);
+                        console.log('Response:', xhr.responseText);
+                        showNotificationError('Failed to add to cart');
+                    }
+                });
+            });
+
+            function showNotification(message) {
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.top = '80px';
+                notification.style.right = '20px';
+                notification.style.backgroundColor = '#6c5ce7';
+                notification.style.color = 'white';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '5px';
+                notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                notification.style.zIndex = '1001';
+                notification.style.transform = 'translateX(120%)';
+                notification.style.transition = 'transform 0.3s ease';
+                notification.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+
+                // Hide and remove notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(120%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            function showNotificationError(message) {
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.top = '80px';
+                notification.style.right = '20px';
+                notification.style.backgroundColor = '#e74c3c';
+                notification.style.color = 'white';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '5px';
+                notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                notification.style.zIndex = '1001';
+                notification.style.transform = 'translateX(120%)';
+                notification.style.transition = 'transform 0.3s ease';
+                notification.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + message;
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(120%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+        });
+    </script>
+@endpush

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Websites;
 
 use App\Http\Controllers\Controller;
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -53,6 +54,11 @@ class ShopController extends Controller
 
         // Sorting
         switch ($request->sort) {
+            case 'promotion':
+                $query->whereHas('promotions', function ($q) {
+                    $q->where('status', 1);
+                })->with('promotions');
+                break;
             case 'latest':
                 $query->orderBy('created_at', 'desc');
                 break;
@@ -93,9 +99,10 @@ class ShopController extends Controller
 
     public function bookDetail($id)
     {
-        $book = Product::find($id);
+        $book = Product::with('promotions')->find($id);
         $relatedBooks = Product::where('status', 1)
             ->where('id', '!=', $id)
+            ->with('promotions')
             ->whereHas('categories', function ($query) use ($book) {
                 $query->whereIn('categories.id', $book->categories()->get()->pluck('id'));
             })
@@ -103,5 +110,71 @@ class ShopController extends Controller
             ->get();
 
         return view('website.shop.partials.book_detail', compact('book', 'relatedBooks'));
+    }
+
+    // public function addToCart(Request $request)
+    // {
+    //     try {
+    //         // if (!auth()->guard('customers')->check()) {
+    //         //     return response()->json(['success' => false, 'message' => 'Please login first'], 401);
+    //         // }
+
+    //         $product_id = $request->product_id;
+    //         $quantity = $request->quantity ?? 1;
+
+    //         $book = Product::findOrFail($product_id);
+
+    //         $cartItem = CartItem::updateOrCreate(
+    //             [
+    //                 'customer_id' => 1,
+    //                 'product_id' => $product_id
+    //             ],
+    //             [
+    //                 'quantity' => DB::raw("quantity + $quantity"),
+    //                 'price' => $book->price
+    //             ]
+    //         );
+
+    //         return response()->json(['success' => true, 'message' => 'Added to cart']);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+    //     }
+    // }
+    public function addToCart(Request $request)
+    {
+        try {
+            $product_id = $request->product_id;
+            $quantity = $request->quantity ?? 1;
+
+            $fixedCustomerId = 7; // Fixed customer ID for testing
+
+            // Ensure the fixed customer exists
+            if (!\App\Models\Customer::where('id', $fixedCustomerId)->exists()) {
+                return response()->json(['success' => false, 'message' => 'Test customer does not exist in the database.'], 400);
+            }
+
+            $product = Product::findOrFail($product_id);
+
+            $cartItem = CartItem::where('customer_id', $fixedCustomerId)
+                                ->where('product_id', $product_id)
+                                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity += $quantity;
+                $cartItem->price = $product->price;
+                $cartItem->save();
+            } else {
+                CartItem::create([
+                    'customer_id' => $fixedCustomerId,
+                    'product_id' => $product_id,
+                    'quantity' => $quantity,
+                    'price' => $product->price
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Added to cart']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
 }

@@ -14,10 +14,13 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $featured_products = Product::where('status', 1)
+                            ->with(['promotions'])
                             ->orderBy('id', 'desc')
                             ->take(4)->get();
         $best_sellers = Product::where('status', 1)
                             ->where('bestseller', 1)
+                            ->with(['promotions'])
+                            ->orderBy('count_product_sale', 'desc')
                             ->orderBy('id', 'desc')
                             ->paginate(4);
         $new_arrivals = Product::where('status', 1)

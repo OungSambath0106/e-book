@@ -457,7 +457,7 @@ nav a:hover::after {
     background-color: var(--primary);
 }
 
-.btn-view-all {
+.btn-see-more {
     background-color: var(--primary);
     display: flex;
     align-items: center;
@@ -467,13 +467,13 @@ nav a:hover::after {
     border-radius: 5px;
     text-decoration: none;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.8rem;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
 }
 
-.btn-view-all:hover {
+.btn-see-more:hover {
     background-color: var(--primary);
     color: var(--light);
     transform: translateX(10px);
@@ -565,6 +565,141 @@ nav a:hover::after {
     font-weight: 600;
     color: var(--primary);
     font-size: 1.1rem;
+}
+
+.book-card {
+    position: relative;
+}
+
+.original-price {
+    font-size: 0.9rem;
+    color: var(--gray);
+    text-decoration: line-through;
+    font-weight: 400;
+}
+
+.badges-tag p {
+    margin-top: 7px;
+}
+
+.firstLine {
+    font-size: 14px;
+    font-weight: 600;
+}.secondLine {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badges-tag {
+    position: absolute;
+    margin:25px auto;
+    top: 0;
+    right: 20px;
+    width:50px;
+    height:50px;
+    background:#552F87;
+    border-radius:100%;
+    color: #FFF;
+    line-height: 15px;
+    text-align: center;
+    align-content: center;
+    text-transform: uppercase;
+    font-family: "Open Sans",sans-serif;
+    -webkit-animation: 3s ease-in-out 0s normal none infinite running swing;
+    -moz-animation: 3s ease-in-out 0s normal none infinite running swing;
+    -o-animation: 3s ease-in-out 0s normal none infinite running swing;
+    animation: 3s ease-in-out 0s normal none infinite running swing;
+    /* animation: swing 1s infinite ease-in-out; */
+    transform-origin: center;
+
+    -webkit-transform-origin: 100px -71px;
+    -moz-transform-origin: 100px -71px;
+    -o-transform-origin: 100px -71px;
+    transform-origin: 100px -71px;
+}
+.badges-tag:before {
+    content: '';
+    position: absolute;
+    top: 22.5px;
+    left: 22.5px;
+    width: 5px;
+    height: 5px;
+    border-radius: 100%;
+
+    -webkit-box-shadow: 0px -20.5px 0px -0.5px #fff, 0px -25px #552F87, 5px -24.5px #552F87, 9.75px -23.5px #552F87, 14px -21.25px #552F87, 17.75px -18px #552F87,
+        20.75px -14.25px #552F87, 23.25px -10px #552F87, 24.5px -5px #552F87, 25px 0px #552F87,
+
+        -5px -24.5px #552F87, -9.75px -23.5px #552F87, -17.75px -18px #552F87,
+        -14px -21.25px #552F87, -20.75px -14.25px #552F87, -23.25px -10px #552F87, -24.5px -5px #552F87, -25px 0px #552F87,
+
+        0px 25px #552F87, -5px 24.5px #552F87, -9.75px 23.5px #552F87, -14px 21.25px #552F87,
+        -17.75px 18px #552F87, -20.75px 14.25px #552F87, -23.25px -10px #552F87, -24.5px 5px #552F87, -23.25px 10px #552F87,
+
+        5px 24.5px #552F87, 9.75px 23.5px #552F87, 14px 21.25px #552F87,
+        17.75px 18px #552F87, 20.75px 14.25px #552F87, 23.25px 10px #552F87, 24.5px 5px #552F87;
+
+    -moz-box-shadow: 0px -20.5px 0px -0.5px #fff, 0px -25px #552F87, 5px -24.5px #552F87, 9.75px -23.5px #552F87, 14px -21.25px #552F87, 17.75px -18px #552F87,
+        20.75px -14.25px #552F87, 23.25px -10px #552F87, 24.5px -5px #552F87, 25px 0px #552F87,
+
+        -5px -24.5px #552F87, -9.75px -23.5px #552F87, -17.75px -18px #552F87,
+        -14px -21.25px #552F87, -20.75px -14.25px #552F87, -23.25px -10px #552F87, -24.5px -5px #552F87, -25px 0px #552F87,
+
+        0px 25px #552F87, -5px 24.5px #552F87, -9.75px 23.5px #552F87, -14px 21.25px #552F87,
+        -17.75px 18px #552F87, -20.75px 14.25px #552F87, -23.25px -10px #552F87, -24.5px 5px #552F87, -23.25px 10px #552F87,
+
+        5px 24.5px #552F87, 9.75px 23.5px #552F87, 14px 21.25px #552F87,
+        17.75px 18px #552F87, 20.75px 14.25px #552F87, 23.25px 10px #552F87, 24.5px 5px #552F87;
+    -o-box-shadow: 0px -20.5px 0px -0.5px #fff, 0px -25px #552F87, 5px -24.5px #552F87, 9.75px -23.5px #552F87, 14px -21.25px #552F87, 17.75px -18px #552F87,
+        20.75px -14.25px #552F87, 23.25px -10px #552F87, 24.5px -5px #552F87, 25px 0px #552F87,
+
+        -5px -24.5px #552F87, -9.75px -23.5px #552F87, -17.75px -18px #552F87,
+        -14px -21.25px #552F87, -20.75px -14.25px #552F87, -23.25px -10px #552F87, -24.5px -5px #552F87, -25px 0px #552F87,
+
+        0px 25px #552F87, -5px 24.5px #552F87, -9.75px 23.5px #552F87, -14px 21.25px #552F87,
+        -17.75px 18px #552F87, -20.75px 14.25px #552F87, -23.25px -10px #552F87, -24.5px 5px #552F87, -23.25px 10px #552F87,
+
+        5px 24.5px #552F87, 9.75px 23.5px #552F87, 14px 21.25px #552F87,
+        17.75px 18px #552F87, 20.75px 14.25px #552F87, 23.25px 10px #552F87, 24.5px 5px #552F87;
+    box-shadow: 0px -20.5px 0px -0.5px #fff, 0px -25px #552F87, 5px -24.5px #552F87, 9.75px -23.5px #552F87, 14px -21.25px #552F87, 17.75px -18px #552F87,
+        20.75px -14.25px #552F87, 23.25px -10px #552F87, 24.5px -5px #552F87, 25px 0px #552F87,
+
+        -5px -24.5px #552F87, -9.75px -23.5px #552F87, -17.75px -18px #552F87,
+        -14px -21.25px #552F87, -20.75px -14.25px #552F87, -23.25px -10px #552F87, -24.5px -5px #552F87, -25px 0px #552F87,
+
+        0px 25px #552F87, -5px 24.5px #552F87, -9.75px 23.5px #552F87, -14px 21.25px #552F87,
+        -17.75px 18px #552F87, -20.75px 14.25px #552F87, -23.25px -10px #552F87, -24.5px 5px #552F87, -23.25px 10px #552F87,
+
+        5px 24.5px #552F87, 9.75px 23.5px #552F87, 14px 21.25px #552F87,
+        17.75px 18px #552F87, 20.75px 14.25px #552F87, 23.25px 10px #552F87, 24.5px 5px #552F87;
+}
+.badges-tag:after{
+    content:'';
+    position:absolute;
+    top:-30px;right:24px;
+    width:1.5px;height:35px;
+    border-radius:0%;
+    background:#000;
+}
+
+@-webkit-keyframes swing {
+    0%   { -webkit-transform: rotate(-3deg) translate(-2px, -2px); }
+    50%  { -webkit-transform: rotate(3deg) translate(2px, 2px); }
+    100% { -webkit-transform: rotate(-3deg) translate(-2px, -2px); }
+}
+@-moz-keyframes swing {
+    0%   { -moz-transform: rotate(-3deg) translate(-2px, -2px); }
+    50%  { -moz-transform: rotate(3deg) translate(2px, 2px); }
+    100% { -moz-transform: rotate(-3deg) translate(-2px, -2px); }
+}
+@-o-keyframes swing {
+    0%   { -o-transform: rotate(-3deg) translate(-2px, -2px); }
+    50%  { -o-transform: rotate(3deg) translate(2px, 2px); }
+    100% { -o-transform: rotate(-3deg) translate(-2px, -2px); }
+}
+@keyframes swing {
+    0%   { transform: rotate(-3deg) translate(-2px, -2px); }
+    50%  { transform: rotate(3deg) translate(2px, 2px); }
+    100% { transform: rotate(-3deg) translate(-2px, -2px); }
 }
 
 /* Newsletter Section */

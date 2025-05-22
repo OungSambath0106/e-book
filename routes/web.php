@@ -22,6 +22,7 @@ use App\Http\Controllers\Backends\PromotionController;
 use App\Http\Controllers\Backends\ShoesSliderController;
 use App\Http\Controllers\Websites\AuthorController as WebsitesAuthorController;
 use App\Http\Controllers\Websites\CategoryController as WebsitesCategoryController;
+use App\Http\Controllers\Websites\CheckoutController;
 use App\Http\Controllers\Websites\HomeController as WebsitesHomeController;
 
 /*
@@ -48,12 +49,18 @@ Route::get('/admin/login', function () {
     return redirect('/admin/login');
 });
 
+// website routes
+Route::middleware(['web', 'CheckUserLogin', 'SetSessionData'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    // Route::post('/shop/add-to-cart', [ShopController::class, 'addToCart'])->name('add.to.cart')->middleware('auth:customers');
+});
 Route::get('/', [WebsitesHomeController::class, 'index'])->name('home');
 Route::get('/books/all', [WebsitesHomeController::class, 'showAllBooks'])->name('all.books.show');
 Route::get('/books/search', [WebsitesHomeController::class, 'searchBooks'])->name('books.search');
 Route::get('/categories', [WebsitesCategoryController::class, 'index'])->name('categories');
 Route::get('/categories/filter-products/{categoryId}', [WebsitesCategoryController::class, 'filterProducts'])->name('categories.filter-products');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+Route::post('/shop/add-to-cart', [ShopController::class, 'addToCart'])->name('add.to.cart');
 Route::get('/shop/filter-products/{categoryId}', [ShopController::class, 'filterProducts'])->name('shop.filter');
 Route::get('/book-detail/{id}', [ShopController::class, 'bookDetail'])->name('book.detail');
 Route::get('/authors', [WebsitesAuthorController::class, 'index'])->name('authors');

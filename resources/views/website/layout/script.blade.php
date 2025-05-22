@@ -25,7 +25,7 @@
     easing: 'ease', // default easing for AOS animations
     once: false, // whether animation should happen only once - while scrolling down
     mirror: false, // whether elements should animate out while scrolling past them
-    anchorPlacement: 'center-bottom', // defines which position of the element regarding to window should trigger the animation
+    anchorPlacement: 'top-bottom', // defines which position of the element regarding to window should trigger the animation
     });
 </script>
 <script>
@@ -106,37 +106,37 @@
 
         // Simulate a book being added to cart
         const cartBtn = document.querySelector('.add-to-cart');
-        cartBtn.addEventListener('click', () => {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.style.position = 'fixed';
-            notification.style.top = '80px';
-            notification.style.right = '20px';
-            notification.style.backgroundColor = '#6c5ce7';
-            notification.style.color = 'white';
-            notification.style.padding = '15px 20px';
-            notification.style.borderRadius = '5px';
-            notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
-            notification.style.zIndex = '1001';
-            notification.style.transform = 'translateX(120%)';
-            notification.style.transition = 'transform 0.3s ease';
-            notification.innerHTML = '<i class="fas fa-check-circle"></i> Book added to cart!';
+        // cartBtn.addEventListener('click', () => {
+        //     // Create notification element
+        //     const notification = document.createElement('div');
+        //     notification.style.position = 'fixed';
+        //     notification.style.top = '80px';
+        //     notification.style.right = '20px';
+        //     notification.style.backgroundColor = '#6c5ce7';
+        //     notification.style.color = 'white';
+        //     notification.style.padding = '15px 20px';
+        //     notification.style.borderRadius = '5px';
+        //     notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+        //     notification.style.zIndex = '1001';
+        //     notification.style.transform = 'translateX(120%)';
+        //     notification.style.transition = 'transform 0.3s ease';
+        //     notification.innerHTML = '<i class="fas fa-check-circle"></i> Book added to cart!';
 
-            document.body.appendChild(notification);
+        //     document.body.appendChild(notification);
 
-            // Show notification
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
+        //     // Show notification
+        //     setTimeout(() => {
+        //         notification.style.transform = 'translateX(0)';
+        //     }, 100);
 
-            // Hide and remove notification
-            setTimeout(() => {
-                notification.style.transform = 'translateX(120%)';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        });
+        //     // Hide and remove notification
+        //     setTimeout(() => {
+        //         notification.style.transform = 'translateX(120%)';
+        //         setTimeout(() => {
+        //             document.body.removeChild(notification);
+        //         }, 300);
+        //     }, 3000);
+        // });
 
         // Initialize active state for home link
         document.querySelector('nav ul li a.active').classList.add('active');
@@ -171,11 +171,9 @@
         // setTimeout(pulseAnimation, 2000);
     });
 </script>
-@push('js')
-    <script>
-        document.getElementById('search-input').addEventListener('click', function () {
-            window.location.href = "{{ route('books.search') }}";
-        });
-    </script>
-@endpush
+<script>
+    document.getElementById('search-input').addEventListener('click', function () {
+        window.location.href = "{{ route('books.search') }}";
+    });
+</script>
 @stack('js')

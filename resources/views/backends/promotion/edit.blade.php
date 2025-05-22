@@ -114,9 +114,9 @@
                                             <div class="form-group col-md-6">
                                                 <label class="required_label" for="promotion_type">{{ __('Promotion Type') }}</label>
                                                 <select name="promotion_type" id="promotion_type" class="form-control select2 @error('promotion_type') is-invalid @enderror" onchange="togglePromotionFields()">
-                                                    <option value="category" {{ old('promotion_type', $promotion->promotion_type) == 'category' ? 'selected' : '' }}>
+                                                    {{-- <option value="category" {{ old('promotion_type', $promotion->promotion_type) == 'category' ? 'selected' : '' }}>
                                                         {{ __('Category') }}
-                                                    </option>
+                                                    </option> --}}
                                                     <option value="product" {{ old('promotion_type', $promotion->promotion_type) == 'product' ? 'selected' : '' }}>
                                                         {{ __('Product') }}
                                                     </option>
@@ -128,7 +128,7 @@
                                                 @enderror
                                             </div>
                                             <div class="form-group col-md-6" id="product_field">
-                                                <label class="required_label" for="product">{{ __('Promotion by Product') }}</label>
+                                                <label class="required_label" for="product">{{ __('Promotion Products') }}</label>
                                                 <select name="products[]" id="product_input" multiple class="form-control select2 @error('products') is-invalid @enderror">
                                                     @foreach ($products as $product)
                                                         <option value="{{ $product->id }}"

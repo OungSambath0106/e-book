@@ -108,6 +108,7 @@
                             <span class="sort-label">Default sorting</span>
                             <select class="sort-select">
                                 <option value="default">Default sorting</option>
+                                <option value="promotion">Sort by books promotion</option>
                                 <option value="popularity">Sort by popularity</option>
                                 <option value="bestseller">Sort by bestseller</option>
                                 <option value="rating">Sort by rating</option>

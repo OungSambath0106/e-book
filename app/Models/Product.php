@@ -34,6 +34,11 @@ class Product extends Model
         return $this->translations[1]->value ?? $description;
     }
 
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -47,6 +52,19 @@ class Product extends Model
     public function productgallery()
     {
         return $this->hasOne(ProductGallery::class, 'product_id');
+    }
+
+    public function promotions()
+    {
+        return $this->belongsToMany(Promotion::class, 'promotion_product', 'product_id', 'promotion_id')
+        ->where('status', 1)
+        ->where('start_date', '<=', now())
+        ->where('end_date', '>=', now());
+    }
+
+    public function latestPromotion()
+    {
+        return $this->promotions()->orderBy('id', 'desc')->first();
     }
 
     public function author()
