@@ -110,12 +110,30 @@ class LoginController extends Controller
         $customer = Customer::where('phone', $request->phone)->first();
 
         if (!$customer || !Hash::check($request->password, $customer->password)) {
-            return redirect()->back()->withErrors(['login' => 'Invalid credentials']);
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        auth()->login($customer);
+        auth()->guard('customers')->login($customer);
 
-        return redirect()->route('home')->with('success', 'Login successful');
+        $token = $customer->createToken('PhoneLogin')->accessToken;
+
+        $customer_info = [
+            'token' => $token,
+            'id' => $customer->id,
+            'name' => $customer->name,
+            'phone' => $customer->phone,
+            'email' => $customer->email,
+            'image_url' => $customer->image_url,
+            'is_verify' => $customer->is_verify,
+            'provider' => $customer->provider,
+            'is_google_login' => $customer->provider == 'google' ? 1 : 0,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'customer_info' => $customer_info,
+        ]);
     }
 
     public function logout()

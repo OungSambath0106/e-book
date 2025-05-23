@@ -47,9 +47,9 @@ Route::get('language/{locale}', function ($locale) {
 })->name('change_language');
 
 // Customer routes
-Route::get('/sign-in', [AuthLoginController::class, 'showLoginForm'])->name('sign-in');
-Route::post('/sign-in', [AuthLoginController::class, 'loginPhoneOTP']);
-Route::post('/sign-out', [AuthLoginController::class, 'logout'])->name('sign-out');
+Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('customer.loginForm');
+Route::post('/login', [AuthLoginController::class, 'loginPhoneOTP'])->name('customer.login');
+Route::post('/logout', [AuthLoginController::class, 'logout'])->name('customer.logout');
 
 // website routes
 Route::get('/', [WebsitesHomeController::class, 'index'])->name('home');
@@ -58,18 +58,20 @@ Route::get('/books/search', [WebsitesHomeController::class, 'searchBooks'])->nam
 Route::get('/categories', [WebsitesCategoryController::class, 'index'])->name('categories');
 Route::get('/categories/filter-products/{categoryId}', [WebsitesCategoryController::class, 'filterProducts'])->name('categories.filter-products');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-Route::post('/shop/add-to-cart', [ShopController::class, 'addToCart'])->name('add.to.cart');
+// Route::post('/shop/add-to-cart', [ShopController::class, 'addToCart'])->name('add.to.cart');
 Route::get('/shop/filter-products/{categoryId}', [ShopController::class, 'filterProducts'])->name('shop.filter');
 Route::get('/book-detail/{id}', [ShopController::class, 'bookDetail'])->name('book.detail');
 Route::get('/authors', [WebsitesAuthorController::class, 'index'])->name('authors');
 Route::get('/author-detail/{id}', [WebsitesAuthorController::class, 'show'])->name('author.detail');
 
 Route::middleware(['web', 'CheckUserLogin', 'SetSessionData'])->group(function () {
+    Route::post('/shop/add-to-cart', [ShopController::class, 'addToCart'])->name('add.to.cart');
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-    // Route::post('/shop/add-to-cart', [ShopController::class, 'addToCart'])->name('add.to.cart')->middleware('auth:customers');
+    Route::post('/cart/update-quantity', [CheckoutController::class, 'updateQuantity'])->name('cart.update-quantity');
+    Route::post('/cart/remove-item', [CheckoutController::class, 'removeItem'])->name('cart.remove-item');
 });
 
-Auth::routes();
+// Auth::routes();
 
 // admin login
 Route::prefix('admin')->group(function () {

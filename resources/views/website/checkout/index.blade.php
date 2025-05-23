@@ -56,7 +56,7 @@
         .cart-item {
             display: flex;
             gap: 1rem;
-            padding: 1.5rem;
+            margin: 1.5rem;
             border-bottom: 1px solid #e5e7eb;
             align-items: center;
         }
@@ -98,7 +98,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin: 1rem 0;
+            margin: 1rem 0 1.5rem;
         }
 
         .qty-btn {
@@ -144,11 +144,15 @@
         }
 
         .remove-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
             background: #ef4444;
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            padding: 0.5rem 0.7rem;
+            font-size: 0.7rem;
+            border-radius: 50%;
             cursor: pointer;
             transition: background 0.2s;
         }
@@ -210,7 +214,7 @@
             gap: 1rem;
         }
 
-        .btn {
+        .btn-group .btn {
             padding: 0.75rem 2rem;
             border-radius: 8px;
             font-size: 1rem;
@@ -223,16 +227,16 @@
             text-align: center;
         }
 
-        .btn-primary {
+        .btn-group .btn-primary {
             background: #6366f1;
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-group .btn-primary:hover {
             background: #5856eb;
         }
 
-        .btn-secondary {
+        .btn-group .btn-secondary {
             background: white;
             color: #6b7280;
             border: 1px solid #d1d5db;
@@ -567,137 +571,192 @@
 @endsection
 @push('js')
     <script>
-        let currentStep = 1;
-        let cart = [{
-                id: 1,
-                title: "ប្រវត្តិ៖ ខែ៣០០០០៖ រាជបុត្រដុំ ៨",
-                author: "អុក ចាំអីត",
-                price: 6.00,
-                originalPrice: 10.00,
-                quantity: 1
-            },
-            {
-                id: 2,
-                title: "Sample E-Book Title 2",
-                author: "Author Name",
-                price: 8.00,
-                originalPrice: 12.00,
-                quantity: 2
-            }
-        ];
+        document.addEventListener("DOMContentLoaded", () => {
+            let currentStep = 1;
+            let cart = @json($cart);
 
-        function nextStep() {
-            if (currentStep < 4) {
-                // Hide current page
-                document.getElementById(`page${currentStep}`).classList.remove('active');
-                document.getElementById(`step${currentStep}`).classList.remove('active');
-                document.getElementById(`step${currentStep}`).classList.add('completed');
+            const scrollTop = () => window.scrollTo(0, 0);
 
-                // Show next page
-                currentStep++;
-                document.getElementById(`page${currentStep}`).classList.add('active');
-                document.getElementById(`step${currentStep}`).classList.add('active');
-
-                // Scroll to top
-                window.scrollTo(0, 0);
-            }
-        }
-
-        function previousStep() {
-            if (currentStep > 1) {
-                // Hide current page
-                document.getElementById(`page${currentStep}`).classList.remove('active');
-                document.getElementById(`step${currentStep}`).classList.remove('active');
-
-                // Show previous page
-                currentStep--;
-                document.getElementById(`page${currentStep}`).classList.add('active');
-                document.getElementById(`step${currentStep}`).classList.add('active');
-                document.getElementById(`step${currentStep}`).classList.remove('completed');
-
-                // Scroll to top
-                window.scrollTo(0, 0);
-            }
-        }
-
-        function updateQuantity(itemId, change) {
-            const item = cart.find(item => item.id === itemId);
-            if (item) {
-                if (change === 0) {
-                    // Direct input change
-                    const input = document.getElementById(`qty${itemId}`);
-                    item.quantity = Math.max(1, parseInt(input.value) || 1);
-                    input.value = item.quantity;
-                } else {
-                    // Button click
-                    item.quantity = Math.max(1, item.quantity + change);
-                    document.getElementById(`qty${itemId}`).value = item.quantity;
+            const switchStep = (next) => {
+                const prevStep = currentStep;
+                currentStep += next;
+                if (currentStep < 1 || currentStep > 4) {
+                    currentStep = prevStep;
+                    return;
                 }
+                document.getElementById(`page${prevStep}`).classList.remove('active');
+                document.getElementById(`step${prevStep}`).classList.remove('active');
+                if (next > 0) document.getElementById(`step${prevStep}`).classList.add('completed');
+                else document.getElementById(`step${prevStep}`).classList.remove('completed');
+                document.getElementById(`page${currentStep}`).classList.add('active');
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                scrollTop();
+            };
+
+            window.nextStep = () => switchStep(1);
+            window.previousStep = () => switchStep(-1);
+
+            window.updateQuantity = (id, change) => {
+                const input = document.getElementById(`qty${id}`);
+                let newQty = parseInt(input.value);
+
+                if (change !== 0) {
+                    newQty += change;
+                }
+
+                if (newQty < 1) {
+                    newQty = 1;
+                }
+
+                input.value = newQty;
+
+                // 🔄 Update local cart quantity
+                const cartItem = cart.find(item => item.product_id === id);
+                if (cartItem) {
+                    cartItem.quantity = newQty;
+                }
+
+                // 🔁 Recalculate immediately
                 updateCartSummary();
-            }
-        }
 
-        function removeItem(itemId) {
-            cart = cart.filter(item => item.id !== itemId);
-            renderCart();
-            updateCartSummary();
-        }
+                // 📨 Update backend
+                fetch('{{ route('cart.update-quantity') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        product_id: id,
+                        quantity: newQty
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert('Failed to update quantity.');
+                    } else {
+                        if (data.cart_count !== undefined) {
+                            document.getElementById('cart-count').textContent = data.cart_count;
+                        }
+                    }
+                });
+            };
 
-        function updateCartSummary() {
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const discount = subtotal * 0.08;
-            const total = subtotal - discount;
+            window.removeItem = (id) => {
+                // Remove item from the frontend cart array
+                cart = cart.filter(i => i.id !== id);
 
-            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('discount').textContent = `$${discount.toFixed(2)}`;
-            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
-        }
+                // Remove the DOM element for the cart item
+                document.querySelector(`.cart-item[data-id="${id}"]`)?.remove();
 
-        function renderCart() {
-            // This would re-render cart items dynamically
-            // For this demo, we'll just update the summary
-            updateCartSummary();
-        }
+                // Update summary values (subtotal, total, etc.)
+                updateCartSummary();
 
-        function selectPayment(method) {
-            // Remove selected class from all payment methods
-            document.querySelectorAll('.payment-method').forEach(el => {
-                el.classList.remove('selected');
+                // If cart is now empty, update the cart summary HTML
+                if (cart.length === 0) {
+                    document.querySelector('.cart-summary').innerHTML = `
+                        <div class="summary-row m-0 justify-content-center">
+                            <span>No items in cart.</span>
+                        </div>
+                    `;
+                    document.querySelector('.btn-group .btn-primary').disabled = true;
+                }
+
+                // Send request to backend to remove item from database
+                fetch('{{ route('cart.remove-item') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ id: id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message);
+                        // Update navbar cart count
+                        if (data.cart_count !== undefined) {
+                            document.getElementById('cart-count').textContent = data.cart_count;
+                        }
+                    } else {
+                        showNotification(data.message);
+                    }
+                });
+            };
+
+            const updateCartSummary = () => {
+                let subtotal = 0, discount = 0, total = 0;
+                cart.forEach(({ price, quantity, promotions }) => {
+                    subtotal += price * quantity;
+                    promotions.forEach(({ percent, amount, discount_type }) => {
+                        if (discount_type === 'percent') {
+                            discount += (price * (percent / 100)) * quantity;
+                        } else {
+                            discount += amount * quantity;
+                        }
+                    });
+                });
+                total = subtotal - discount;
+                document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+                document.getElementById('discount').textContent = `- $${discount.toFixed(2)}`;
+                document.getElementById('total').textContent = `$ ${total.toFixed(2)}`;
+            };
+
+            window.selectPayment = (method) => {
+                document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+                method.closest('.payment-method')?.classList.add('selected');
+            };
+
+            window.goHome = () => window.location.href = "{{ route('shop') }}";
+            window.downloadBooks = () => alert('Download links have been sent to your email!');
+
+            document.addEventListener('input', (e) => {
+                const target = e.target;
+                if (target.placeholder === '1234 5678 9012 3456') {
+                    target.value = target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim().slice(0, 19);
+                }
+                if (target.placeholder === 'MM/YY') {
+                    let value = target.value.replace(/\D/g, '').slice(0, 4);
+                    if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2);
+                    target.value = value;
+                }
             });
 
-            // Add selected class to clicked method
-            event.target.closest('.payment-method').classList.add('selected');
-        }
+            window.showNotification = (message) => {
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.top = '80px';
+                notification.style.right = '20px';
+                notification.style.backgroundColor = '#ef4444';
+                notification.style.color = 'white';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '5px';
+                notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                notification.style.zIndex = '1001';
+                notification.style.transform = 'translateX(120%)';
+                notification.style.transition = 'transform 0.3s ease';
+                notification.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + message;
 
-        function goHome() {
-            window.location.href = "{{ route('shop') }}";
-        }
+                document.body.appendChild(notification);
 
-        function downloadBooks() {
-            alert('Download links have been sent to your email!');
-        }
+                // Show notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
 
-        // Format card number input
-        document.addEventListener('input', function(e) {
-            if (e.target.placeholder === '1234 5678 9012 3456') {
-                let value = e.target.value.replace(/\s/g, '');
-                let formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
-                if (formattedValue.length <= 19) {
-                    e.target.value = formattedValue;
-                }
+                // Hide and remove notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(120%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
             }
 
-            if (e.target.placeholder === 'MM/YY') {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value.length >= 2) {
-                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                }
-                e.target.value = value;
-            }
+            updateCartSummary();
         });
-
-        // Initialize
-        updateCartSummary();
     </script>
 
     <!-- Address Selection Tabs -->

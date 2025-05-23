@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Websites;
 use App\Http\Controllers\Controller;
 use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -99,6 +100,7 @@ class ShopController extends Controller
 
     public function bookDetail($id)
     {
+        // dd(auth()->guard('customers')->user());
         $book = Product::with('promotions')->find($id);
         $relatedBooks = Product::where('status', 1)
             ->where('id', '!=', $id)
@@ -146,33 +148,27 @@ class ShopController extends Controller
             $product_id = $request->product_id;
             $quantity = $request->quantity ?? 1;
 
-            $fixedCustomerId = 7; // Fixed customer ID for testing
+            $customer_id = auth()->guard('customers')->user()->id;
 
-            // Ensure the fixed customer exists
-            if (!\App\Models\Customer::where('id', $fixedCustomerId)->exists()) {
-                return response()->json(['success' => false, 'message' => 'Test customer does not exist in the database.'], 400);
-            }
-
-            $product = Product::findOrFail($product_id);
-
-            $cartItem = CartItem::where('customer_id', $fixedCustomerId)
+            $cartItem = CartItem::where('customer_id', $customer_id)
                                 ->where('product_id', $product_id)
                                 ->first();
 
             if ($cartItem) {
                 $cartItem->quantity += $quantity;
-                $cartItem->price = $product->price;
                 $cartItem->save();
             } else {
                 CartItem::create([
-                    'customer_id' => $fixedCustomerId,
+                    'customer_id' => $customer_id,
                     'product_id' => $product_id,
                     'quantity' => $quantity,
-                    'price' => $product->price
                 ]);
             }
 
-            return response()->json(['success' => true, 'message' => 'Added to cart']);
+            // get cart count
+            $cartCount = CartItem::where('customer_id', auth()->guard('customers')->user()->id)->count();
+
+            return response()->json(['success' => true, 'message' => 'Added to cart', 'cart_count' => $cartCount]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
         }

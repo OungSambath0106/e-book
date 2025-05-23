@@ -559,18 +559,20 @@
                 <!-- Login Form -->
                 <div class="form-section active" id="loginForm">
                     <form id="loginFormElement">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
                         <div class="form-group">
                             <label for="loginPhone">Phone Number</label>
                             <div class="input-wrapper">
                                 <span class="country-code">855</span>
-                                <input type="tel" id="loginPhone" class="form-input phone-input"
+                                <input type="tel" id="loginPhone" name="phone" class="form-input phone-input"
                                     placeholder="Enter your phone number" required>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="loginPassword">Password</label>
-                            <input type="password" id="loginPassword" class="form-input"
+                            <input type="password" id="loginPassword" name="password" class="form-input"
                                 placeholder="Enter your password" required>
                         </div>
 
@@ -658,13 +660,34 @@
         }
 
         // Login form
-        document.getElementById('loginFormElement').addEventListener('submit', (e) => {
+        document.getElementById('loginFormElement').addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const phone = document.getElementById('loginPhone').value;
             const password = document.getElementById('loginPassword').value;
+            const csrfToken = document.querySelector('input[name="_token"]').value;
 
-            if (phone && password) {
-                alert('Login successful! Redirecting to dashboard...');
+            try {
+                const response = await fetch("{{ route('customer.login') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ phone, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Redirect to home route with token in URL
+                    window.location.href = "{{ route('home') }}?token=" + encodeURIComponent(data.customer_info.token);
+                } else {
+                    alert(data.message || "Login failed.");
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert("An error occurred. Please try again.");
             }
         });
 

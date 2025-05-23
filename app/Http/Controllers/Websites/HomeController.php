@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Websites;
 
 use App\Http\Controllers\Controller;
 use App\Models\Baner;
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Promotion;

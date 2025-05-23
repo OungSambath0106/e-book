@@ -649,6 +649,10 @@
                     },
                     success: function (response) {
                         if (response.success) {
+                            // Update cart count in navbar
+                            if (response.cart_count !== undefined) {
+                                $('#cart-count').text(response.cart_count);
+                            }
                             showNotification(response.message);
                         } else {
                             showNotificationError(response.message);

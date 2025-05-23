@@ -178,7 +178,7 @@
 
         <h2 class="pb-2">Sign In</h2>
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('admin.login') }}">
             @csrf
             <div class="form-group">
                 <label for="email">Email Address</label>

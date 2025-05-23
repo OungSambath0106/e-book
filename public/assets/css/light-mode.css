@@ -2,6 +2,7 @@
     --primary: #7b48e3;
     --secondary: #f5f5f7;
     --accent: #ff8a3d;
+    --danger: #ff0000;
     --text: #333;
     --light: #fff;
     --gray: #888;
@@ -679,6 +680,30 @@ nav a:hover::after {
     width:1.5px;height:35px;
     border-radius:0%;
     background:#000;
+}
+
+.badge-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--danger);
+    color: var(--light);
+    border-radius: 50%;
+    padding: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    width: 20px;
+    text-align: center;
+    line-height: 12px;
+}
+
+.cart-btn.focus, .cart-btn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.cart-btn .fa-shopping-cart:hover {
+    color: var(--primary-hover);
 }
 
 @-webkit-keyframes swing {
