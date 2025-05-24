@@ -1,4 +1,4 @@
-<div class="page" id="page4">
+<div class="page checkout-page" id="page4">
     <div class="order-success">
         <div class="success-icon">🎉</div>
         <h1 class="success-title">Order Completed!</h1>
@@ -29,7 +29,7 @@
         </div>
 
         <div class="btn-group" style="justify-content: center; gap: 1rem;">
-            <button class="btn btn-primary" onclick="downloadBooks()">Download Books</button>
+            <button class="btn btn-primary" onclick="downloadReceipt()">Download Receipt</button>
             <button class="btn btn-secondary" onclick="goHome()">Continue Shopping</button>
         </div>
     </div>

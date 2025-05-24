@@ -34,6 +34,11 @@ class Customer extends Authenticatable
         }
     }
 
+    public function shippingAddresses()
+    {
+        return $this->hasMany(ShippingAddress::class, 'customer_id');
+    }
+
     /**
      * The attributes that are mass assignable.
      *

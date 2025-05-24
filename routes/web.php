@@ -66,7 +66,9 @@ Route::get('/author-detail/{id}', [WebsitesAuthorController::class, 'show'])->na
 
 Route::middleware(['web', 'CheckUserLogin', 'SetSessionData'])->group(function () {
     Route::post('/shop/add-to-cart', [ShopController::class, 'addToCart'])->name('add.to.cart');
+    Route::post('/shop/buy-now', [ShopController::class, 'buyNow'])->name('buy.now');
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout/save-address', [CheckoutController::class, 'saveAddress'])->name('checkout.save-address');
     Route::post('/cart/update-quantity', [CheckoutController::class, 'updateQuantity'])->name('cart.update-quantity');
     Route::post('/cart/remove-item', [CheckoutController::class, 'removeItem'])->name('cart.remove-item');
 });

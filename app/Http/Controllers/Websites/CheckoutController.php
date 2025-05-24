@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Websites;
 
 use App\Http\Controllers\Controller;
 use App\Models\CartItem;
+use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
 {
-    public function index()
+    public function index($page = 'cart')
     {
         $cartItems = CartItem::with('product')
                     ->with('product.promotions')
@@ -34,7 +35,12 @@ class CheckoutController extends Controller
             ];
         });
 
-        return view('website.checkout.index', compact('cartItems', 'cart'));
+        $shippingAddresses = ShippingAddress::where('customer_id', auth()->guard('customers')
+                        ->id())
+                        ->orderBy('id', 'desc')
+                        ->get();
+
+        return view('website.checkout.index', compact('cartItems', 'cart', 'page', 'shippingAddresses'));
     }
 
     public function cart()
@@ -79,5 +85,44 @@ class CheckoutController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Item not found'], 404);
+    }
+
+    public function saveAddress(Request $request)
+    {
+        $customer = auth()->guard('customers')->user();
+
+        if ($request->save_address) {
+            $existingAddress = $customer->shippingAddresses()
+                ->where('label', $request->label)
+                ->where('email', $request->email)
+                ->where('address', $request->address)
+                ->where('phone', $request->phone)
+                ->first();
+
+            if ($existingAddress) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Address already exists'
+                ]);
+            }
+
+            // Save the new address
+            $customer->shippingAddresses()->create([
+                'label' => $request->label,
+                'email' => $request->email,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'address' => $request->address,
+                'phone' => $request->phone
+            ]);
+        }
+
+        $shippingAddresses = $customer->shippingAddresses;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Address saved',
+            'data' => $shippingAddresses
+        ]);
     }
 }

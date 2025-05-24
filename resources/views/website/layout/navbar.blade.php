@@ -4,7 +4,9 @@
         $web_header_logo = $setting->where('type', 'web_header_logo')->first()->value ?? '';
         $company_name = $setting->where('type', 'company_name')->first()->value ?? '';
 
-        $cartCount = App\Models\CartItem::where('customer_id', auth()->guard('customers')->user()->id)->count();
+        if (auth()->guard('customers')->check()) {
+            $cartCount = App\Models\CartItem::where('customer_id', auth()->guard('customers')->user()->id)->count();
+        }
     @endphp
     <div class="container nav-container">
         <a href="{{ route('home') }}" class="logo">
@@ -22,16 +24,26 @@
                 <li><a class="@if (request()->is('shop') || request()->is('book-detail/*')) active @endif" href="{{ route('shop') }}">Shop</a></li>
                 <li><a class="@if (request()->is('authors') || request()->is('author-detail/*')) active @endif" href="{{ route('authors') }}">Authors</a>
                 </li>
-                <li><a href="{{ route('customer.loginForm') }}">About Us</a></li>
+                <li><a href="#">About Us</a></li>
             </ul>
         </nav>
 
         <div class="nav-buttons">
-            <button type="button" class="btn cart-btn position-relative" style="background: none; border: none; color: #000;" onclick="window.location.href='{{ route('checkout') }}'">
+            <button type="button" class="btn cart-btn position-relative" style="background: none; border: none; color: #000;"
+                @if (auth()->guard('customers')->check() && $cartCount > 0)
+                    onclick="window.location.href='{{ route('checkout') }}'"
+                @elseif (auth()->guard('customers')->check() && $cartCount == 0)
+                    onclick="window.location.href='{{ route('shop') }}'"
+                @else
+                    onclick="window.location.href='{{ route('customer.loginForm') }}'"
+                @endif
+            >
                 <i class="fas fa-shopping-cart"></i>
-                <span id="cart-count" class="badge-count">
-                    {{ $cartCount }}
-                </span>
+                @if (auth()->guard('customers')->check() && $cartCount > 0)
+                    <span id="cart-count" class="badge-count">
+                        {{ $cartCount }}
+                    </span>
+                @endif
             </button>
 
             <button class="contact-btn" type="button" aria-label="Contact now">

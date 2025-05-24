@@ -173,4 +173,33 @@ class ShopController extends Controller
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
+
+    public function buyNow(Request $request)
+    {
+        try {
+            $product_id = $request->product_id;
+            $quantity = $request->quantity ?? 1;
+
+            $customer_id = auth()->guard('customers')->user()->id;
+
+            $cartItem = CartItem::where('customer_id', $customer_id)
+                ->where('product_id', $product_id)
+                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity += $quantity;
+                $cartItem->save();
+            } else {
+                CartItem::create([
+                    'customer_id' => $customer_id,
+                    'product_id' => $product_id,
+                    'quantity' => $quantity,
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Added to cart']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
+    }
 }

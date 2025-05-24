@@ -564,7 +564,7 @@
                         <div class="form-group">
                             <label for="loginPhone">Phone Number</label>
                             <div class="input-wrapper">
-                                <span class="country-code">855</span>
+                                <span class="country-code" id="countryCode">855</span>
                                 <input type="tel" id="loginPhone" name="phone" class="form-input phone-input"
                                     placeholder="Enter your phone number" required>
                             </div>
@@ -663,6 +663,7 @@
         document.getElementById('loginFormElement').addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const countryCode = document.getElementById('countryCode').textContent;
             const phone = document.getElementById('loginPhone').value;
             const password = document.getElementById('loginPassword').value;
             const csrfToken = document.querySelector('input[name="_token"]').value;
@@ -674,9 +675,8 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': csrfToken
                     },
-                    body: JSON.stringify({ phone, password })
+                    body: JSON.stringify({ phone: countryCode + phone, password }),
                 });
-
                 const data = await response.json();
 
                 if (response.ok) {

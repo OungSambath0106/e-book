@@ -1,4 +1,4 @@
-<div class="page active" id="page1">
+<div class="page cart-page active" id="page1">
     <h1 class="page-title">Shopping Cart</h1>
 
     <div id="cart-items">
@@ -47,10 +47,6 @@
             <div class="summary-row">
                 <span>Subtotal:</span>
                 <span id="subtotal">$0.00</span>
-            </div>
-            <div class="summary-row">
-                <span>Shipping:</span>
-                <span>Free</span>
             </div>
             <div class="summary-row">
                 <span>Discount:</span>

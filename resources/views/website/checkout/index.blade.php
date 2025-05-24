@@ -38,7 +38,7 @@
             display: none;
             background: white;
             border-radius: 12px;
-            margin: 2rem;
+            margin: 2rem 2rem 4.4rem 2rem;
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
@@ -246,7 +246,7 @@
             display: flex;
             gap: 1rem;
             justify-content: space-between;
-            margin-top: 2rem;
+            margin-top: 2.5rem;
         }
 
         .payment-methods {
@@ -320,7 +320,7 @@
             text-align: left;
         }
 
-        .address-tabs {
+        .address-tabs, .order-type-tabs {
             display: flex;
             margin-bottom: 2rem;
             background: #f3f4f6;
@@ -328,7 +328,7 @@
             padding: 4px;
         }
 
-        .address-tab {
+        .address-tab, .order-type-tab {
             flex: 1;
             padding: 0.75rem 1rem;
             border: none;
@@ -340,7 +340,7 @@
             color: #6b7280;
         }
 
-        .address-tab.active {
+        .address-tab.active, .order-type-tab.active {
             background: white;
             color: #1f2937;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -350,7 +350,7 @@
             display: none;
         }
 
-        .address-section.active {
+        .address-section.active, .order-type-section.active {
             display: block;
         }
 
@@ -436,16 +436,18 @@
             white-space: nowrap;
         }
 
-        .edit-address-btn:hover {
+        .edit-address-btn:hover, .edit-address-btn:focus {
             background: #f3f4f6;
             border-color: #6366f1;
             color: #6366f1;
+            outline: none;
         }
 
-        .delete-address-btn:hover {
+        .delete-address-btn:hover, .delete-address-btn:focus {
             background: #fef2f2;
             border-color: #ef4444;
             color: #ef4444;
+            outline: none;
         }
 
         .checkbox-label {
@@ -518,7 +520,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .address-tabs {
+            .address-tabs, .order-type-tabs {
                 flex-direction: column;
                 gap: 4px;
             }
@@ -544,7 +546,7 @@
             </div>
             <div class="progress-step" id="step2">
                 <span>📍</span>
-                <span>Address</span>
+                <span>Shipping</span>
             </div>
             <div class="progress-step" id="step3">
                 <span>💳</span>
@@ -572,29 +574,75 @@
 @push('js')
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            let currentStep = 1;
             let cart = @json($cart);
+            let currentStep = parseInt(localStorage.getItem('checkoutStep')) || 1;
 
             const scrollTop = () => window.scrollTo(0, 0);
+
+            // Restore step state from localStorage
+            for (let i = 1; i <= 4; i++) {
+                const page = document.getElementById(`page${i}`);
+                const step = document.getElementById(`step${i}`);
+                if (page) page.classList.remove('active');
+                if (step) step.classList.remove('active', 'completed');
+            }
+
+            // Activate saved step and mark completed ones
+            document.getElementById(`page${currentStep}`).classList.add('active');
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            for (let i = 1; i < currentStep; i++) {
+                document.getElementById(`step${i}`).classList.add('completed');
+            }
 
             const switchStep = (next) => {
                 const prevStep = currentStep;
                 currentStep += next;
+
                 if (currentStep < 1 || currentStep > 4) {
                     currentStep = prevStep;
                     return;
                 }
+
                 document.getElementById(`page${prevStep}`).classList.remove('active');
                 document.getElementById(`step${prevStep}`).classList.remove('active');
-                if (next > 0) document.getElementById(`step${prevStep}`).classList.add('completed');
-                else document.getElementById(`step${prevStep}`).classList.remove('completed');
+
+                if (next > 0) {
+                    document.getElementById(`step${prevStep}`).classList.add('completed');
+                } else {
+                    document.getElementById(`step${prevStep}`).classList.remove('completed');
+                }
+
                 document.getElementById(`page${currentStep}`).classList.add('active');
                 document.getElementById(`step${currentStep}`).classList.add('active');
+
+                if (currentStep === 4) {
+                    localStorage.removeItem('checkoutStep');
+                } else {
+                    localStorage.setItem('checkoutStep', currentStep);
+                }
+
                 scrollTop();
             };
 
             window.nextStep = () => switchStep(1);
             window.previousStep = () => switchStep(-1);
+
+            // On page load, show the correct step
+            document.addEventListener('DOMContentLoaded', () => {
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`page${i}`).classList.remove('active');
+                    document.getElementById(`step${i}`).classList.remove('active');
+                }
+                document.getElementById(`page${currentStep}`).classList.add('active');
+                document.getElementById(`step${currentStep}`).classList.add('active');
+
+                // Also re-mark completed steps
+                for (let i = 1; i < currentStep; i++) {
+                    document.getElementById(`step${i}`).classList.add('completed');
+                }
+
+                scrollTop();
+            });
 
             window.updateQuantity = (id, change) => {
                 const input = document.getElementById(`qty${id}`);
@@ -710,7 +758,7 @@
             };
 
             window.goHome = () => window.location.href = "{{ route('shop') }}";
-            window.downloadBooks = () => alert('Download links have been sent to your email!');
+            window.downloadReceipt = () => alert('Download receipt has been sent to your email!');
 
             document.addEventListener('input', (e) => {
                 const target = e.target;
@@ -723,6 +771,37 @@
                     target.value = value;
                 }
             });
+
+            window.showNotificationSuccess = (message) => {
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.top = '80px';
+                notification.style.right = '20px';
+                notification.style.backgroundColor = '#10b981';
+                notification.style.color = 'white';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '5px';
+                notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                notification.style.zIndex = '1001';
+                notification.style.transform = 'translateX(120%)';
+                notification.style.transition = 'transform 0.3s ease';
+                notification.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+
+                // Hide and remove notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(120%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
 
             window.showNotification = (message) => {
                 const notification = document.createElement('div');
@@ -762,20 +841,33 @@
     <!-- Address Selection Tabs -->
     <script>
         function switchAddressTab(tab) {
-            const existingTab = document.getElementById('existing-address-tab');
+            const pickupTab = document.getElementById('pickup-address-tab');
+            const deliveryTab = document.getElementById('delivery-address-tab');
             const newTab = document.getElementById('add-new-address-tab');
-            const existingSection = document.getElementById('existing-address-section');
+            const deliverySection = document.getElementById('delivery-address-section');
             const newSection = document.getElementById('new-address-section');
+            const pickupSection = document.getElementById('pickup-address-section');
 
-            if (tab === 'existing') {
-                existingTab.classList.add('active');
+            if (tab === 'pickup') {
+                pickupTab.classList.add('active');
+                deliveryTab.classList.remove('active');
                 newTab.classList.remove('active');
-                existingSection.classList.add('active');
+                pickupSection.classList.add('active');
+                deliverySection.classList.remove('active');
+                newSection.classList.remove('active');
+            } else if (tab === 'delivery') {
+                pickupTab.classList.remove('active');
+                deliveryTab.classList.add('active');
+                newTab.classList.remove('active');
+                pickupSection.classList.remove('active');
+                deliverySection.classList.add('active');
                 newSection.classList.remove('active');
             } else if (tab === 'new') {
-                existingTab.classList.remove('active');
+                pickupTab.classList.remove('active');
+                deliveryTab.classList.remove('active');
                 newTab.classList.add('active');
-                existingSection.classList.remove('active');
+                pickupSection.classList.remove('active');
+                deliverySection.classList.remove('active');
                 newSection.classList.add('active');
             }
         }
@@ -803,6 +895,83 @@
             if (checkedInput) {
                 checkedInput.closest('.saved-address').classList.add('selected');
             }
+        });
+    </script>
+
+    <!-- Save Address -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Handle label selection
+            $('.address-label-btn').on('click', function () {
+                $('.address-label-btn').removeClass('active'); // Remove from all
+                $(this).addClass('active'); // Add to clicked
+
+                // Update hidden input value
+                let selectedLabel = $(this).val();
+                $('#selected-label').val(selectedLabel);
+            });
+
+            $('#save-address').on('change', function () {
+                if ($(this).is(':checked')) {
+                    // Serialize form data
+                    const formData = $('#new-address-form').serialize();
+
+                    $.ajax({
+                        url: "{{ route('checkout.save-address') }}",
+                        type: "POST",
+                        data: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                showNotificationSuccess(response.message);
+
+                                const savedAddresses = response.data;
+                                const savedAddressesContainer = document.querySelector('#delivery-address-section .saved-addresses');
+
+                                const newAddress = savedAddresses[savedAddresses.length - 1]; // Assuming the last is the new one
+                                const addressElement = document.createElement('div');
+                                addressElement.classList.add('saved-address');
+                                addressElement.setAttribute('onclick', `selectAddress(${newAddress.id}, true)`);
+                                addressElement.innerHTML = `
+                                    <div class="address-radio">
+                                        <input type="radio" name="selected-address" value="${newAddress.id}" checked>
+                                    </div>
+                                    <div class="address-details">
+                                        <div class="address-label">
+                                            ${newAddress.label === 'home' ? '🏠' : newAddress.label === 'office' ? '🏢' : newAddress.label === 'gift' ? '🎁' : '📍'} ${newAddress.label.toUpperCase()}
+                                        </div>
+                                        <div class="address-name">
+                                            <span>${newAddress.first_name} ${newAddress.last_name}</span>
+                                        </div>
+                                        <div class="address-text">
+                                            <span>${newAddress.address}</span>
+                                        </div>
+                                        <div class="address-contact">
+                                            <span>${newAddress.email} • ${newAddress.phone || 'N/A'}</span>
+                                        </div>
+                                    </div>
+                                    <div class="address-actions">
+                                        <button class="edit-address-btn" onclick="editAddress(${newAddress.id})">✏️ Edit</button>
+                                        <button class="delete-address-btn" onclick="deleteAddress(${newAddress.id})">🗑️ Delete</button>
+                                    </div>
+                                `;
+
+                                // Insert at the top
+                                savedAddressesContainer.prepend(addressElement);
+
+                            } else {
+                                showNotification(response.message);
+                            }
+                        },
+                        error: function (xhr) {
+                            showNotification(xhr.responseText);
+                        }
+                    });
+                }
+            });
         });
     </script>
 

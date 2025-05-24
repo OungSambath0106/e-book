@@ -1,4 +1,4 @@
-<div class="page" id="page3">
+<div class="page payment-page" id="page3">
     <h1 class="page-title">Payment Information</h1>
 
     <div class="security-info">

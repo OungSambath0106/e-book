@@ -515,10 +515,17 @@
                     </div>
 
                     <div class="product-actions">
-                        <a href="#" class="add-to-cart" data-product-id="{{ $book->id }}">
-                            <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i> Add To Cart
-                        </a>
-                        <a href="{{ route('checkout') }}" class="buy-now">Buy Now</a>
+                        @if (auth()->guard('customers')->check())
+                            <a href="#" class="add-to-cart" data-product-id="{{ $book->id }}">
+                                <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i> Add To Cart
+                            </a>
+                            <a href="#" class="buy-now" data-product-id="{{ $book->id }}">Buy Now</a>
+                        @else
+                            <a href="{{ route('customer.loginForm') }}" class="add-to-cart">
+                                <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i> Add To Cart
+                            </a>
+                            <a href="{{ route('customer.loginForm') }}" class="buy-now">Buy Now</a>
+                        @endif
                     </div>
 
                     <div class="product-features">
@@ -654,6 +661,38 @@
                                 $('#cart-count').text(response.cart_count);
                             }
                             showNotification(response.message);
+                        } else {
+                            showNotificationError(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('AJAX error:', status, error);
+                        console.log('Response:', xhr.responseText);
+                        showNotificationError('Failed to add to cart');
+                    }
+                });
+            });
+
+            $('.buy-now').click(function (e) {
+                e.preventDefault();
+
+                var productId = $(this).data('product-id');
+                if (!productId) {
+                    showNotificationError('Product ID is missing!');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('buy.now') }}",
+                    type: "POST",
+                    data: {
+                        product_id: productId,
+                        quantity: 1,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = "{{ route('checkout') }}";
                         } else {
                             showNotificationError(response.message);
                         }
