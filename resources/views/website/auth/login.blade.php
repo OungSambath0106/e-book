@@ -3,8 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Book Store - Login & Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -683,55 +685,140 @@
                     // Redirect to home route with token in URL
                     window.location.href = "{{ route('home') }}?token=" + encodeURIComponent(data.customer_info.token);
                 } else {
-                    alert(data.message || "Login failed.");
+                    showNotification(data.message || "Login failed.");
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                alert("An error occurred. Please try again.");
+                showNotification("An error occurred. Please try again.");
             }
         });
 
         // Register form
-        document.getElementById('registerFormElement').addEventListener('submit', (e) => {
+        document.getElementById('registerFormElement').addEventListener('submit', function(e) {
             e.preventDefault();
-            const phone = document.getElementById('registerPhone').value;
 
-            if (phone) {
-                registeredPhone = '855 ' + phone;
-                document.getElementById('phoneDisplay').textContent = registeredPhone;
-                showForm('otpForm', 'otp');
-                startTimer();
+            const phone = document.getElementById('registerPhone').value.trim();
+            const fullPhone = '855' + phone;
+
+            if (phone === '') {
+                showNotification('Please enter your phone number');
+                return;
             }
+
+            // Send AJAX request to backend
+            fetch('{{ route("customer.registerPhoneOTP") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ phone: fullPhone })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('phoneDisplay').textContent = fullPhone;
+                    sessionStorage.setItem('phone', fullPhone);
+                    showForm('otpForm', 'otp');
+                    startTimer();
+                } else {
+                    showNotification(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An unexpected error occurred.');
+            });
         });
 
         // OTP form
-        document.getElementById('otpFormElement').addEventListener('submit', (e) => {
+        document.getElementById('otpFormElement').addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const otpInputs = document.querySelectorAll('.otp-input');
-            const otp = Array.from(otpInputs).map(input => input.value).join('');
+            const otp = Array.from(otpInputs).map(input => input.value.trim()).join('');
+            const phone = sessionStorage.getItem('phone');
 
             if (otp.length === 6) {
-                clearInterval(timer);
-                showForm('setupForm', 'setup');
+                try {
+                    const response = await fetch('{{ route("customer.verifyOnlyOTP") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ phone, otp })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        clearInterval(timer);
+                        // Hide OTP form and show setup form
+                        // document.getElementById('otpFormElement').closest('.form-section').style.display = 'none';
+                        showForm('setupForm', 'setup');
+                        // document.getElementById('setupForm').style.display = 'block';
+                    } else {
+                        showNotification(data.message || 'OTP verification failed.');
+                    }
+                } catch (error) {
+                    console.error('OTP Fetch error:', error);
+                    showNotification('Something went wrong while verifying the OTP.');
+                }
             } else {
-                alert('Please enter the complete 6-digit code');
+                showNotification('Please enter the complete 6-digit code');
             }
         });
 
         // Setup form
-        document.getElementById('setupFormElement').addEventListener('submit', (e) => {
+        document.getElementById('setupFormElement').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const username = document.getElementById('username').value;
+
+            const name = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            const phone = sessionStorage.getItem('phone');
 
             if (password !== confirmPassword) {
-                alert('Passwords do not match');
+                showNotification('Passwords do not match');
                 return;
             }
 
-            if (username && password) {
-                showForm('successForm', 'success');
+            try {
+                const response = await fetch('{{ route("customer.setupAccount") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        phone,
+                        name,
+                        password,
+                        confirm_password: confirmPassword
+                    })
+                });
+
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    // window.location.href = "{{ route('home') }}?token=" + encodeURIComponent(data.customer_info.token);
+                    // showNotificationSuccess('Account created successfully');
+                } else {
+                    const data = await response.json();
+                    if (data.errors) {
+                        showNotification(Object.values(data.errors).join("\n"));
+                    }
+                }
+            } catch (error) {
+                console.error('Setup Fetch error:', error);
+                showNotification('Something went wrong during account setup.');
             }
         });
 
@@ -796,7 +883,7 @@
             document.querySelectorAll('.otp-input').forEach(input => input.value = '');
             document.querySelectorAll('.otp-input')[0].focus();
             startTimer();
-            alert('New OTP sent to ' + registeredPhone);
+            showNotification('New OTP sent to ' + registeredPhone);
         }
 
         // Auto-focus first input when OTP form is shown
@@ -816,6 +903,68 @@
                 attributeFilter: ['class']
             });
         });
+
+        window.showNotificationSuccess = (message) => {
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.top = '80px';
+                notification.style.right = '20px';
+                notification.style.backgroundColor = '#10b981';
+                notification.style.color = 'white';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '5px';
+                notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                notification.style.zIndex = '1001';
+                notification.style.transform = 'translateX(120%)';
+                notification.style.transition = 'transform 0.3s ease';
+                notification.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+
+                // Hide and remove notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(120%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            window.showNotification = (message) => {
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.top = '80px';
+                notification.style.right = '20px';
+                notification.style.backgroundColor = '#ef4444';
+                notification.style.color = 'white';
+                notification.style.padding = '15px 20px';
+                notification.style.borderRadius = '5px';
+                notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                notification.style.zIndex = '1001';
+                notification.style.transform = 'translateX(120%)';
+                notification.style.transition = 'transform 0.3s ease';
+                notification.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + message;
+
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+
+                // Hide and remove notification
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(120%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
     </script>
 </body>
 

@@ -47,6 +47,11 @@ Route::get('language/{locale}', function ($locale) {
 })->name('change_language');
 
 // Customer routes
+Route::get('/register', [AuthLoginController::class, 'showRegisterForm'])->name('customer.registerForm');
+Route::post('/registerPhoneOTP', [AuthLoginController::class, 'registerPhoneOTP'])->name('customer.registerPhoneOTP');
+Route::post('/verify-only-otp', [AuthLoginController::class, 'verifyOnlyOTP'])->name('customer.verifyOnlyOTP');
+Route::get('/setup-account', [AuthLoginController::class, 'showSetupForm'])->name('customer.setupForm');
+Route::post('/setup-account', [AuthLoginController::class, 'setupAccount'])->name('customer.setupAccount');
 Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('customer.loginForm');
 Route::post('/login', [AuthLoginController::class, 'loginPhoneOTP'])->name('customer.login');
 Route::post('/logout', [AuthLoginController::class, 'logout'])->name('customer.logout');

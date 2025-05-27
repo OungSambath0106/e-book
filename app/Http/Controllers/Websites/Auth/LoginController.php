@@ -26,7 +26,10 @@ class LoginController extends Controller
         $existingCustomer = Customer::where('phone', $phone)->first();
 
         if ($existingCustomer && $existingCustomer->is_verify == 1) {
-            return redirect()->back()->withErrors(['phone' => 'Phone number has already been registered']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Phone number has already been registered',
+            ], 400);
         }
 
         $otp = rand(100000, 999999);
@@ -43,56 +46,129 @@ class LoginController extends Controller
                 $customer->save();
             }
 
-            return redirect()->route('verify.otp.form')->with('phone', $phone);
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP sent successfully',
+                'phone' => $phone,
+            ]);
         }
 
-        return redirect()->back()->withErrors(['otp' => 'Failed to send OTP']);
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send OTP',
+        ], 500);
     }
 
     public function showVerifyForm()
     {
         $phone = session('phone');
-        if (!$phone) return redirect()->route('register.form');
+        if (!$phone) return redirect()->route('customer.registerForm');
 
         return view('website.auth.verify_otp', compact('phone'));
     }
 
-    public function verifyOTP(Request $request)
+    public function showSetupForm()
+    {
+        $phone = session('phone');
+        if (!$phone) return redirect()->route('customer.registerForm');
+
+        return view('website.auth.set_up_acc', compact('phone'));
+    }
+
+    // public function verifyOTP(Request $request)
+    // {
+    //     $request->validate([
+    //         'phone' => 'required',
+    //         'otp' => 'required|numeric',
+    //         'name' => 'required|string',
+    //         'password' => 'required|string|min:6',
+    //         'confirm_password' => 'required|string|min:6|same:password',
+    //     ]);
+
+    //     $phone = $request->phone;
+    //     $otp = $request->otp;
+
+    //     $cachedOtp = Cache::get('otp_' . $phone);
+    //     if ($otp != $cachedOtp) {
+    //         return redirect()->back()->withErrors(['otp' => 'Phone and OTP do not match']);
+    //     }
+
+    //     $customer = Customer::where('phone', $phone)->first();
+    //     if (!$customer) {
+    //         $customer = new Customer();
+    //         $customer->phone = $phone;
+    //         $customer->provider = 'phone';
+    //     }
+
+    //     $customer->name = $request->name;
+    //     $customer->is_verify = 1;
+    //     $customer->provider = 'phone';
+    //     $customer->password = Hash::make($request->password);
+    //     $customer->save();
+
+    //     auth()->login($customer);
+
+    //     Cache::forget('otp_' . $phone);
+
+    //     return redirect()->route('home')->with('success', 'Registered and logged in successfully');
+    // }
+    public function verifyOnlyOTP(Request $request)
     {
         $request->validate([
             'phone' => 'required',
             'otp' => 'required|numeric',
-            'name' => 'required|string',
-            'password' => 'required|string|min:6',
-            'confirm_password' => 'required|string|min:6|same:password',
         ]);
 
         $phone = $request->phone;
         $otp = $request->otp;
 
         $cachedOtp = Cache::get('otp_' . $phone);
-        if ($otp != $cachedOtp) {
-            return redirect()->back()->withErrors(['otp' => 'Phone and OTP do not match']);
+        if (!$cachedOtp || $otp != $cachedOtp) {
+            return response()->json(['success' => false, 'message' => 'Invalid OTP']);
         }
 
-        $customer = Customer::where('phone', $phone)->first();
-        if (!$customer) {
-            $customer = new Customer();
-            $customer->phone = $phone;
-            $customer->provider = 'phone';
+        session(['otp_verified' => true]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function setupAccount(Request $request)
+    {
+        if (!session('otp_verified')) {
+            return redirect()->route('customer.registerForm')->withErrors(['otp' => 'OTP not verified']);
         }
 
+        $request->validate([
+            'phone' => 'required',
+            'name' => 'required|string',
+            'password' => 'required|string|min:6',
+            'confirm_password' => 'required|string|min:6|same:password',
+        ]);
+
+        $phone = $request->phone;
+
+        $customer = Customer::firstOrNew(['phone' => $phone]);
+        $customer->provider = 'phone';
         $customer->name = $request->name;
         $customer->is_verify = 1;
-        $customer->provider = 'phone';
-        $customer->password = Hash::make($request->password);
+        $customer->password = $request->password;
         $customer->save();
 
-        auth()->login($customer);
+        auth()->guard('customers')->login($customer);
+        $token = $customer->createToken('PhoneLogin')->accessToken;
 
         Cache::forget('otp_' . $phone);
+        session()->forget('otp_verified');
 
-        return redirect()->route('home')->with('success', 'Registered and logged in successfully');
+        $customer_info = [
+            'token' => $token,
+            'id' => $customer->id,
+            'name' => $customer->name,
+            'phone' => $customer->phone,
+            'email' => $customer->email,
+        ];
+
+        return redirect()->route('home', ['token' => $token])->with('success', 'Account created successfully')->with('customer_info', $customer_info);
     }
 
     public function showLoginForm()

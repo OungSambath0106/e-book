@@ -7,16 +7,17 @@
 
     <form id="otpFormElement">
         <div class="otp-container">
-            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)">
-            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 2)">
-            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 3)">
-            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 4)">
-            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 5)">
-            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 6)">
+            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this)">
+            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this)">
+            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this)">
+            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this)">
+            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this)">
+            <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this)">
         </div>
-        <div class="timer" id="timer">Resend code in 60s</div>
+        <div class="timer" id="timer">Resend code in <span id="countdown">60</span>s</div>
         <button type="submit" class="btn btn-primary">Verify OTP</button>
     </form>
-    <div class="resend-code" id="resendCode" style="display: none;" onclick="resendOTP()">Resend
-        Code</div>
+    <div class="resend-code" id="resendCode" style="display: none;" onclick="resendOTP()">
+        Resend Code
+    </div>
 </div>
