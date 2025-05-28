@@ -10,6 +10,18 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="registerPhoneOTPButton">Send OTP</button>
+        <button type="submit" class="btn btn-primary" id="registerPhoneOTPButton">Register</button>
+        <hr style="margin-top: 3rem; margin-bottom: 1rem;">
+        <div class="social-login" style="">
+            <a href="#" class="btn">
+                <i class="fab fa-google"></i>
+            </a>
+            <a href="#" class="btn">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="btn">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </div>
     </form>
 </div>

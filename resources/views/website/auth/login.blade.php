@@ -5,7 +5,19 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Book Store - Login & Register</title>
+    @php
+        $setting = \App\Models\BusinessSetting::all();
+
+        $data['fav_icon'] = @$setting->where('type', 'fav_icon')->first()->value ?? '';
+        $data['company_name'] = @$setting->where('type', 'company_name')->first()->value ?? '';
+    @endphp
+    <title>@yield('page_title', $data['company_name'])</title>
+    <link rel="icon" type="image/x-icon" href="
+        @if ($data['fav_icon'] && file_exists('uploads/business_settings/' . $data['fav_icon']))
+            {{ asset('uploads/business_settings/' . $data['fav_icon']) }}
+        @else
+            {{ asset('uploads/image/default.png') }}
+        @endif">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         * {
@@ -375,6 +387,27 @@
             font-size: 40px;
             color: white;
             animation: successPulse 0.6s ease-out;
+        }
+
+        .social-login {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            padding-top: .5rem;
+        }
+
+        .social-login .btn {
+            text-decoration: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            margin: 0;
+            padding: 0;
         }
 
         @keyframes successPulse {
@@ -761,9 +794,7 @@
                     if (data.success) {
                         clearInterval(timer);
                         // Hide OTP form and show setup form
-                        // document.getElementById('otpFormElement').closest('.form-section').style.display = 'none';
                         showForm('setupForm', 'setup');
-                        // document.getElementById('setupForm').style.display = 'block';
                     } else {
                         showNotification(data.message || 'OTP verification failed.');
                     }
@@ -808,8 +839,6 @@
 
                 if (response.redirected) {
                     window.location.href = response.url;
-                    // window.location.href = "{{ route('home') }}?token=" + encodeURIComponent(data.customer_info.token);
-                    // showNotificationSuccess('Account created successfully');
                 } else {
                     const data = await response.json();
                     if (data.errors) {
@@ -880,10 +909,31 @@
         }
 
         function resendOTP() {
-            document.querySelectorAll('.otp-input').forEach(input => input.value = '');
-            document.querySelectorAll('.otp-input')[0].focus();
-            startTimer();
-            showNotification('New OTP sent to ' + registeredPhone);
+            const phone = sessionStorage.getItem('phone');
+            fetch('{{ route("customer.resendOTP") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ phone: phone })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotificationSuccess(data.message);
+                    document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+                    document.querySelectorAll('.otp-input')[0].focus();
+                    showNotificationSuccess('New OTP sent to ' + phone);
+                    startTimer();
+                } else {
+                    showNotification(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An unexpected error occurred.');
+            });
         }
 
         // Auto-focus first input when OTP form is shown

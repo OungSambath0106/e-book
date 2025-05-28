@@ -23,5 +23,47 @@
     img {
         opacity: 1 !important;
     }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0; /* fix Bootstrap's margin */
+    }
+
+    .dropdown-toggle::after {
+        display: none;
+    }
+
+    .user-info-dropdown .dropdown-item.active,
+    .user-info-dropdown .dropdown-item:active {
+        color: #16181b;
+        text-decoration: none;
+        background-color: #f8f9fa;
+    }
+
+    .user-info-dropdown .dropdown-item {
+        padding: 0;
+    }
+
+    .user-info-dropdown .dropdown-item a {
+        color: var(--gray-700);
+        font-size: .8rem;
+        font-weight: 500;
+        padding: .25rem 1.5rem;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+    }
+
+    .user-info-dropdown .dropdown-item:hover a {
+        color: var(--primary);
+    }
+
+    .user-info-dropdown .logout-item a {
+        color: var(--red-500);
+    }
+
+    .user-info-dropdown .logout-item:hover a {
+        color: var(--red-600);
+    }
 </style>
 @stack('css')

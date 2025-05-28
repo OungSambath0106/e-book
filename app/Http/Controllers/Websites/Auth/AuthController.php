@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Websites\Auth;
 
-use App\helpers\GlobalFunction;
-use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
+use App\helpers\GlobalFunction;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     public function showRegisterForm()
     {
@@ -92,22 +92,6 @@ class LoginController extends Controller
             'message' => 'Failed to send OTP',
         ], 500);
     }
-
-    // public function showVerifyForm()
-    // {
-    //     $phone = session('phone');
-    //     if (!$phone) return redirect()->route('customer.registerForm');
-
-    //     return view('website.auth.verify_otp', compact('phone'));
-    // }
-
-    // public function showSetupForm()
-    // {
-    //     $phone = session('phone');
-    //     if (!$phone) return redirect()->route('customer.registerForm');
-
-    //     return view('website.auth.set_up_acc', compact('phone'));
-    // }
 
     public function verifyOnlyOTP(Request $request)
     {
@@ -211,7 +195,8 @@ class LoginController extends Controller
 
     public function logout()
     {
-        auth()->logout();
-        return redirect()->route('sign-in')->with('success', 'Logged out successfully');
+        auth()->guard('customers')->logout();
+        session()->forget('customer_info');
+        return redirect()->route('home')->with('success', 'Logged out successfully');
     }
 }

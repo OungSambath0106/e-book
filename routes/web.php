@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backends\AuthorController;
 use App\Http\Controllers\Backends\BanerController;
-use App\Http\Controllers\Backends\BrandController;
 use App\Http\Controllers\Backends\RoleController;
 use App\Http\Controllers\Backends\UserController;
 use App\Http\Controllers\Backends\LanguageController;
@@ -19,8 +18,7 @@ use App\Http\Controllers\Backends\CustomerController;
 use App\Http\Controllers\Backends\OrderController;
 use App\Http\Controllers\Backends\ProductController;
 use App\Http\Controllers\Backends\PromotionController;
-use App\Http\Controllers\Backends\ShoesSliderController;
-use App\Http\Controllers\Websites\Auth\LoginController as AuthLoginController;
+use App\Http\Controllers\Websites\Auth\AuthController as WebsitesAuthController;
 use App\Http\Controllers\Websites\AuthorController as WebsitesAuthorController;
 use App\Http\Controllers\Websites\CategoryController as WebsitesCategoryController;
 use App\Http\Controllers\Websites\CheckoutController;
@@ -47,14 +45,15 @@ Route::get('language/{locale}', function ($locale) {
 })->name('change_language');
 
 // Customer routes
-Route::get('/register', [AuthLoginController::class, 'showRegisterForm'])->name('customer.registerForm');
-Route::post('/registerPhoneOTP', [AuthLoginController::class, 'registerPhoneOTP'])->name('customer.registerPhoneOTP');
-Route::post('/verify-only-otp', [AuthLoginController::class, 'verifyOnlyOTP'])->name('customer.verifyOnlyOTP');
-Route::get('/setup-account', [AuthLoginController::class, 'showSetupForm'])->name('customer.setupForm');
-Route::post('/setup-account', [AuthLoginController::class, 'setupAccount'])->name('customer.setupAccount');
-Route::get('/login', [AuthLoginController::class, 'showLoginForm'])->name('customer.loginForm');
-Route::post('/login', [AuthLoginController::class, 'loginPhoneOTP'])->name('customer.login');
-Route::post('/logout', [AuthLoginController::class, 'logout'])->name('customer.logout');
+Route::get('/register', [WebsitesAuthController::class, 'showRegisterForm'])->name('customer.registerForm');
+Route::post('/registerPhoneOTP', [WebsitesAuthController::class, 'registerPhoneOTP'])->name('customer.registerPhoneOTP');
+Route::post('/resend-otp', [WebsitesAuthController::class, 'resendOTP'])->name('customer.resendOTP');
+Route::post('/verify-only-otp', [WebsitesAuthController::class, 'verifyOnlyOTP'])->name('customer.verifyOnlyOTP');
+Route::get('/setup-account', [WebsitesAuthController::class, 'showSetupForm'])->name('customer.setupForm');
+Route::post('/setup-account', [WebsitesAuthController::class, 'setupAccount'])->name('customer.setupAccount');
+Route::get('/login', [WebsitesAuthController::class, 'showLoginForm'])->name('customer.loginForm');
+Route::post('/login', [WebsitesAuthController::class, 'loginPhoneOTP'])->name('customer.login');
+Route::post('/customer/logout', [WebsitesAuthController::class, 'logout'])->name('customer.logout');
 
 // website routes
 Route::get('/', [WebsitesHomeController::class, 'index'])->name('home');
