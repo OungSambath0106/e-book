@@ -45,15 +45,19 @@ Route::get('language/{locale}', function ($locale) {
 })->name('change_language');
 
 // Customer routes
-Route::get('/register', [WebsitesAuthController::class, 'showRegisterForm'])->name('customer.registerForm');
+// Route::get('/register', [WebsitesAuthController::class, 'showRegisterForm'])->name('customer.registerForm');
 Route::post('/registerPhoneOTP', [WebsitesAuthController::class, 'registerPhoneOTP'])->name('customer.registerPhoneOTP');
 Route::post('/resend-otp', [WebsitesAuthController::class, 'resendOTP'])->name('customer.resendOTP');
 Route::post('/verify-only-otp', [WebsitesAuthController::class, 'verifyOnlyOTP'])->name('customer.verifyOnlyOTP');
-Route::get('/setup-account', [WebsitesAuthController::class, 'showSetupForm'])->name('customer.setupForm');
+// Route::get('/setup-account', [WebsitesAuthController::class, 'showSetupForm'])->name('customer.setupForm');
 Route::post('/setup-account', [WebsitesAuthController::class, 'setupAccount'])->name('customer.setupAccount');
 Route::get('/login', [WebsitesAuthController::class, 'showLoginForm'])->name('customer.loginForm');
 Route::post('/login', [WebsitesAuthController::class, 'loginPhoneOTP'])->name('customer.login');
 Route::post('/customer/logout', [WebsitesAuthController::class, 'logout'])->name('customer.logout');
+Route::post('/forget-password', [WebsitesAuthController::class, 'forgetPassword'])->name('customer.forgetPassword');
+Route::post('/reset-password', [WebsitesAuthController::class, 'resetPassword'])->name('customer.resetPassword');
+Route::post('/google-login', [WebsitesAuthController::class, 'googleLogin'])->name('customer.googleLogin');
+Route::post('/facebook-login', [WebsitesAuthController::class, 'facebookLogin'])->name('customer.facebookLogin');
 
 // website routes
 Route::get('/', [WebsitesHomeController::class, 'index'])->name('home');

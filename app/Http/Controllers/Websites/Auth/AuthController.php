@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Cache;
 
 class AuthController extends Controller
 {
-    public function showRegisterForm()
-    {
-        return view('website.auth.login');
-    }
-
     public function registerPhoneOTP(Request $request)
     {
         $request->validate([
@@ -50,6 +45,7 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'OTP sent successfully',
                 'phone' => $phone,
+                'otp' => $otp,
             ]);
         }
 
@@ -66,14 +62,6 @@ class AuthController extends Controller
         ]);
 
         $phone = $request->phone;
-        // $otp = Cache::get('otp_' . $phone);
-
-        // if (!$otp) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'OTP not found',
-        //     ], 400);
-        // }
 
         $otp = rand(100000, 999999);
         Cache::put('otp_' . $phone, $otp, now()->addMinutes(1));
@@ -83,6 +71,8 @@ class AuthController extends Controller
         if ($response) {
             return response()->json([
                 'success' => true,
+                'phone' => $phone,
+                'otp' => $otp,
                 'message' => 'OTP sent successfully',
             ]);
         }
@@ -149,7 +139,7 @@ class AuthController extends Controller
             'email' => $customer->email,
         ];
 
-        return redirect()->route('home', ['token' => $token])->with('success', 'Account created successfully')->with('customer_info', $customer_info);
+        return redirect()->route('home')->with('success', 'Account created successfully')->with('customer_info', $customer_info);
     }
 
     public function showLoginForm()
@@ -198,5 +188,142 @@ class AuthController extends Controller
         auth()->guard('customers')->logout();
         session()->forget('customer_info');
         return redirect()->route('home')->with('success', 'Logged out successfully');
+    }
+
+    public function forgetPassword(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required',
+        ]);
+
+        $phone = $request->phone;
+        $customer = Customer::where('phone', $phone)->first();
+
+        if (!$customer) {
+            return response()->json(['message' => 'Phone number not found', 'success' => false], 404);
+        }
+
+        $otp = rand(100000, 999999);
+        Cache::put('otp_' . $phone, $otp, now()->addMinutes(1));
+
+        $response = GlobalFunction::sendOTP($phone, $otp);
+        if ($response) {
+            return response()->json([
+                'success' => true,
+                'phone' => $phone,
+                'otp' => $otp,
+                'message' => 'OTP sent successfully',
+            ], 200);
+        } else {
+            return response()->json(['message' => 'Failed to send OTP', 'success' => false], 500);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string',
+            'otp' => 'required|numeric',
+            'new_password' => 'required|string|min:6',
+            'confirm_password' => 'required|string|same:new_password',
+        ]);
+
+        $phone = $request->phone;
+        $otp = $request->otp;
+        $newPassword = $request->new_password;
+
+        $cachedOtp = Cache::get('otp_' . $phone);
+
+        if (!$cachedOtp || $cachedOtp != $otp) {
+            return response()->json(['message' => 'Phone number and OTP do not match', 'success' => false], 400);
+        }
+
+        $customer = Customer::where('phone', $phone)->first();
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found', 'success' => false], 404);
+        }
+
+        $customer->password = $newPassword;
+        $customer->save();
+
+        Cache::forget('otp_' . $phone);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password has been reset successfully',
+        ], 200);
+    }
+
+    public function googleLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'displayName' => 'required|string',
+            'photoURL' => 'nullable|string',
+            'uid' => 'required|string',
+        ]);
+
+        $customer = Customer::where('google_uid', $request->uid)
+                    ->where('provider', 'google')
+                    ->first();
+
+        if (!$customer) {
+            $customer = Customer::updateOrCreate([
+                'google_uid' => $request->uid,
+            ], [
+                'name'      => $request->displayName,
+                'email'     => $request->email,
+                'provider'  => 'google',
+                'is_verify' => 1,
+                'image'     => $request->photoURL,
+            ]);
+        }
+
+        auth()->guard('customers')->login($customer);
+        $customer->save();
+        $customer->tokens()->delete();
+        $token = $customer->createToken('google_login')->accessToken;
+
+        return response()->json([
+            'token' => $token,
+            'customer' => $customer,
+            'is_google_login' => $customer->provider == 'google' ? 1 : 0,
+        ]);
+    }
+
+    public function facebookLogin(Request $request)
+    {
+        $request->validate([
+            'facebook_id' => 'required|string',
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'photo' => 'nullable|string',
+        ]);
+
+        $customer = Customer::where('facebook_uid', $request->facebook_id)
+                            ->where('provider', 'facebook')
+                            ->first();
+
+        if (!$customer) {
+            $customer = Customer::create([
+                'facebook_uid' => $request->facebook_id,
+                'name'         => $request->name,
+                'email'        => $request->email,
+                'provider'     => 'facebook',
+                'image'        => $request->photo,
+                'is_verify'    => 1
+            ]);
+        }
+
+        auth()->guard('customers')->login($customer);
+        $customer->tokens()->delete();
+        $token = $customer->createToken('facebook_login')->accessToken;
+
+        return response()->json([
+            'success' => true,
+            'token' => $token,
+            'customer' => $customer,
+            'is_facebook_login' => $customer->provider == 'facebook' ? 1 : 0,
+        ]);
     }
 }

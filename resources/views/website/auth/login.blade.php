@@ -49,7 +49,7 @@
             overflow: hidden;
         }
 
-        .auth-container::before {
+        /* .auth-container::before {
             content: '';
             position: absolute;
             top: 0;
@@ -58,7 +58,7 @@
             height: 4px;
             background: linear-gradient(90deg, #667eea, #764ba2);
             z-index: 10;
-        }
+        } */
 
         /* Left Side - Visual Content */
         .visual-side {
@@ -195,7 +195,7 @@
 
         .logo {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .logo h1 {
@@ -208,16 +208,12 @@
             gap: 10px;
         }
 
-        .logo span {
-            font-size: 28px;
-        }
-
         .auth-toggle {
             display: flex;
             background: #f8f9ff;
             border-radius: 12px;
             padding: 4px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             position: relative;
         }
 
@@ -410,6 +406,71 @@
             padding: 0;
         }
 
+        .divider {
+            color: #999;
+            font-size: 14px;
+            padding: 2rem 0 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider::before {
+            margin-right: 16px;
+        }
+
+        .divider::after {
+            margin-left: 16px;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 0.5rem;
+        }
+
+        .social-btn {
+            width: 56px;
+            height: 56px;
+            border: none;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .social-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .forgot-password {
+            text-align: right;
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
         @keyframes successPulse {
             0% {
                 transform: scale(0);
@@ -528,6 +589,12 @@
 </head>
 
 <body>
+    @php
+        $setting = App\Models\BusinessSetting::all();
+        $web_header_logo = $setting->where('type', 'web_header_logo')->first()->value ?? '';
+        $company_name = $setting->where('type', 'company_name')->first()->value ?? '';
+    @endphp
+
     <div class="auth-container">
         <!-- Left Side - Visual Content -->
         <div class="visual-side">
@@ -576,12 +643,33 @@
                 <p>Your account is now ready! Start exploring our extensive collection of eBooks and begin your amazing
                     reading adventure today.</p>
             </div>
+
+            <!-- Forgot Password Visual -->
+            <div class="visual-content" id="forgotPasswordVisual">
+                <span class="visual-icon">🔐</span>
+                <h2>Forgot Password</h2>
+                <p>Enter your phone number to reset your password. We will send you an OTP to your phone number.</p>
+            </div>
+
+            <!-- OTP Verification Reset Password Visual -->
+            <div class="visual-content" id="otpResetPasswordVisual">
+                <span class="visual-icon">🔐</span>
+                <h2>Verify Your OTP</h2>
+                <p>Enter the 6-digit code sent to your phone to reset your password</p>
+            </div>
+
+            <!-- Reset Password Visual -->
+            <div class="visual-content" id="resetPasswordVisual">
+                <span class="visual-icon">🔐</span>
+                <h2>Reset Password</h2>
+                <p>Enter your new password to reset your account. Please enter your phone number and OTP to reset your password.</p>
+            </div>
         </div>
 
         <!-- Right Side - Form Content -->
         <div class="form-side">
             <div class="logo">
-                <h1><span>📚</span> E-BOOK STORE</h1>
+                <h1>{{ $company_name }}</h1>
             </div>
 
             <!-- Main Toggle -->
@@ -611,8 +699,35 @@
                                 placeholder="Enter your password" required>
                         </div>
 
+                        <div class="form-group">
+                            <a href="javascript:void(0)" class="forgot-password" onclick="showForm('forgotPasswordForm', 'forgotPassword')">Forgot Password?</a>
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Login</button>
                     </form>
+                    <div class="divider"> Or </div>
+                    <div class="social-buttons">
+                        <button class="social-btn" onclick="signInWithGoogle()">
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                        </button>
+
+                        <button class="social-btn" onclick="signInWithFacebook()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#1877F2">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </button>
+
+                        <button class="social-btn" onclick="signInWithApple()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Register Form -->
@@ -623,6 +738,15 @@
 
                 <!-- Setup Profile -->
                 @include('website.auth.set_up_acc')
+
+                <!-- Forgot Password -->
+                @include('website.auth.forgot_password')
+
+                <!-- OTP Verification Reset Password -->
+                @include('website.auth.verify_otp_reset_password')
+
+                <!-- Reset Password -->
+                @include('website.auth.reset_password')
 
                 <!-- Success Message -->
                 <div class="form-section" id="successForm">
@@ -694,14 +818,54 @@
             }
         }
 
+        // Login form formatting
+        document.getElementById('loginPhone').addEventListener('input', function (e) {
+            // Remove non-digit characters
+            let digits = e.target.value.replace(/\D/g, '');
+
+            // Format based on starting digit
+            let formatted = '';
+            if (digits.startsWith('0')) {
+                if (digits.length <= 3) {
+                    formatted = digits;
+                } else if (digits.length <= 6) {
+                    formatted = `${digits.slice(0, 3)} ${digits.slice(3)}`;
+                } else {
+                    formatted = `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 10)}`;
+                }
+            } else {
+                if (digits.length <= 2) {
+                    formatted = digits;
+                } else if (digits.length <= 5) {
+                    formatted = `${digits.slice(0, 2)} ${digits.slice(2)}`;
+                } else {
+                    formatted = `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 9)}`;
+                }
+            }
+
+            e.target.value = formatted;
+        });
+
         // Login form
         document.getElementById('loginFormElement').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const countryCode = document.getElementById('countryCode').textContent;
-            const phone = document.getElementById('loginPhone').value;
-            const password = document.getElementById('loginPassword').value;
+            let rawPhone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value.trim();
             const csrfToken = document.querySelector('input[name="_token"]').value;
+
+            // Remove spaces
+            rawPhone = rawPhone.replace(/\s/g, '');
+            // Remove leading 0 if present
+            if (rawPhone.startsWith('0')) {
+                rawPhone = rawPhone.slice(1);
+            }
+            // Validate again: ensure it's only digits and length is valid
+            if (!/^\d+$/.test(rawPhone) || rawPhone.length < 8) {
+                showNotification("Invalid phone number.");
+                return;
+            }
 
             try {
                 const response = await fetch("{{ route('customer.login') }}", {
@@ -710,13 +874,13 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': csrfToken
                     },
-                    body: JSON.stringify({ phone: countryCode + phone, password }),
+                    body: JSON.stringify({ phone: countryCode + rawPhone, password }),
                 });
+
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Redirect to home route with token in URL
-                    window.location.href = "{{ route('home') }}?token=" + encodeURIComponent(data.customer_info.token);
+                    window.location.href = "{{ route('home') }}";
                 } else {
                     showNotification(data.message || "Login failed.");
                 }
@@ -726,19 +890,59 @@
             }
         });
 
+        // Register form formatting
+        const phoneInput = document.getElementById('registerPhone');
+        // Allow only number keys
+        phoneInput.addEventListener('keypress', function (e) {
+            const char = String.fromCharCode(e.which);
+            if (!/[0-9]/.test(char)) {
+                e.preventDefault();
+            }
+        });
+
+        // Handle paste (prevent letters/symbols)
+        phoneInput.addEventListener('paste', function (e) {
+            const pasted = (e.clipboardData || window.clipboardData).getData('text');
+            if (!/^\d+$/.test(pasted)) {
+                e.preventDefault();
+            }
+        });
+
+        // Auto-format on input
+        phoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\s+/g, ''); // Remove spaces
+
+            let formatted = '';
+            if (value.startsWith('0')) {
+                formatted = value.slice(0, 3);
+                if (value.length > 3) formatted += ' ' + value.slice(3, 6);
+                if (value.length > 6) formatted += ' ' + value.slice(6, 9);
+            } else {
+                formatted = value.slice(0, 2);
+                if (value.length > 2) formatted += ' ' + value.slice(2, 5);
+                if (value.length > 5) formatted += ' ' + value.slice(5, 8);
+            }
+
+            e.target.value = formatted.trim();
+        });
+
         // Register form
-        document.getElementById('registerFormElement').addEventListener('submit', function(e) {
+        document.getElementById('registerFormElement').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const phone = document.getElementById('registerPhone').value.trim();
-            const fullPhone = '855' + phone;
-
-            if (phone === '') {
+            const rawPhone = document.getElementById('registerPhone').value;
+            // Remove all spaces
+            let cleanedPhone = rawPhone.replace(/\s+/g, '');
+            // Remove leading zero only if it's the first character
+            if (cleanedPhone.startsWith('0')) {
+                cleanedPhone = cleanedPhone.substring(1);
+            }
+            const fullPhone = '855' + cleanedPhone;
+            if (cleanedPhone === '') {
                 showNotification('Please enter your phone number');
                 return;
             }
 
-            // Send AJAX request to backend
             fetch('{{ route("customer.registerPhoneOTP") }}', {
                 method: 'POST',
                 headers: {
@@ -752,6 +956,7 @@
                 if (data.success) {
                     document.getElementById('phoneDisplay').textContent = fullPhone;
                     sessionStorage.setItem('phone', fullPhone);
+                    sessionStorage.setItem('otp', data.otp);
                     showForm('otpForm', 'otp');
                     startTimer();
                 } else {
@@ -851,6 +1056,127 @@
             }
         });
 
+        // Forgot Password form
+        document.getElementById('forgotPasswordFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const phone = document.getElementById('forgotPasswordPhone').value.trim();
+            const fullPhone = '855' + phone;
+            const csrfToken = document.querySelector('input[name="_token"]').value;
+
+            try {
+                const response = await fetch('{{ route("customer.forgetPassword") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ phone: fullPhone })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        document.getElementById('phoneDisplayResetPassword').textContent = fullPhone;
+                        showForm('otpResetPasswordForm', 'otpResetPassword');
+                        showNotificationSuccess(data.message);
+                        startTimerResetPassword();
+                    } else if (!data.success) {
+                        showNotification(data.message);
+                    }
+                }
+            } catch (error) {
+                console.error('Forgot Password error:', error);
+                showNotification('An error occurred. Please try again.');
+            }
+        });
+
+        // OTP Verification Reset Password form
+        document.getElementById('otpResetPasswordFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const otpInputs = document.querySelectorAll('.otp-input');
+            const otp = Array.from(otpInputs).map(input => input.value.trim()).join('');
+            const phone = sessionStorage.getItem('phone');
+
+            if (otp.length === 6) {
+                try {
+                    const response = await fetch('{{ route("customer.verifyOnlyOTP") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ phone, otp })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        clearInterval(timer);
+                        // Hide OTP form and show reset password form
+                        showForm('resetPasswordForm', 'resetPassword');
+                    } else {
+                        showNotification(data.message || 'OTP verification failed.');
+                    }
+                } catch (error) {
+                    console.error('OTP Fetch error:', error);
+                    showNotification('Something went wrong while verifying the OTP.');
+                }
+            } else {
+                showNotification('Please enter the complete 6-digit code');
+            }
+        });
+
+        // Reset Password form
+        document.getElementById('resetPasswordFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const phone = sessionStorage.getItem('phone');
+
+            if (newPassword !== confirmPassword) {
+                showNotification('Passwords do not match');
+                return;
+            }
+
+            try {
+                const response = await fetch('{{ route("customer.resetPassword") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        phone,
+                        new_password: newPassword,
+                        confirm_password: confirmPassword
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        showNotificationSuccess(data.message);
+                        clearInterval(timer);
+                        showForm('loginForm', 'login');
+                    } else {
+                        showNotification(data.message);
+                    }
+                }
+            } catch (error) {
+                console.error('Reset Password error:', error);
+                showNotification('An error occurred. Please try again.');
+            }
+        });
+
         function showForm(formId, visualId) {
             const currentForm = document.querySelector('.form-section.active');
             const newForm = document.getElementById(formId);
@@ -884,6 +1210,18 @@
             clearInterval(timer);
         }
 
+        function goBackLogin() {
+            showForm('loginForm', 'login');
+            document.getElementById('mainToggle').style.display = 'flex';
+            clearInterval(timer);
+        }
+
+        function goBackForgotPassword() {
+            showForm('forgotPasswordForm', 'forgotPassword');
+            document.getElementById('mainToggle').style.display = 'flex';
+            clearInterval(timer);
+        }
+
         function moveToNext(current, nextIndex) {
             if (current.value.length === 1 && nextIndex <= 6) {
                 const nextInput = document.querySelectorAll('.otp-input')[nextIndex];
@@ -908,6 +1246,23 @@
             }, 1000);
         }
 
+        function startTimerResetPassword() {
+            countdown = 60;
+            document.getElementById('resendCodeResetPassword').style.display = 'none';
+            document.getElementById('timerResetPassword').style.display = 'block';
+
+            timer = setInterval(() => {
+                countdown--;
+                document.getElementById('timerResetPassword').textContent = `Resend code in ${countdown}s`;
+
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('timerResetPassword').style.display = 'none';
+                    document.getElementById('resendCodeResetPassword').style.display = 'block';
+                }
+            }, 1000);
+        }
+
         function resendOTP() {
             const phone = sessionStorage.getItem('phone');
             fetch('{{ route("customer.resendOTP") }}', {
@@ -926,6 +1281,34 @@
                     document.querySelectorAll('.otp-input')[0].focus();
                     showNotificationSuccess('New OTP sent to ' + phone);
                     startTimer();
+                } else {
+                    showNotification(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An unexpected error occurred.');
+            });
+        }
+
+        function resendOTPResetPassword() {
+            const phone = sessionStorage.getItem('phone');
+            fetch('{{ route("customer.resendOTP") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ phone: phone })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotificationSuccess(data.message);
+                    document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+                    document.querySelectorAll('.otp-input')[0].focus();
+                    showNotificationSuccess('New OTP sent to ' + phone);
+                    startTimerResetPassword();
                 } else {
                     showNotification(data.message);
                 }
@@ -1015,6 +1398,109 @@
                     }, 300);
                 }, 3000);
             }
+    </script>
+    <!-- Include Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCI2t3yWm5BVrLtodKsmaBXvizjfWeXaOg",
+            authDomain: "e-book-store-c0106.firebaseapp.com",
+            projectId: "e-book-store-c0106",
+            storageBucket: "e-book-store-c0106.appspot.com",
+            messagingSenderId: "1033729348961",
+            appId: "1:1033729348961:web:5a67768d0e379ae959e120",
+            measurementId: "G-DFD58B2FQP"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        window.signInWithGoogle = function () {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    fetch("{{ route('customer.googleLogin') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            email: user.email,
+                            displayName: user.displayName,
+                            photoURL: user.photoURL,
+                            uid: user.uid
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.is_google_login) {
+                            window.location.href = "{{ route('home') }}";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Fetch error:", error);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Google Auth Error:", error);
+                });
+        };
+    </script>
+
+    <!-- Facebook Login -->
+    <script>
+        window.fbAsyncInit = function () {
+        FB.init({
+            appId: '961679482581695',
+            cookie: true,
+            xfbml: true,
+            version: 'v19.0'
+        });
+        };
+
+        (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <script>
+        function signInWithFacebook() {
+        FB.login(function (response) {
+            if (response.authResponse) {
+            FB.api('/me', { fields: 'id,name,email,picture' }, function (userInfo) {
+                fetch("{{ route('customer.facebookLogin') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    facebook_id: userInfo.id,
+                    name: userInfo.name,
+                    email: userInfo.email,
+                    photo: userInfo.picture.data.url
+                })
+                })
+                .then(response => response.json())
+                .then(data => {
+                if (data.success) {
+                    window.location.href = "{{ route('home') }}";
+                }
+                });
+            });
+            } else {
+            console.log("User cancelled login or did not fully authorize.");
+            }
+        }, { scope: 'email,public_profile' });
+        }
     </script>
 </body>
 

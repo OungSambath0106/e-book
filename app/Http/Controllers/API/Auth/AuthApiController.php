@@ -35,7 +35,7 @@ class AuthApiController extends Controller
             }
 
             $otp = rand(100000, 999999);
-            Cache::put('otp_' . $phone, $otp, now()->addMinutes(5));
+            Cache::put('otp_' . $phone, $otp, now()->addMinutes(1));
 
             $response = GlobalFunction::sendOTP($phone, $otp);
 
